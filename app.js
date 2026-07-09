@@ -1,5 +1,6 @@
 const STORAGE_KEY = "fortnite-sprites-collection-v1";
 const LANG_KEY = "fortnite-elementals-lang";
+const SORT_KEY = "fortnite-elementals-sort";
 
 const RARITY_COLORS = {
   Rare: "var(--rare)",
@@ -20,6 +21,11 @@ const TRANSLATIONS = {
     tabNotOwned: "Não tenho",
     tabMastered: "Dominados",
     tabNotMastered: "Não dominados",
+    tabFavorites: "Favoritos ★",
+    sortLabel: "Ordenar por",
+    sortDefault: "Padrão",
+    sortRarity: "Raridade",
+    sortAlpha: "Nome (A–Z)",
     progressOwned: (owned, total) => `${owned} / ${total} coletados`,
     progressMastered: (mastered, total) => `${mastered} / ${total} dominados`,
     owned: "Tenho",
@@ -58,6 +64,11 @@ const TRANSLATIONS = {
     tabNotOwned: "Not owned",
     tabMastered: "Mastered",
     tabNotMastered: "Not mastered",
+    tabFavorites: "Favorites ★",
+    sortLabel: "Sort by",
+    sortDefault: "Default",
+    sortRarity: "Rarity",
+    sortAlpha: "Name (A–Z)",
     progressOwned: (owned, total) => `${owned} / ${total} collected`,
     progressMastered: (mastered, total) => `${mastered} / ${total} mastered`,
     owned: "Owned",
@@ -126,6 +137,9 @@ let collection = loadCollection();
 let lang = loadLang();
 let activeFilter = "all";
 let searchTerm = "";
+let sortMode = ["default", "rarity", "alpha"].includes(storage.get(SORT_KEY))
+  ? storage.get(SORT_KEY)
+  : "default";
 
 const grid = document.getElementById("elemental-grid");
 const emptyState = document.getElementById("empty-state");
@@ -183,7 +197,24 @@ function matchesFilter(elemental) {
   if (activeFilter === "not-owned") return !hasAny(elemental, "owned");
   if (activeFilter === "mastered") return hasAny(elemental, "mastered");
   if (activeFilter === "not-mastered") return !hasAny(elemental, "mastered");
+  if (activeFilter === "favorites") return getEntry(elemental.id).favorite;
   return elemental.rarity === activeFilter;
+}
+
+function sortElementals(list) {
+  if (sortMode === "alpha") {
+    return [...list].sort((a, b) =>
+      a.name[lang].localeCompare(b.name[lang], lang === "pt" ? "pt-BR" : "en")
+    );
+  }
+  if (sortMode === "rarity") {
+    return [...list].sort(
+      (a, b) =>
+        RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity) ||
+        a.name[lang].localeCompare(b.name[lang], lang === "pt" ? "pt-BR" : "en")
+    );
+  }
+  return list; // ordem padrão dos dados
 }
 
 function matchesSearch(elemental) {
@@ -212,8 +243,21 @@ function applyLanguage() {
     else if (key === "not-owned") tab.textContent = s.tabNotOwned;
     else if (key === "mastered") tab.textContent = s.tabMastered;
     else if (key === "not-mastered") tab.textContent = s.tabNotMastered;
+    else if (key === "favorites") tab.textContent = s.tabFavorites;
     else tab.textContent = s.rarities[key];
   });
+
+  document.getElementById("sort-label").textContent = s.sortLabel;
+  const sortSelect = document.getElementById("sort-select");
+  const sortNames = {
+    default: s.sortDefault,
+    rarity: s.sortRarity,
+    alpha: s.sortAlpha,
+  };
+  [...sortSelect.options].forEach((opt) => {
+    opt.textContent = sortNames[opt.value];
+  });
+  sortSelect.value = sortMode;
 
   const refreshBtn = document.getElementById("refresh-btn");
   refreshBtn.title = s.refresh;
@@ -447,7 +491,9 @@ function createCard(elemental) {
 }
 
 function render() {
-  const visible = ELEMENTALS.filter((e) => matchesFilter(e) && matchesSearch(e));
+  const visible = sortElementals(
+    ELEMENTALS.filter((e) => matchesFilter(e) && matchesSearch(e))
+  );
 
   grid.innerHTML = "";
   visible.forEach((elemental) => grid.appendChild(createCard(elemental)));
@@ -506,6 +552,12 @@ filterTabs.addEventListener("click", (e) => {
 
 document.getElementById("refresh-btn").addEventListener("click", () => {
   window.location.reload();
+});
+
+document.getElementById("sort-select").addEventListener("change", (e) => {
+  sortMode = e.target.value;
+  storage.set(SORT_KEY, sortMode);
+  render();
 });
 
 langSwitch.addEventListener("click", (e) => {
