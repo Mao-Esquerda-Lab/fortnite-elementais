@@ -22,8 +22,8 @@ const TRANSLATIONS = {
     favorite: "Favoritar",
     variant: "(variante)",
     dust: "Pó de Elemental",
-    variantsLabel: "Variantes",
-    noVariants: "Sem variantes",
+    collectionLabel: "Coleção",
+    baseVariant: "Base",
     empty: "Nenhum Elemental encontrado.",
     installTitle: "📱 Instale como aplicativo",
     installButton: "Instalar aplicativo",
@@ -50,8 +50,8 @@ const TRANSLATIONS = {
     favorite: "Favorite",
     variant: "(variant)",
     dust: "Sprite Dust",
-    variantsLabel: "Variants",
-    noVariants: "No variants",
+    collectionLabel: "Collection",
+    baseVariant: "Base",
     empty: "No Elementals found.",
     installTitle: "📱 Install as an app",
     installButton: "Install app",
@@ -258,9 +258,17 @@ function variantImgFallback(img) {
 window.variantImgFallback = variantImgFallback;
 
 function variantChips(elemental, entry, s) {
-  if (!elemental.variants.length) {
-    return `<div class="variants"><span class="variants-label">${s.noVariants}</span></div>`;
-  }
+  // O Sprite base é um chip na mesma linha das variantes.
+  const baseChip = `
+    <button type="button"
+            class="variant-chip base${entry.owned ? " owned" : ""}"
+            data-action="base" data-id="${elemental.id}"
+            title="${s.baseVariant} — ${s.owned}"
+            aria-pressed="${entry.owned}">
+      <img src="${elemental.image}" alt="" loading="lazy"
+           onerror="variantImgFallback(this)" />
+      <span>${s.baseVariant}</span>
+    </button>`;
 
   const chips = elemental.variants
     .map((v) => {
@@ -280,8 +288,8 @@ function variantChips(elemental, entry, s) {
 
   return `
     <div class="variants">
-      <span class="variants-label">${s.variantsLabel}</span>
-      <div class="variant-chips">${chips}</div>
+      <span class="variants-label">${s.collectionLabel}</span>
+      <div class="variant-chips">${baseChip}${chips}</div>
     </div>`;
 }
 
@@ -309,15 +317,9 @@ function createCard(elemental) {
       <span>💠 ${elemental.dust} ${s.dust}</span>
       <span>🪙 ${elemental.variantCost} ${s.variant}</span>
     </div>
-    <div class="card-actions">
-      <label class="owned-toggle">
-        <input type="checkbox" ${entry.owned ? "checked" : ""} data-action="owned" data-id="${elemental.id}" />
-        ${s.owned}
-      </label>
-      <button class="favorite-btn ${entry.favorite ? "active" : ""}" data-action="favorite" data-id="${elemental.id}" title="${s.favorite}">
-        ${entry.favorite ? "★" : "☆"}
-      </button>
-    </div>
+    <button class="favorite-btn ${entry.favorite ? "active" : ""}" data-action="favorite" data-id="${elemental.id}" title="${s.favorite}">
+      ${entry.favorite ? "★" : "☆"}
+    </button>
   `;
 
   return card;
@@ -340,8 +342,8 @@ grid.addEventListener("click", (e) => {
   const id = target.dataset.id;
   const action = target.dataset.action;
 
-  if (action === "owned") {
-    setEntry(id, { owned: target.checked });
+  if (action === "base") {
+    setEntry(id, { owned: !getEntry(id).owned });
     render();
   } else if (action === "favorite") {
     setEntry(id, { favorite: !getEntry(id).favorite });

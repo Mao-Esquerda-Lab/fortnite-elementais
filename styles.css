@@ -300,6 +300,10 @@ body {
   font-weight: 800;
 }
 
+.variant-chip.base {
+  border-color: var(--rarity-color, var(--border));
+}
+
 .elemental-costs {
   display: flex;
   gap: 0.75rem;
@@ -307,30 +311,10 @@ body {
   color: var(--muted);
 }
 
-.card-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 0.2rem;
-}
-
-.owned-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-  user-select: none;
-}
-
-.owned-toggle input {
-  width: 1.05rem;
-  height: 1.05rem;
-  accent-color: var(--rarity-color, var(--accent));
-  cursor: pointer;
-}
-
 .favorite-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
   background: none;
   border: none;
   font-size: 1.2rem;
