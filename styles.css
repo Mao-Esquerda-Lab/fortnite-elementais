@@ -145,11 +145,20 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Menu de navegação rápida: ícones dos Elementais base; clicar rola até o card. */
+/* Menu de navegação rápida: ícones dos Elementais base; clicar rola até o
+   card. Gruda logo abaixo do cabeçalho fixo e fica acessível durante a
+   rolagem; em telas estreitas a linha rola na horizontal. */
 .sprite-nav {
+  position: sticky;
+  top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  z-index: 50;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 0.4rem;
+  padding: 0.55rem 0;
+  background: var(--bg);
+  scrollbar-width: thin;
 }
 
 .sprite-nav:empty {
@@ -157,6 +166,7 @@ body {
 }
 
 .nav-icon {
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   padding: 5px;
@@ -341,8 +351,9 @@ body {
   position: relative;
   border-top: 4px solid var(--rarity-color, var(--border));
   transition: transform 0.15s, box-shadow 0.15s;
-  /* O scroll do menu de navegação para logo abaixo do cabeçalho fixo. */
-  scroll-margin-top: calc(4.2rem + env(safe-area-inset-top, 0px));
+  /* O scroll do menu de navegação para abaixo do cabeçalho fixo e da
+     própria barra de ícones grudada. */
+  scroll-margin-top: calc(7.6rem + env(safe-area-inset-top, 0px));
 }
 
 /* Destaque temporário no card alvo da navegação rápida. */
