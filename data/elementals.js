@@ -250,6 +250,48 @@ const ELEMENTALS = [
     dust: 7500,
     variantCost: 15000,
   },
+  // Sprites já listados na wiki mas ainda não lançados no jogo
+  // (upcoming: true desabilita os checkboxes e tira do progresso).
+  {
+    id: "air",
+    name: { pt: "Ar", en: "Air" },
+    wikiName: "Air Sprite",
+    rarity: "Rare",
+    upcoming: true,
+    ability: {
+      pt: "Aumenta a velocidade de corrida e a altura do pulo, e anula dano de queda.",
+      en: "Increases sprint speed and jump height, and nullifies fall damage.",
+    },
+    dust: 100,
+    variantCost: 4000,
+  },
+  {
+    id: "seven",
+    name: { pt: "Sete", en: "Seven" },
+    wikiName: "Seven Sprite",
+    rarity: "Legendary",
+    upcoming: true,
+    ability: {
+      pt: "Revela ao seu esquadrão os rastros de passos dos inimigos.",
+      en: "Makes enemy foot trails visible to your squad.",
+    },
+    dust: 5000,
+    variantCost: 10000,
+  },
+  {
+    id: "john-wick",
+    name: { pt: "John Wick", en: "John Wick" },
+    wikiName: "John Wick Sprite",
+    rarity: "Mythic",
+    upcoming: true,
+    noVariants: true,
+    ability: {
+      pt: "Habilidade ainda não revelada.",
+      en: "Ability not yet revealed.",
+    },
+    dust: 7500,
+    variantCost: 15000,
+  },
 ];
 
 ELEMENTALS.forEach((e) => {

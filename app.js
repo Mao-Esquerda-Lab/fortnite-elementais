@@ -33,6 +33,7 @@ const TRANSLATIONS = {
     costVariants: "Variantes",
     collectionLabel: "Coleção",
     baseVariant: "Base",
+    upcoming: "Em breve",
     empty: "Nenhum Elemental encontrado.",
     installTitle: "📱 Instale como aplicativo",
     installButton: "Instalar aplicativo",
@@ -69,6 +70,7 @@ const TRANSLATIONS = {
     costVariants: "Variants",
     collectionLabel: "Collection",
     baseVariant: "Base",
+    upcoming: "Upcoming",
     empty: "No Elementals found.",
     installTitle: "📱 Install as an app",
     installButton: "Install app",
@@ -319,6 +321,7 @@ function renderProgress() {
   };
 
   ELEMENTALS.forEach((e) => {
+    if (e.upcoming) return; // não lançados não contam no progresso
     const entry = getEntry(e.id);
     total += 1 + e.variants.length;
     tally(owned, e.rarity, entry.owned);
@@ -354,6 +357,7 @@ function spriteTile(elemental, s, { variantId, name, image, title, state }) {
   const checkbox = (action, checked, label) => `
     <label class="tile-check">
       <input type="checkbox" ${checked ? "checked" : ""}
+             ${elemental.upcoming ? "disabled" : ""}
              data-action="${action}" data-id="${elemental.id}"
              data-variant="${variantId}" />
       ${label}
@@ -418,6 +422,7 @@ function createCard(elemental) {
       <div class="card-title">
         <h3 class="elemental-name">${elemental.name[lang]}</h3>
         <span class="rarity-badge">${s.rarities[elemental.rarity]}</span>
+        ${elemental.upcoming ? `<span class="upcoming-badge">${s.upcoming}</span>` : ""}
       </div>
     </div>
     <p class="elemental-ability">${elemental.ability[lang]}</p>

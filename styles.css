@@ -69,6 +69,18 @@ body {
   color: var(--muted);
 }
 
+/* Ícone do app centralizado na barra do cabeçalho. */
+.header-icon {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + env(safe-area-inset-top, 0px) / 2);
+  transform: translate(-50%, -50%);
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
 .lang-switch {
   display: flex;
   gap: 0.35rem;
@@ -169,6 +181,47 @@ body {
   border-color: var(--accent);
   color: #0f1115;
   font-weight: 600;
+}
+
+/* Filtros de raridade na cor da raridade — servem também de legenda. */
+.filter-tab[data-rarity="Rare"] {
+  color: var(--rare);
+  border-color: var(--rare);
+}
+
+.filter-tab[data-rarity="Epic"] {
+  color: var(--epic);
+  border-color: var(--epic);
+}
+
+.filter-tab[data-rarity="Legendary"] {
+  color: var(--legendary);
+  border-color: var(--legendary);
+}
+
+.filter-tab[data-rarity="Mythic"] {
+  color: var(--mythic);
+  border-color: var(--mythic);
+}
+
+.filter-tab.active[data-rarity="Rare"] {
+  background: var(--rare);
+  color: #0f1115;
+}
+
+.filter-tab.active[data-rarity="Epic"] {
+  background: var(--epic);
+  color: #0f1115;
+}
+
+.filter-tab.active[data-rarity="Legendary"] {
+  background: var(--legendary);
+  color: #0f1115;
+}
+
+.filter-tab.active[data-rarity="Mythic"] {
+  background: var(--mythic);
+  color: #0f1115;
 }
 
 .progress {
@@ -279,6 +332,24 @@ body {
   color: #0f1115;
   background: var(--rarity-color, var(--muted));
   white-space: nowrap;
+}
+
+.upcoming-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  color: var(--muted);
+  border: 1px dashed var(--muted);
+  white-space: nowrap;
+}
+
+.upcoming-badge + * .tile-check,
+.sprite-tile .tile-check input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .elemental-ability {
@@ -548,6 +619,14 @@ body {
     flex-direction: column;
     align-items: stretch;
     gap: 0.25rem;
+  }
+
+  /* No layout em coluna, flex:1 passaria a controlar a ALTURA da barra
+     e a colapsaria para zero — fixa a altura e ocupa toda a largura. */
+  .progress-bar {
+    flex: none;
+    width: 100%;
+    height: 0.6rem;
   }
 
   .progress-label {
