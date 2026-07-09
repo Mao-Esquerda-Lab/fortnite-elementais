@@ -545,8 +545,12 @@ filterTabs.addEventListener("click", (e) => {
   const btn = e.target.closest(".filter-tab");
   if (!btn) return;
 
-  activeFilter = btn.dataset.rarity;
-  [...filterTabs.children].forEach((el) => el.classList.toggle("active", el === btn));
+  const clicked = btn.dataset.rarity;
+  // Clicar no filtro já ativo desfaz o filtro (volta para "Todos").
+  activeFilter = clicked !== "all" && clicked === activeFilter ? "all" : clicked;
+  [...filterTabs.children].forEach((el) =>
+    el.classList.toggle("active", el.dataset.rarity === activeFilter)
+  );
   render();
 });
 
