@@ -273,15 +273,6 @@ body {
   gap: 0.3rem;
 }
 
-/* O quadradinho do Sprite base ocupa a linha inteira, acima das variantes. */
-.sprite-tile.base {
-  grid-column: 1 / -1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-color: var(--rarity-color, var(--border));
-}
-
 .sprite-tile.owned {
   border-color: var(--rarity-color, var(--accent));
   background: color-mix(in srgb, var(--rarity-color, var(--accent)) 12%, var(--surface-hover));
@@ -319,11 +310,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-}
-
-.sprite-tile.base .tile-checks {
-  flex-direction: row;
-  gap: 0.75rem;
 }
 
 .tile-check {

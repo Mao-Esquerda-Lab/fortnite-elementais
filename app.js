@@ -282,7 +282,7 @@ function variantImgFallback(img) {
 }
 window.variantImgFallback = variantImgFallback;
 
-function spriteTile(elemental, s, { variantId, name, image, title, state, isBase }) {
+function spriteTile(elemental, s, { variantId, name, image, title, state }) {
   const checkbox = (action, checked, label) => `
     <label class="tile-check">
       <input type="checkbox" ${checked ? "checked" : ""}
@@ -292,7 +292,7 @@ function spriteTile(elemental, s, { variantId, name, image, title, state, isBase
     </label>`;
 
   return `
-    <div class="sprite-tile${isBase ? " base" : ""}${state.owned ? " owned" : ""}${state.mastered ? " mastered" : ""}"
+    <div class="sprite-tile${state.owned ? " owned" : ""}${state.mastered ? " mastered" : ""}"
          title="${title}">
       <div class="tile-head">
         <img src="${image}" alt="" width="24" height="24" loading="lazy"
@@ -314,7 +314,6 @@ function collectionTiles(elemental, entry, s) {
     image: elemental.image,
     title: `${elemental.name[lang]} — ${s.baseVariant}`,
     state: entry,
-    isBase: true,
   });
 
   const variantTiles = elemental.variants
