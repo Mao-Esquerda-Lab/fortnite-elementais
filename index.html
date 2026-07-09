@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f1115" />
   <title>Fortnite Sprites Locker</title>
   <link rel="stylesheet" href="styles.css" />
@@ -24,7 +24,7 @@
     <button class="install-close" id="install-close" type="button" aria-label="×">×</button>
   </div>
 
-  <header class="topbar">
+  <div class="app-header">
     <!-- O rótulo já vem preenchido para não depender do JavaScript. -->
     <button class="refresh-btn" id="refresh-btn" type="button" title="Atualizar">
       <span aria-hidden="true">⟳</span><span id="refresh-label">Atualizar</span>
@@ -33,6 +33,9 @@
       <button class="lang-btn" data-lang="pt">PT</button>
       <button class="lang-btn" data-lang="en">EN</button>
     </div>
+  </div>
+
+  <header class="topbar">
     <h1 id="app-title"></h1>
     <p class="subtitle" id="app-subtitle"></p>
   </header>

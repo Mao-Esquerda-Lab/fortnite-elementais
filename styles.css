@@ -36,11 +36,27 @@ body {
   color: var(--text);
 }
 
+/* Cabeçalho fixo e opaco, igual na web e no app instalado.
+   O padding com env(safe-area-inset-top) cobre a barra de status/notch. */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(0.55rem + env(safe-area-inset-top, 0px)) 0.75rem 0.55rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
 .topbar {
   position: relative;
   text-align: center;
-  /* Espaço para os controles fixos não cobrirem o título. */
-  padding: 4rem 1rem 1.5rem;
+  /* Espaço para o conteúdo começar abaixo do cabeçalho fixo. */
+  padding: calc(4.5rem + env(safe-area-inset-top, 0px)) 1rem 1.5rem;
 }
 
 .topbar h1 {
@@ -53,26 +69,12 @@ body {
   color: var(--muted);
 }
 
-/* Controles fixos: seguem visíveis durante a rolagem. */
 .lang-switch {
-  position: fixed;
-  top: 0.75rem;
-  right: 0.75rem;
-  z-index: 60;
   display: flex;
   gap: 0.35rem;
 }
 
-.lang-btn,
 .refresh-btn {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-.refresh-btn {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 60;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -405,8 +407,8 @@ body {
 
 .install-toast {
   position: fixed;
-  /* Abaixo dos controles fixos do cabeçalho. */
-  top: 3.9rem;
+  /* Abaixo do cabeçalho fixo. */
+  top: calc(3.9rem + env(safe-area-inset-top, 0px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
