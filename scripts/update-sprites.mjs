@@ -26,6 +26,14 @@ const PAGE = "Sprites";
 const API_URL = `https://fortnite.fandom.com/api.php?action=parse&page=${PAGE}&prop=wikitext&format=json`;
 const RAW_URL = `https://fortnite.fandom.com/wiki/${PAGE}?action=raw`;
 
+// O app cobre apenas Sprites do Chapter 7 em diante.
+const MIN_CHAPTER = 7;
+
+// Sprites confirmados como de capítulos anteriores (fora do escopo do app),
+// citados na página sem contexto de capítulo detectável. Remova daqui se
+// algum deles ganhar uma versão do Chapter 7+.
+const EXCLUDED_SPRITES = ["Dash Sprite", "Superman Sprite"];
+
 // Prefixos de variantes: "Gold Water Sprite" não é um Sprite novo.
 const VARIANT_PREFIXES = [
   "Base",
@@ -103,30 +111,60 @@ const startsWithVariant = (name) =>
 
 // Extrai os nomes "X Sprite" citados na página (links, templates e arquivos),
 // junto com a raridade encontrada na mesma linha, quando houver.
+// Só aceita Sprites do Chapter >= MIN_CHAPTER: o capítulo vem da subpágina
+// do link ([[X Sprite/Chapter 6|...]]) ou, na falta dela, do heading de
+// seção mais recente que cite um capítulo. Sem contexto nenhum, aceita.
 function parseSprites(wikitext) {
   const found = new Map(); // nome -> raridade | null
 
   // ":" fora das classes evita capturar prefixos como "File:".
-  const patterns = [
-    // [[Water Sprite]], [[Water Sprite/Chapter 7|Water Sprite]]
-    /\[\[([A-Z][^[\]|#/{}:\n]*? Sprite)(?:\/[^[\]|]*)?(?:\|[^[\]]*)?\]\]/g,
+  // O grupo 2 do padrão de link é a subpágina (ex.: "Chapter 7").
+  const linkPattern =
+    /\[\[([A-Z][^[\]|#/{}:\n]*? Sprite)(?:\/([^[\]|]*))?(?:\|[^[\]]*)?\]\]/g;
+  const otherPatterns = [
     // {{Item|Water Sprite|...}} e afins
     /\{\{[^{}|]*\|\s*([A-Z][^{}|=:\n]*? Sprite)\s*[|}]/g,
     // File:Water Sprite - Item - Fortnite.png
     /([A-Z][^[\]{}|=:\n]*? Sprite) - Item - Fortnite\.(?:png|webp|jpg)/g,
   ];
 
+  const chapterOf = (text) => {
+    const m = text && text.match(/Chapter\s*(\d+)/i);
+    return m ? Number(m[1]) : null;
+  };
+
+  let sectionChapter = null; // último heading que citou um capítulo
+
   for (const line of wikitext.split("\n")) {
+    const heading = line.match(/^=+\s*(.+?)\s*=+\s*$/);
+    if (heading) {
+      const chapter = chapterOf(heading[1]);
+      if (chapter !== null) sectionChapter = chapter;
+      continue;
+    }
+
     const rarity =
       RARITIES.find((r) => new RegExp(`\\b${r}\\b`, "i").test(line)) || null;
-    for (const pattern of patterns) {
+
+    const add = (rawName, explicitChapter) => {
+      const name = rawName.trim();
+      if (startsWithVariant(name)) return;
+      if (EXCLUDED_SPRITES.includes(name)) return;
+      const chapter = explicitChapter ?? sectionChapter;
+      if (chapter !== null && chapter < MIN_CHAPTER) return;
+      if (!found.has(name) || (rarity && !found.get(name))) {
+        found.set(name, rarity);
+      }
+    };
+
+    linkPattern.lastIndex = 0;
+    for (const match of line.matchAll(linkPattern)) {
+      add(match[1], chapterOf(match[2]));
+    }
+    for (const pattern of otherPatterns) {
       pattern.lastIndex = 0;
       for (const match of line.matchAll(pattern)) {
-        const name = match[1].trim();
-        if (startsWithVariant(name)) continue;
-        if (!found.has(name) || (rarity && !found.get(name))) {
-          found.set(name, rarity);
-        }
+        add(match[1], null);
       }
     }
   }
@@ -163,7 +201,8 @@ function writeAutoFile(entries) {
   const content = `// ARQUIVO GERADO AUTOMATICAMENTE — não edite à mão.
 // Gerado por scripts/update-sprites.mjs (workflow update-sprites.yml), que
 // consulta a página "Sprites" da Fortnite Wiki todo dia e ADICIONA aqui os
-// Sprites que ainda não existem em data/elementals.js.
+// Sprites do Chapter 7 em diante que ainda não existem em
+// data/elementals.js. Sprites de capítulos anteriores ficam fora do app.
 //
 // Para traduzir/curar um Sprite desta lista (nome em PT, habilidade,
 // variantes especiais etc.), MOVA a entrada para data/elementals.js: o
@@ -195,8 +234,11 @@ async function main() {
   const known = loadKnownElementals();
   const knownNames = new Set(known.map((e) => e.wikiName));
   // Os "Em breve" (upcoming) podem ainda não aparecer na página da wiki —
-  // as travas de sanidade valem só para os Sprites já lançados.
-  const releasedNames = known.filter((e) => !e.upcoming).map((e) => e.wikiName);
+  // as travas de sanidade valem só para os Sprites já lançados. A denylist
+  // também fica de fora, para dados antigos não conflitarem com ela.
+  const releasedNames = known
+    .filter((e) => !e.upcoming && !EXCLUDED_SPRITES.includes(e.wikiName))
+    .map((e) => e.wikiName);
 
   // Fail-closed 1: todos os Sprites lançados precisam continuar citados na
   // página. Se algum sumiu, ou a página foi reformulada, ou recebemos um
