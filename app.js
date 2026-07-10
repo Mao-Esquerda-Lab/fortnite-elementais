@@ -22,6 +22,8 @@ const TRANSLATIONS = {
     exportTitle: "Abre uma imagem com o resumo da sua coleção",
     exportFile: "sprites-resumo",
     exportDownload: "Baixar imagem",
+    exportCopy: "Copiar imagem",
+    exportCopied: "Copiada! ✓",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
     tabAll: "Todos",
     tabOwned: "Tenho",
@@ -72,6 +74,8 @@ const TRANSLATIONS = {
     exportTitle: "Opens an image summarizing your collection",
     exportFile: "sprites-summary",
     exportDownload: "Download image",
+    exportCopy: "Copy image",
+    exportCopied: "Copied! ✓",
     exportTotal: (total) => `${total} items (Base + variants)`,
     tabAll: "All",
     tabOwned: "Owned",
@@ -271,6 +275,7 @@ function applyLanguage() {
   exportBtn.title = s.exportTitle;
   document.getElementById("export-label").textContent = s.exportLabel;
   document.getElementById("export-download").textContent = s.exportDownload;
+  document.getElementById("export-copy").textContent = s.exportCopy;
   document.getElementById("export-close").textContent = s.close;
 
   document.getElementById("sort-label").textContent = s.sortLabel;
@@ -857,6 +862,8 @@ async function exportSummary() {
   // em vez de disparar o download direto.
   canvas.toBlob((blob) => {
     if (!blob) return;
+    exportBlob = blob;
+    exportCopyBtn.textContent = s.exportCopy;
     exportUrl = URL.createObjectURL(blob);
     exportImg.src = exportUrl;
     exportDownloadLink.href = exportUrl;
@@ -870,7 +877,28 @@ async function exportSummary() {
 const exportOverlay = document.getElementById("export-overlay");
 const exportImg = document.getElementById("export-img");
 const exportDownloadLink = document.getElementById("export-download");
+const exportCopyBtn = document.getElementById("export-copy");
 let exportUrl = null;
+let exportBlob = null;
+
+// Copiar imagem só existe onde o navegador suporta imagem no clipboard
+// (Chrome/Edge/Safari; Firefox ainda não).
+exportCopyBtn.hidden = !(navigator.clipboard && window.ClipboardItem);
+
+exportCopyBtn.addEventListener("click", async () => {
+  if (!exportBlob) return;
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({ "image/png": exportBlob }),
+    ]);
+    exportCopyBtn.textContent = t().exportCopied;
+    setTimeout(() => {
+      exportCopyBtn.textContent = t().exportCopy;
+    }, 2000);
+  } catch {
+    /* usuário negou permissão ou o clipboard falhou — mantém o botão */
+  }
+});
 
 function closeExportOverlay() {
   exportOverlay.hidden = true;
