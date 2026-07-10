@@ -669,6 +669,22 @@ const EXPORT_COLORS = {
   },
 };
 
+// Ajusta o texto ao espaço SEM usar o maxWidth do fillText: no WebKit/Safari
+// textos maiores que o maxWidth podem simplesmente não ser desenhados
+// (quadrinhos "vazios" no resumo). Mede de verdade: diminui a fonte até
+// caber e, em último caso, corta com reticências. Deixa ctx.font ajustada.
+function fitText(ctx, text, maxWidth, size, weight, font) {
+  for (let s = size; s >= 8; s--) {
+    ctx.font = `${weight} ${s}px ${font}`;
+    if (ctx.measureText(text).width <= maxWidth) return text;
+  }
+  let cut = text;
+  while (cut.length > 1 && ctx.measureText(`${cut}…`).width > maxWidth) {
+    cut = cut.slice(0, -1);
+  }
+  return `${cut}…`;
+}
+
 function roundedRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   if (ctx.roundRect) {
@@ -801,8 +817,8 @@ async function exportSummary() {
     }
 
     ctx.fillStyle = c.text;
-    ctx.font = `700 15px ${FONT}`;
-    ctx.fillText(e.name[lang], NAME_X, y, CHIPS_X - NAME_X - 12);
+    const name = fitText(ctx, e.name[lang], CHIPS_X - NAME_X - 12, 15, 700, FONT);
+    ctx.fillText(name, NAME_X, y);
 
     const items = [
       { label: s.baseVariant, state: entry },
@@ -826,9 +842,9 @@ async function exportSummary() {
         ctx.stroke();
         ctx.fillStyle = c.muted;
       }
-      ctx.font = `600 11px ${FONT}`;
       const mark = item.state.mastered ? "★ " : item.state.owned ? "✓ " : "";
-      ctx.fillText(`${mark}${item.label}`, x + 8, y + 1, CHIP_W - 14);
+      const label = fitText(ctx, `${mark}${item.label}`, CHIP_W - 14, 11, 600, FONT);
+      ctx.fillText(label, x + 8, y + 1);
     });
   });
 
