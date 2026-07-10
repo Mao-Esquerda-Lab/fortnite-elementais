@@ -350,13 +350,15 @@ body {
   padding: 1rem;
 }
 
+/* Tamanho FIXO: a caixa não muda quando o rótulo dos botões muda
+   (ex.: "Copiar" -> "Copiado! ✓"); a imagem se acomoda dentro dela. */
 .export-box {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.9rem;
   padding: 0.9rem;
-  max-width: min(680px, 94vw);
-  max-height: 88vh;
+  width: min(680px, 94vw);
+  height: min(88vh, 900px);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -399,6 +401,9 @@ body {
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
+  /* Largura estável entre "Copiar" e "Copiado! ✓". */
+  min-width: 7rem;
+  text-align: center;
 }
 
 .export-copy:hover {
