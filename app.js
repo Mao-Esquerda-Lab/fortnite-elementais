@@ -38,6 +38,8 @@ const TRANSLATIONS = {
     compareOnlyThem: "Só ele(a) tem",
     compareNone: "Nada exclusivo aqui",
     compareInvalidCode: "Este link de comparação é inválido ou está corrompido.",
+    compareZeroHint:
+      "Seus totais deram 0? Se você abriu este link dentro de um app de mensagens (WhatsApp, Instagram etc.), ele pode usar um armazenamento separado do seu navegador normal. Tente abrir o link direto no Chrome/Safari para ver sua coleção de verdade.",
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -103,6 +105,8 @@ const TRANSLATIONS = {
     compareOnlyThem: "Only they have",
     compareNone: "Nothing exclusive here",
     compareInvalidCode: "This comparison link is invalid or corrupted.",
+    compareZeroHint:
+      "Your totals show 0? If you opened this link inside a messaging app (WhatsApp, Instagram, etc.), it may use storage separate from your regular browser. Try opening the link directly in Chrome/Safari to see your real collection.",
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -462,6 +466,7 @@ function applyLanguage() {
   document.getElementById("share-close").textContent = s.close;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
+  compareZeroHint.textContent = s.compareZeroHint;
 
   document.getElementById("sort-label").textContent = s.sortLabel;
   const sortSelect = document.getElementById("sort-select");
@@ -1112,6 +1117,7 @@ const compareOverlay = document.getElementById("compare-overlay");
 const compareStats = document.getElementById("compare-stats");
 const compareOnlyYou = document.getElementById("compare-only-you");
 const compareOnlyThem = document.getElementById("compare-only-them");
+const compareZeroHint = document.getElementById("compare-zero-hint");
 
 function openShareModal() {
   const s = t();
@@ -1156,10 +1162,15 @@ function compareListColumn(title, labels) {
 function openCompareModal(theirCollection) {
   const s = t();
   const rows = diffCollections(collection, theirCollection);
+  const myTotals = computeTotals(collection);
 
   compareStats.innerHTML =
-    statTile(s.compareYou, computeTotals(collection)) +
+    statTile(s.compareYou, myTotals) +
     statTile(s.compareThem, computeTotals(theirCollection));
+  // "Você: 0" pode ser genuíno, mas também é o sintoma de abrir o link num
+  // navegador embutido (WhatsApp/Instagram etc.), que isola o localStorage
+  // do navegador de verdade — avisa por via das dúvidas.
+  compareZeroHint.hidden = myTotals.owned !== 0;
 
   const onlyMine = [];
   const onlyTheirs = [];
