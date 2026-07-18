@@ -88,6 +88,10 @@
       <button class="export-btn" id="export-btn" type="button">
         <span aria-hidden="true">📸</span><span id="export-label"></span>
       </button>
+      <!-- Gera um link para comparar a coleção com a de um amigo (sem backend). -->
+      <button class="export-btn" id="share-btn" type="button">
+        <span aria-hidden="true">🔗</span><span id="share-label"></span>
+      </button>
     </section>
 
     <section id="elemental-grid" class="elemental-grid"></section>
@@ -113,6 +117,46 @@
         <a class="export-download" id="export-download"></a>
         <button class="export-close" id="export-close" type="button"></button>
       </div>
+    </div>
+  </div>
+
+  <!-- Gera/copia um link de comparação, ou aceita colar o de um amigo. -->
+  <div class="export-overlay" id="share-overlay" hidden>
+    <div class="export-box share-box">
+      <div class="share-section">
+        <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="share-link-input" type="text" readonly />
+          <button class="export-copy" id="share-copy-btn" type="button"></button>
+        </div>
+      </div>
+      <div class="share-section">
+        <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="share-paste-input" type="text" />
+          <button class="export-copy" id="share-paste-btn" type="button"></button>
+        </div>
+        <p class="share-error" id="share-paste-error" hidden></p>
+      </div>
+      <div class="export-actions">
+        <button class="export-close" id="share-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparação somente-leitura contra a coleção decodificada de um link. -->
+  <div class="export-overlay" id="compare-overlay" hidden>
+    <div class="export-box compare-box">
+      <div class="compare-header">
+        <h2 id="compare-title"></h2>
+        <button class="export-close" id="compare-close" type="button"></button>
+      </div>
+      <div class="compare-stats" id="compare-stats"></div>
+      <div class="compare-lists">
+        <div class="compare-list-col" id="compare-only-you"></div>
+        <div class="compare-list-col" id="compare-only-them"></div>
+      </div>
+      <div class="compare-rows" id="compare-rows"></div>
     </div>
   </div>
 

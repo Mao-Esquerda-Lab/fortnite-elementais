@@ -25,6 +25,23 @@ const TRANSLATIONS = {
     exportCopy: "Copiar",
     exportCopied: "Copiado! ✓",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
+    shareLabel: "Compartilhar",
+    shareTitle: "Gera um link para comparar sua coleção com a de um amigo",
+    shareLinkLabel: "Seu link de comparação",
+    shareCopyLink: "Copiar link",
+    sharePasteLabel: "Cole aqui o código ou link de um amigo",
+    sharePasteButton: "Comparar",
+    compareTitle: "Comparação de coleção",
+    compareYou: "Você",
+    compareThem: "Amigo(a)",
+    compareOnlyYou: "Só você tem",
+    compareOnlyThem: "Só ele(a) tem",
+    compareNone: "Nada exclusivo aqui",
+    compareInvalidCode: "Este link de comparação é inválido ou está corrompido.",
+    compareLegendBoth: "Ambos",
+    compareLegendMine: "Só você",
+    compareLegendTheirs: "Só ele(a)",
+    compareLegendNeither: "Nenhum",
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -77,6 +94,23 @@ const TRANSLATIONS = {
     exportCopy: "Copy",
     exportCopied: "Copied! ✓",
     exportTotal: (total) => `${total} items (Base + variants)`,
+    shareLabel: "Share",
+    shareTitle: "Generates a link to compare your collection with a friend's",
+    shareLinkLabel: "Your comparison link",
+    shareCopyLink: "Copy link",
+    sharePasteLabel: "Paste a friend's code or link here",
+    sharePasteButton: "Compare",
+    compareTitle: "Collection comparison",
+    compareYou: "You",
+    compareThem: "Friend",
+    compareOnlyYou: "Only you have",
+    compareOnlyThem: "Only they have",
+    compareNone: "Nothing exclusive here",
+    compareInvalidCode: "This comparison link is invalid or corrupted.",
+    compareLegendBoth: "Both",
+    compareLegendMine: "Only you",
+    compareLegendTheirs: "Only them",
+    compareLegendNeither: "Neither",
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -179,8 +213,11 @@ function fmtNumber(n) {
   return n.toLocaleString(lang === "pt" ? "pt-BR" : "en-US");
 }
 
-function getEntry(id) {
-  const entry = collection[id] || {
+// O parâmetro source permite ler uma coleção "estrangeira" (ex.: a de um
+// amigo, decodificada de um link de comparação) com a mesma normalização,
+// sem nunca tocar na coleção real do usuário.
+function getEntry(id, source = collection) {
+  const entry = source[id] || {
     owned: false,
     mastered: false,
     favorite: false,
@@ -203,6 +240,151 @@ function getVariantEntry(entry, variantId) {
 function setEntry(id, patch) {
   collection[id] = { ...getEntry(id), ...patch };
   saveCollection(collection);
+}
+
+// ---- Código de comparação (compartilhar/comparar coleção com um amigo) ----
+// Sem backend: o código descreve só o que tem estado não-padrão, chaveado
+// pelo id estável do Elemental (nunca por posição no array — a ordem de
+// ELEMENTALS não é garantida entre curadorias). "favorite" fica de fora (é
+// curadoria pessoal) e "upcoming" também (não conta no progresso e não tem
+// checkbox habilitado).
+const SHARE_CODE_VERSION = 1;
+const VARIANT_CODES = {
+  gold: "g",
+  gummy: "u",
+  galaxy: "x",
+  gem: "e",
+  holofoil: "h",
+  cube: "c",
+  quack: "q",
+};
+const VARIANT_CODES_REV = Object.fromEntries(
+  Object.entries(VARIANT_CODES).map(([id, code]) => [code, id])
+);
+
+function tileBits(state) {
+  return (state.owned ? 1 : 0) | (state.mastered ? 2 : 0);
+}
+
+function bitsToState(bits) {
+  return { owned: (bits & 1) !== 0, mastered: (bits & 2) !== 0 };
+}
+
+function encodeCollectionCode(source = collection) {
+  const segments = [];
+  ELEMENTALS.forEach((e) => {
+    if (e.upcoming) return;
+    const entry = getEntry(e.id, source);
+    let seg = "";
+    const baseBits = tileBits(entry);
+    if (baseBits) seg += String(baseBits);
+    e.variants.forEach((v) => {
+      const bits = tileBits(getVariantEntry(entry, v.id));
+      if (bits) seg += `,${VARIANT_CODES[v.id] || v.id}${bits}`;
+    });
+    if (seg) segments.push(`${e.id}.${seg}`);
+  });
+  const payload = `${SHARE_CODE_VERSION}|${segments.join(";")}`;
+  return btoa(payload)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+// Nunca lança: qualquer formato inesperado (versão desconhecida, base64
+// corrompido, dígitos fora de 0-3) resulta em null — quem chama decide o
+// que fazer (ignorar silenciosamente ou avisar o usuário).
+function decodeCollectionCode(code) {
+  try {
+    const base64 = code.trim().replace(/-/g, "+").replace(/_/g, "/");
+    const payload = atob(base64);
+    const sepIdx = payload.indexOf("|");
+    if (sepIdx === -1) return null;
+    if (Number(payload.slice(0, sepIdx)) !== SHARE_CODE_VERSION) return null;
+    const body = payload.slice(sepIdx + 1);
+
+    const result = {};
+    if (!body) return result;
+
+    for (const segment of body.split(";")) {
+      if (!segment) continue;
+      const dotIdx = segment.indexOf(".");
+      if (dotIdx <= 0) return null; // sem id ou sem separador: código corrompido
+      const id = segment.slice(0, dotIdx);
+      const parts = segment.slice(dotIdx + 1).split(",");
+
+      const entry = { owned: false, mastered: false, favorite: false, variants: {} };
+      if (parts[0]) {
+        const bits = Number(parts[0]);
+        if (!Number.isInteger(bits) || bits < 0 || bits > 3) return null;
+        Object.assign(entry, bitsToState(bits));
+      }
+      for (const part of parts.slice(1)) {
+        if (!part) continue;
+        const variantId = VARIANT_CODES_REV[part[0]];
+        const bits = Number(part.slice(1));
+        if (!Number.isInteger(bits) || bits < 0 || bits > 3) return null;
+        // Código de variante desconhecido (link de uma versão mais nova do
+        // app): ignora só essa variante, não o resto da entrada.
+        if (variantId) entry.variants[variantId] = bitsToState(bits);
+      }
+      result[id] = entry;
+    }
+    return result;
+  } catch {
+    return null;
+  }
+}
+
+// Soma tenho/dominados de uma coleção (a real ou uma decodificada de um
+// link) contra os Elementais conhecidos NESTA versão do app — assim os dois
+// lados de uma comparação são sempre proporcionais, mesmo que o link tenha
+// vindo de uma versão com Elementais que este app ainda não conhece.
+function computeTotals(source) {
+  let total = 0;
+  let owned = 0;
+  let mastered = 0;
+  ELEMENTALS.forEach((e) => {
+    if (e.upcoming) return;
+    const entry = getEntry(e.id, source);
+    const states = [entry, ...e.variants.map((v) => getVariantEntry(entry, v.id))];
+    total += states.length;
+    states.forEach((st) => {
+      if (st.owned) owned += 1;
+      if (st.mastered) mastered += 1;
+    });
+  });
+  return { total, owned, mastered };
+}
+
+// Classifica cada quadradinho (Base + variantes) em: ambos têm, só eu tenho,
+// só o outro tem, ou nenhum tem. Ids desconhecidos de "theirs" (Elemental
+// novo demais para este app) nunca aparecem — a iteração é sempre sobre os
+// ELEMENTALS conhecidos aqui.
+function diffCollections(mine, theirs) {
+  const s = t();
+  return ELEMENTALS.filter((e) => !e.upcoming).map((e) => {
+    const mineEntry = getEntry(e.id, mine);
+    const theirEntry = getEntry(e.id, theirs);
+    const tileList = [
+      { name: s.baseVariant, mineState: mineEntry, theirState: theirEntry },
+      ...e.variants.map((v) => ({
+        name: v.name[lang],
+        mineState: getVariantEntry(mineEntry, v.id),
+        theirState: getVariantEntry(theirEntry, v.id),
+      })),
+    ].map((tile) => ({
+      name: tile.name,
+      status: tile.mineState.owned && tile.theirState.owned
+        ? "both"
+        : tile.mineState.owned
+          ? "mine"
+          : tile.theirState.owned
+            ? "theirs"
+            : "neither",
+    }));
+    return { elemental: e, tiles: tileList };
+  });
 }
 
 // Filtros de coleção valem por quadradinho (Base e cada variante), não só
@@ -277,6 +459,17 @@ function applyLanguage() {
   document.getElementById("export-download").textContent = s.exportDownload;
   document.getElementById("export-copy").textContent = s.exportCopy;
   document.getElementById("export-close").textContent = s.close;
+
+  const shareBtn = document.getElementById("share-btn");
+  shareBtn.title = s.shareTitle;
+  document.getElementById("share-label").textContent = s.shareLabel;
+  document.getElementById("share-link-label").textContent = s.shareLinkLabel;
+  document.getElementById("share-copy-btn").textContent = s.shareCopyLink;
+  document.getElementById("share-paste-label").textContent = s.sharePasteLabel;
+  document.getElementById("share-paste-btn").textContent = s.sharePasteButton;
+  document.getElementById("share-close").textContent = s.close;
+  document.getElementById("compare-title").textContent = s.compareTitle;
+  document.getElementById("compare-close").textContent = s.close;
 
   document.getElementById("sort-label").textContent = s.sortLabel;
   const sortSelect = document.getElementById("sort-select");
@@ -578,6 +771,21 @@ function collectionTiles(elemental, entry, s) {
     </div>`;
 }
 
+// Uma linha compacta e somente-leitura por Elemental na tela de comparação:
+// nome + uma tira de badges (um por quadradinho) colorido pelo status.
+function renderCompareRow(row) {
+  const badges = row.tiles
+    .map((tile) => `<span class="compare-badge badge-${tile.status}">${tile.name}</span>`)
+    .join("");
+  return `
+    <div class="compare-row">
+      <span class="compare-row-name" style="--rarity-color:${RARITY_COLORS[row.elemental.rarity]}">
+        <span class="compare-row-dot"></span>${row.elemental.name[lang]}
+      </span>
+      <div class="compare-row-badges">${badges}</div>
+    </div>`;
+}
+
 function createCard(elemental) {
   const s = t();
   const entry = getEntry(elemental.id);
@@ -756,18 +964,7 @@ async function exportSummary() {
 
   // Totais: tenho / não tenho e dominados / não dominados (de um total
   // que conta o Base e cada variante de todos os Elementais lançados).
-  let owned = 0;
-  let mastered = 0;
-  let total = 0;
-  list.forEach((e) => {
-    const entry = getEntry(e.id);
-    const states = [entry, ...e.variants.map((v) => getVariantEntry(entry, v.id))];
-    total += states.length;
-    states.forEach((st) => {
-      if (st.owned) owned += 1;
-      if (st.mastered) mastered += 1;
-    });
-  });
+  const { total, owned, mastered } = computeTotals(collection);
 
   ctx.fillStyle = c.text;
   ctx.font = `700 24px ${FONT}`;
@@ -927,6 +1124,142 @@ document.getElementById("export-btn").addEventListener("click", () => {
   exportSummary();
 });
 
+// ---- Compartilhar/comparar coleção com um amigo (sem backend) ----
+const shareOverlay = document.getElementById("share-overlay");
+const shareLinkInput = document.getElementById("share-link-input");
+const shareCopyBtn = document.getElementById("share-copy-btn");
+const sharePasteInput = document.getElementById("share-paste-input");
+const sharePasteBtn = document.getElementById("share-paste-btn");
+const sharePasteError = document.getElementById("share-paste-error");
+const compareOverlay = document.getElementById("compare-overlay");
+const compareStats = document.getElementById("compare-stats");
+const compareOnlyYou = document.getElementById("compare-only-you");
+const compareOnlyThem = document.getElementById("compare-only-them");
+const compareRows = document.getElementById("compare-rows");
+
+function openShareModal() {
+  const s = t();
+  shareLinkInput.value = `${location.origin}${location.pathname}#c=${encodeCollectionCode()}`;
+  shareCopyBtn.textContent = s.shareCopyLink;
+  sharePasteInput.value = "";
+  sharePasteError.hidden = true;
+  shareOverlay.hidden = false;
+}
+
+function closeShareModal() {
+  shareOverlay.hidden = true;
+}
+
+// Aceita tanto o link inteiro colado quanto só o código puro.
+function parseSharePaste(text) {
+  const trimmed = (text || "").trim();
+  const match = trimmed.match(/[#?]c=([^&\s]+)/);
+  return match ? match[1] : trimmed;
+}
+
+function statTile(label, totals) {
+  const s = t();
+  return `
+    <div class="compare-stat">
+      <span class="compare-stat-label">${label}</span>
+      <span class="compare-stat-value">${s.progressOwned(totals.owned, totals.total)}</span>
+      <span class="compare-stat-value">${s.progressMastered(totals.mastered, totals.total)}</span>
+    </div>`;
+}
+
+function compareListColumn(title, labels) {
+  const s = t();
+  const body = labels.length
+    ? `<ul class="compare-list">${labels.map((l) => `<li>${l}</li>`).join("")}</ul>`
+    : `<p class="compare-list-empty">${s.compareNone}</p>`;
+  return `<h3>${title}</h3>${body}`;
+}
+
+// Nunca mexe em collection/localStorage: theirCollection só existe como
+// variável local, passada por parâmetro para os helpers somente-leitura.
+function openCompareModal(theirCollection) {
+  const s = t();
+  const rows = diffCollections(collection, theirCollection);
+
+  compareStats.innerHTML =
+    statTile(s.compareYou, computeTotals(collection)) +
+    statTile(s.compareThem, computeTotals(theirCollection));
+
+  const onlyMine = [];
+  const onlyTheirs = [];
+  rows.forEach((row) => {
+    row.tiles.forEach((tile) => {
+      const label = `${row.elemental.name[lang]} — ${tile.name}`;
+      if (tile.status === "mine") onlyMine.push(label);
+      if (tile.status === "theirs") onlyTheirs.push(label);
+    });
+  });
+
+  compareOnlyYou.innerHTML = compareListColumn(s.compareOnlyYou, onlyMine);
+  compareOnlyThem.innerHTML = compareListColumn(s.compareOnlyThem, onlyTheirs);
+  compareRows.innerHTML = rows.map(renderCompareRow).join("");
+
+  closeShareModal();
+  compareOverlay.hidden = false;
+}
+
+function closeCompareModal() {
+  compareOverlay.hidden = true;
+  // Tira o #c=... da URL para um refresh não reabrir a comparação —
+  // o estado por baixo nunca foi tocado, então "normal" já está intacto.
+  history.replaceState(null, "", location.pathname + location.search);
+}
+
+// Ao abrir um link de comparação recebido: decodifica e mostra o modal.
+// Falhou (link corrompido/inválido)? Ignora silenciosamente — não é um erro
+// do usuário no boot da página, e nada foi alterado na coleção dele.
+// Também reage a "hashchange": se a página já estava aberta em index.html
+// (sem hash) e o link chega na MESMA aba, o navegador trata como navegação
+// same-document — só dispara hashchange, sem recarregar o script.
+function readShareHashOnLoad() {
+  const match = location.hash.match(/^#c=(.+)$/);
+  if (!match) return;
+  const theirCollection = decodeCollectionCode(match[1]);
+  if (!theirCollection) return;
+  openCompareModal(theirCollection);
+}
+window.addEventListener("hashchange", readShareHashOnLoad);
+
+document.getElementById("share-btn").addEventListener("click", openShareModal);
+document.getElementById("share-close").addEventListener("click", closeShareModal);
+shareOverlay.addEventListener("click", (e) => {
+  if (e.target === shareOverlay) closeShareModal();
+});
+
+shareCopyBtn.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(shareLinkInput.value);
+    shareCopyBtn.textContent = t().exportCopied;
+    setTimeout(() => {
+      shareCopyBtn.textContent = t().shareCopyLink;
+    }, 2000);
+  } catch {
+    // Sem permissão/API de clipboard: seleciona o texto para Ctrl+C manual.
+    shareLinkInput.select();
+  }
+});
+
+sharePasteBtn.addEventListener("click", () => {
+  const code = parseSharePaste(sharePasteInput.value);
+  const theirCollection = code ? decodeCollectionCode(code) : null;
+  if (!theirCollection) {
+    sharePasteError.textContent = t().compareInvalidCode;
+    sharePasteError.hidden = false;
+    return;
+  }
+  openCompareModal(theirCollection);
+});
+
+document.getElementById("compare-close").addEventListener("click", closeCompareModal);
+compareOverlay.addEventListener("click", (e) => {
+  if (e.target === compareOverlay) closeCompareModal();
+});
+
 // Botão flutuante de voltar ao topo: aparece depois de rolar um pouco.
 window.addEventListener(
   "scroll",
@@ -975,3 +1308,4 @@ langSwitch.addEventListener("click", (e) => {
 
 applyLanguage();
 render();
+readShareHashOnLoad();
