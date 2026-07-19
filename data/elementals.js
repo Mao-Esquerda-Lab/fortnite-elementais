@@ -318,6 +318,42 @@ const ELEMENTALS = [
     dust: 7500,
     variantCost: 15000,
   },
+  {
+    id: "batman",
+    name: { pt: "Batman", en: "Batman" },
+    wikiName: "Batman Sprite",
+    rarity: "Mythic",
+    ability: {
+      pt: "Permite lançar-se no ar e abrir a Capa do Batman, funcionando como um planador extra durante a partida.",
+      en: "Lets you launch into the air and deploy the Bat Cape, working as an extra glider during the match.",
+    },
+    dust: 7500,
+    variantCost: 15000,
+  },
+  {
+    id: "pollo",
+    name: { pt: "Pollo", en: "Pollo" },
+    wikiName: "Pollo Sprite",
+    rarity: "Mythic",
+    ability: {
+      pt: "Regenera aos poucos o escudo seu e do seu esquadrão por um tempo após uma eliminação.",
+      en: "Slowly regenerates shield for you and your squad for a while after an elimination.",
+    },
+    dust: 7500,
+    variantCost: 15000,
+  },
+  {
+    id: "vini-jr",
+    name: { pt: "Vini Jr.", en: "Vini Jr." },
+    wikiName: "Vini Jr. Sprite",
+    rarity: "Mythic",
+    ability: {
+      pt: "Deixa o deslizar destrutivo por um tempo após correr, derrubando estruturas e inimigos; acertar um inimigo com o deslizar aumenta a cadência de tiro e a recarga.",
+      en: "Makes sliding destructive for a while after sprinting, breaking structures and hitting enemies; slide-kicking an enemy boosts fire rate and reload speed.",
+    },
+    dust: 7500,
+    variantCost: 15000,
+  },
   // Sprites já listados na wiki mas ainda não lançados no jogo
   // (upcoming: true desabilita os checkboxes e tira do progresso).
   {
