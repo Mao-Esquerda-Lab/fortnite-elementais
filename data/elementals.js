@@ -20,8 +20,8 @@ const WIKI_ITEM = (fileBase) =>
 // Variantes padrão dos Sprites. Exceções (conforme a wiki):
 //  - Burnt Peanut (Mítico) não tem variante nenhuma (noVariants);
 //  - Dream e Punk não têm a variante Metalizado/Holofoil (noHolofoil);
-//  - Cubo existe só para Dream, Punk e Zero Point, e Quack só para o
-//    Zero Point (extraVariants).
+//  - Cúbico existe só para alguns Sprites (extraVariants), e Quack só para
+//    o Zero Point.
 // Todas as variantes herdam a raridade do Sprite base — são versões
 // "especiais" com drop menor, não um tier de raridade próprio.
 // Linha do tempo: Gelatinoso habilitado em 11/jun, Galáctico em 18/jun; Gema e
@@ -73,7 +73,7 @@ const SPRITE_VARIANTS = [
 const EXTRA_VARIANTS = {
   cube: {
     id: "cube",
-    name: { pt: "Cubo", en: "Cube" },
+    name: { pt: "Cúbico", en: "Cube" },
     effect: { pt: "Efeito ainda não revelado", en: "Effect not yet revealed" },
   },
   quack: {
