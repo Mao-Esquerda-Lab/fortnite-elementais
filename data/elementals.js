@@ -387,22 +387,21 @@ const ELEMENTALS = [
     dust: 7500,
     variantCost: 15000,
   },
-  // Sprites já listados na wiki mas ainda não lançados no jogo
-  // (upcoming: true desabilita os checkboxes e tira do progresso).
   {
     id: "john-wick",
     name: { pt: "John Wick", en: "John Wick" },
     wikiName: "John Wick Sprite",
     rarity: "Mythic",
-    upcoming: true,
     noVariants: true,
     ability: {
-      pt: "Habilidade ainda não revelada.",
-      en: "Ability not yet revealed.",
+      pt: "Revela inimigos próximos depois de eliminar ou nocautear alguém.",
+      en: "Reveals nearby enemies after eliminating or knocking someone.",
     },
     dust: 7500,
     variantCost: 15000,
   },
+  // Sprites já listados na wiki mas ainda não lançados no jogo entram aqui
+  // (upcoming: true desabilita os checkboxes e tira do progresso).
 ];
 
 ELEMENTALS.forEach((e) => {
