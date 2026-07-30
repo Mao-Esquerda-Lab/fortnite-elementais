@@ -275,7 +275,10 @@ const ELEMENTALS = [
   {
     id: "peely",
     name: { pt: "Peely", en: "Peely" },
-    wikiName: "Peely Sprite",
+    // Nome completo "Peeky Peely" — usado para as imagens porque a wiki já
+    // tem uma página "Peely" para o personagem/skin, então o item Sprite é
+    // catalogado com o nome completo para não colidir.
+    wikiName: "Peeky Peely Sprite",
     rarity: "Legendary",
     ability: {
       pt: "Marca Sprites de variantes raras (e quem estiver com eles) por perto, mas também revela sua localização.",
