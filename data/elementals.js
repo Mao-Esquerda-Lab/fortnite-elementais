@@ -12,6 +12,11 @@
 // "{Nome} - Item - Fortnite.png" (ex.: "Water Sprite - Item - Fortnite.png",
 // "Gold Water Sprite - Item - Fortnite.png"). Se uma imagem falhar, o app
 // usa o ícone SVG local como fallback.
+// Quando esse padrão não bate com o nome real do arquivo na wiki (Sprite
+// muito novo, nome de exibição diferente do nome do arquivo etc.), dá pra
+// definir `image` direto na entrada do Elemental com um link completo —
+// ela nunca é sobrescrita pela URL adivinhada (ver ELEMENTALS.forEach no
+// fim do arquivo).
 const WIKI_ITEM = (fileBase) =>
   `https://fortnite.fandom.com/wiki/Special:FilePath/${encodeURIComponent(
     `${fileBase} - Item - Fortnite.png`
@@ -404,7 +409,10 @@ const ELEMENTALS = [
   // (upcoming: true desabilita os checkboxes e tira do progresso).
 ];
 
+// Se `image` já vier preenchida na entrada (link direto, ex.: quando a URL
+// adivinhada a partir de wikiName não bate com o nome real do arquivo na
+// wiki), ela tem prioridade — nunca é sobrescrita pela URL adivinhada.
 ELEMENTALS.forEach((e) => {
-  e.image = WIKI_ITEM(e.wikiName);
+  e.image = e.image || WIKI_ITEM(e.wikiName);
   e.variants = e.noVariants ? [] : makeVariants(e);
 });
