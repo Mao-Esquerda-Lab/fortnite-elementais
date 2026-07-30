@@ -273,6 +273,30 @@ const ELEMENTALS = [
     variantCost: 10000,
   },
   {
+    id: "peely",
+    name: { pt: "Peely", en: "Peely" },
+    wikiName: "Peely Sprite",
+    rarity: "Legendary",
+    ability: {
+      pt: "Marca Sprites de variantes raras (e quem estiver com eles) por perto, mas também revela sua localização.",
+      en: "Marks nearby rare Sprite variants (and whoever's carrying them), but also reveals your location.",
+    },
+    dust: 5000,
+    variantCost: 10000,
+  },
+  {
+    id: "lootin-llama",
+    name: { pt: "Lootin' Llama", en: "Lootin' Llama" },
+    wikiName: "Lootin' Llama Sprite",
+    rarity: "Legendary",
+    ability: {
+      pt: "Chance de ganhar uma melhoria de arma ao abrir caixas de munição.",
+      en: "Chance to get a weapon upgrade when opening ammo boxes.",
+    },
+    dust: 5000,
+    variantCost: 10000,
+  },
+  {
     id: "seven",
     name: { pt: "Sete", en: "Seven" },
     wikiName: "Seven Sprite",
