@@ -1099,7 +1099,11 @@ function canShareFiles() {
     return false;
   }
 }
-exportShareBtn.hidden = !canShareFiles();
+// Onde dá pra compartilhar arquivo, o botão de compartilhar substitui o de
+// baixar (no celular, compartilhar já cobre "salvar" como uma das opções).
+const shareSupported = canShareFiles();
+exportShareBtn.hidden = !shareSupported;
+exportDownloadLink.hidden = shareSupported;
 
 exportShareBtn.addEventListener("click", async () => {
   if (!exportBlob) return;
@@ -1107,7 +1111,8 @@ exportShareBtn.addEventListener("click", async () => {
     type: "image/png",
   });
   try {
-    await navigator.share({ files: [file], title: t().title });
+    // Só o arquivo — sem title/text, pra não anexar texto no compartilhamento.
+    await navigator.share({ files: [file] });
   } catch {
     /* usuário cancelou o compartilhamento — sem tratamento especial */
   }
