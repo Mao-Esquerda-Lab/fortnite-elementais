@@ -32,7 +32,8 @@ const WIKI_ITEM = (fileBase) =>
 // Linha do tempo: Gelatinoso habilitado em 11/jun, Galáctico em 18/jun; Gema e
 // Metalizado chegaram nas Fendas Anômalas (Sprite Hunt Rift Anomalies) e
 // foram desabilitadas em 25/jun; o Metalizado voltou em 09/jul/2026 (a
-// Gema segue desabilitada no jogo, mas continua aqui para quem já tem).
+// Gema segue desabilitada no jogo, mas continua aqui para quem já tem);
+// Quack (exclusivo do Ponto Zero) foi ao ar em 30/jul/2026.
 const SPRITE_VARIANTS = [
   {
     id: "gold",
