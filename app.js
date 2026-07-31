@@ -1099,7 +1099,11 @@ function canShareFiles() {
     return false;
   }
 }
-exportShareBtn.hidden = !canShareFiles();
+// Onde dá pra compartilhar arquivo, o botão de compartilhar substitui o de
+// baixar (no celular, compartilhar já cobre "salvar" como uma das opções).
+const shareSupported = canShareFiles();
+exportShareBtn.hidden = !shareSupported;
+exportDownloadLink.hidden = shareSupported;
 
 exportShareBtn.addEventListener("click", async () => {
   if (!exportBlob) return;
