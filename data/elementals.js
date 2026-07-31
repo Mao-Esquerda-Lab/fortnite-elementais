@@ -83,7 +83,7 @@ const EXTRA_VARIANTS = {
   },
   quack: {
     id: "quack",
-    name: { pt: "Quack", en: "Quack" },
+    name: { pt: "Pato", en: "Quack" },
     effect: { pt: "Efeito ainda não revelado", en: "Effect not yet revealed" },
   },
 };
