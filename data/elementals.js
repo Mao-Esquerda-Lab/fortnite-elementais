@@ -33,6 +33,12 @@ const WIKI_ITEM = (fileBase) =>
 // foram desabilitadas em 25/jun; o Metalizado voltou em 09/jul/2026 (a
 // Gema segue desabilitada no jogo, mas continua aqui para quem já tem);
 // Quack foi ao ar em 30/jul/2026 para Água, Fogo, Terra e Ponto Zero.
+//
+// Custo de invocação: reduzido num hotfix em 24/jul/2026 — Base ~10% menor
+// (Raro fica igual, os elementais já eram baratos) e Variantes ~33% menor,
+// por raridade: Raro 4000→2700; Épico 3000/6000→2700/4000;
+// Lendário 5000/10000→4500/6750; Mítico 7500/15000→6750/10000 (os Míticos
+// sem variante já usavam só o valor de Base reduzido).
 const SPRITE_VARIANTS = [
   {
     id: "gold",
@@ -112,7 +118,7 @@ const ELEMENTALS = [
       en: "Regenerates shields for you and your squad while you're in water.",
     },
     dust: 100,
-    variantCost: 4000,
+    variantCost: 2700,
   },
   {
     id: "earth",
@@ -125,7 +131,7 @@ const ELEMENTALS = [
       en: "Increases your chance of finding rare items in chests.",
     },
     dust: 100,
-    variantCost: 4000,
+    variantCost: 2700,
   },
   {
     id: "fire",
@@ -138,7 +144,7 @@ const ELEMENTALS = [
       en: "Creates a burst of extra damage after hitting the same enemy repeatedly.",
     },
     dust: 100,
-    variantCost: 4000,
+    variantCost: 2700,
   },
   {
     id: "fishy",
@@ -151,7 +157,7 @@ const ELEMENTALS = [
       en: "Greatly increases swim speed and grants a speed boost when you take damage.",
     },
     dust: 100,
-    variantCost: 4000,
+    variantCost: 2700,
   },
   {
     id: "air",
@@ -163,7 +169,7 @@ const ELEMENTALS = [
       en: "Increases sprint speed and jump height, and nullifies fall damage.",
     },
     dust: 100,
-    variantCost: 4000,
+    variantCost: 2700,
   },
   {
     id: "duck",
@@ -174,8 +180,8 @@ const ELEMENTALS = [
       pt: "Emotar ou usar o Jam recupera escudo.",
       en: "Emoting or Jamming replenishes shields.",
     },
-    dust: 3000,
-    variantCost: 6000,
+    dust: 2700,
+    variantCost: 4000,
   },
   {
     id: "ghost",
@@ -186,8 +192,8 @@ const ELEMENTALS = [
       pt: "Concede uma breve janela furtiva sempre que você recarrega a arma.",
       en: "Grants a brief stealth window whenever you reload.",
     },
-    dust: 3000,
-    variantCost: 6000,
+    dust: 2700,
+    variantCost: 4000,
   },
   {
     id: "demon",
@@ -198,8 +204,8 @@ const ELEMENTALS = [
       pt: "Rouba um pouco de vida e escudo ao eliminar um oponente.",
       en: "Siphons some health and shields when you eliminate an opponent.",
     },
-    dust: 3000,
-    variantCost: 6000,
+    dust: 2700,
+    variantCost: 4000,
   },
   {
     id: "king",
@@ -210,8 +216,8 @@ const ELEMENTALS = [
       pt: "Sua picareta causa mais dano.",
       en: "Your pickaxe deals more damage.",
     },
-    dust: 3000,
-    variantCost: 6000,
+    dust: 2700,
+    variantCost: 4000,
   },
   {
     id: "aura",
@@ -222,8 +228,8 @@ const ELEMENTALS = [
       pt: "Ganha uma carga de Shock Rock ao causar dano suficiente em inimigos.",
       en: "Gain a Shock Rock charge when you deal enough damage to enemies.",
     },
-    dust: 3000,
-    variantCost: 6000,
+    dust: 2700,
+    variantCost: 4000,
   },
   {
     id: "striker",
@@ -234,8 +240,8 @@ const ELEMENTALS = [
       pt: "Ganha Overdrive ao subir (Mantle) ou saltar obstáculos (Hurdle).",
       en: "Gain Overdrive when you Mantle or Hurdle.",
     },
-    dust: 3000,
-    variantCost: 6000,
+    dust: 2700,
+    variantCost: 4000,
   },
   {
     id: "dream",
@@ -248,8 +254,8 @@ const ELEMENTALS = [
       pt: "Dropa loot aleatório a cada level up, culminando em itens lendários no nível máximo.",
       en: "Drops random loot at every level up, culminating in legendary items at max level.",
     },
-    dust: 5000,
-    variantCost: 10000,
+    dust: 4500,
+    variantCost: 6750,
   },
   {
     id: "punk",
@@ -262,8 +268,8 @@ const ELEMENTALS = [
       pt: "Chance de munição infinita ou recarga automática.",
       en: "Chance for infinite ammo or auto-reload.",
     },
-    dust: 5000,
-    variantCost: 10000,
+    dust: 4500,
+    variantCost: 6750,
   },
   {
     id: "boss",
@@ -275,8 +281,8 @@ const ELEMENTALS = [
       pt: "Aumenta o HP e o Shield máximos.",
       en: "Increases your maximum HP and Shield.",
     },
-    dust: 5000,
-    variantCost: 10000,
+    dust: 4500,
+    variantCost: 6750,
   },
   {
     id: "peely",
@@ -290,20 +296,21 @@ const ELEMENTALS = [
       pt: "Marca Sprites de variantes raras (e quem estiver com eles) por perto, mas também revela sua localização.",
       en: "Marks nearby rare Sprite variants (and whoever's carrying them), but also reveals your location.",
     },
-    dust: 5000,
-    variantCost: 10000,
+    dust: 4500,
+    variantCost: 6750,
   },
   {
     id: "lootin-llama",
     name: { pt: "Lootin' Llama", en: "Lootin' Llama" },
     wikiName: "Lootin' Llama Sprite",
     rarity: "Legendary",
+    noHolofoil: true,
     ability: {
       pt: "Chance de ganhar uma melhoria de arma ao abrir caixas de munição.",
       en: "Chance to get a weapon upgrade when opening ammo boxes.",
     },
-    dust: 5000,
-    variantCost: 10000,
+    dust: 4500,
+    variantCost: 6750,
   },
   {
     id: "seven",
@@ -314,8 +321,8 @@ const ELEMENTALS = [
       pt: "Revela ao seu esquadrão os rastros de passos dos inimigos.",
       en: "Makes enemy foot trails visible to your squad.",
     },
-    dust: 5000,
-    variantCost: 10000,
+    dust: 4500,
+    variantCost: 6750,
   },
   {
     id: "zero-point",
@@ -327,8 +334,8 @@ const ELEMENTALS = [
       pt: "Cria automaticamente uma Shield Bubble Jr. sempre que você se cura.",
       en: "Automatically deploys a Shield Bubble Jr. whenever you heal.",
     },
-    dust: 7500,
-    variantCost: 15000,
+    dust: 6750,
+    variantCost: 10000,
   },
   {
     id: "burnt-peanut",
@@ -340,8 +347,6 @@ const ELEMENTALS = [
       pt: "Mais chance de encontrar loot extra ao eliminar jogadores.",
       en: "Higher chance of finding extra loot when eliminating players.",
     },
-    // Custo reduzido de 7.500 para 6.750 em 24/jul/2026 (balanceamento),
-    // junto com os outros Míticos sem variante (Pollo, Vini Jr.).
     dust: 6750,
     variantCost: 15000,
   },
@@ -355,8 +360,8 @@ const ELEMENTALS = [
       pt: "Marca no seu HUD, por um tempo, qualquer inimigo que te atacar.",
       en: "Marks any enemy who attacks you on your HUD for a duration.",
     },
-    dust: 7500,
-    variantCost: 15000,
+    dust: 6750,
+    variantCost: 10000,
   },
   {
     id: "batman",
@@ -368,8 +373,8 @@ const ELEMENTALS = [
       pt: "Permite lançar-se no ar e abrir a Capa do Batman, funcionando como um planador extra durante a partida.",
       en: "Lets you launch into the air and deploy the Bat Cape, working as an extra glider during the match.",
     },
-    dust: 7500,
-    variantCost: 15000,
+    dust: 6750,
+    variantCost: 10000,
   },
   {
     id: "pollo",
@@ -424,6 +429,9 @@ const ELEMENTALS = [
       pt: "Revela inimigos próximos depois de eliminar ou nocautear alguém.",
       en: "Reveals nearby enemies after eliminating or knocking someone.",
     },
+    // Custo NÃO confirmado: lançou em 30/jul (depois do hotfix de custos de
+    // 24/jul), então pode já ser 6.750 como os outros Míticos sem variante
+    // — mas não achei fonte que confirme o valor exato pra ele.
     dust: 7500,
     variantCost: 15000,
   },
