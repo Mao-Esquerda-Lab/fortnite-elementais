@@ -388,7 +388,10 @@ function tileFilter() {
   if (activeFilter === "owned") return (state) => state.owned;
   if (activeFilter === "not-owned") return (state) => !state.owned;
   if (activeFilter === "mastered") return (state) => state.mastered;
-  if (activeFilter === "not-mastered") return (state) => !state.mastered;
+  // "Não dominados" só faz sentido pro que você já tem — senão listaria
+  // praticamente a coleção inteira, incluindo o que nem foi coletado ainda.
+  if (activeFilter === "not-mastered")
+    return (state) => state.owned && !state.mastered;
   return null;
 }
 
