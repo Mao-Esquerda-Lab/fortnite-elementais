@@ -25,14 +25,14 @@ const WIKI_ITEM = (fileBase) =>
 // Variantes padrão dos Sprites. Exceções (conforme a wiki):
 //  - Burnt Peanut (Mítico) não tem variante nenhuma (noVariants);
 //  - Dream e Punk não têm a variante Metalizado/Holofoil (noHolofoil);
-//  - Cúbico existe só para alguns Sprites (extraVariants), e Quack só para
-//    o Zero Point.
+//  - Cúbico e Quack existem só para alguns Sprites (extraVariants).
 // Todas as variantes herdam a raridade do Sprite base — são versões
 // "especiais" com drop menor, não um tier de raridade próprio.
 // Linha do tempo: Gelatinoso habilitado em 11/jun, Galáctico em 18/jun; Gema e
 // Metalizado chegaram nas Fendas Anômalas (Sprite Hunt Rift Anomalies) e
 // foram desabilitadas em 25/jun; o Metalizado voltou em 09/jul/2026 (a
-// Gema segue desabilitada no jogo, mas continua aqui para quem já tem).
+// Gema segue desabilitada no jogo, mas continua aqui para quem já tem);
+// Quack foi ao ar em 30/jul/2026 para Água, Fogo, Terra e Ponto Zero.
 const SPRITE_VARIANTS = [
   {
     id: "gold",
@@ -83,7 +83,7 @@ const EXTRA_VARIANTS = {
   },
   quack: {
     id: "quack",
-    name: { pt: "Quack", en: "Quack" },
+    name: { pt: "Pato", en: "Quack" },
     effect: { pt: "Efeito ainda não revelado", en: "Effect not yet revealed" },
   },
 };
@@ -106,6 +106,7 @@ const ELEMENTALS = [
     name: { pt: "Água", en: "Water" },
     wikiName: "Water Sprite",
     rarity: "Rare",
+    extraVariants: ["quack"],
     ability: {
       pt: "Regenera o escudo seu e do seu esquadrão enquanto vocês estiverem na água.",
       en: "Regenerates shields for you and your squad while you're in water.",
@@ -118,7 +119,7 @@ const ELEMENTALS = [
     name: { pt: "Terra", en: "Earth" },
     wikiName: "Earth Sprite",
     rarity: "Rare",
-    extraVariants: ["cube"],
+    extraVariants: ["cube", "quack"],
     ability: {
       pt: "Aumenta a chance de encontrar itens raros dentro de baús.",
       en: "Increases your chance of finding rare items in chests.",
@@ -131,7 +132,7 @@ const ELEMENTALS = [
     name: { pt: "Fogo", en: "Fire" },
     wikiName: "Fire Sprite",
     rarity: "Rare",
-    extraVariants: ["cube"],
+    extraVariants: ["cube", "quack"],
     ability: {
       pt: "Cria uma explosão de dano extra depois de acertar o mesmo inimigo repetidas vezes.",
       en: "Creates a burst of extra damage after hitting the same enemy repeatedly.",
@@ -388,6 +389,18 @@ const ELEMENTALS = [
     ability: {
       pt: "Deixa o deslizar destrutivo por um tempo após correr, derrubando estruturas e inimigos; acertar um inimigo com o deslizar aumenta a cadência de tiro e a recarga.",
       en: "Makes sliding destructive for a while after sprinting, breaking structures and hitting enemies; slide-kicking an enemy boosts fire rate and reload speed.",
+    },
+    dust: 7500,
+    variantCost: 15000,
+  },
+  {
+    id: "ironmouse",
+    name: { pt: "Ironmouse", en: "Ironmouse" },
+    wikiName: "Ironmouse Sprite",
+    rarity: "Mythic",
+    ability: {
+      pt: "Regenera vida aos poucos quando ela está baixa, ficando furtivo e com gravidade reduzida enquanto isso.",
+      en: "Regenerates health over time when it's low, gaining Cloak and low gravity while regenerating.",
     },
     dust: 7500,
     variantCost: 15000,
