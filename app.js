@@ -24,6 +24,7 @@ const TRANSLATIONS = {
     exportDownload: "Baixar",
     exportCopy: "Copiar",
     exportCopied: "Copiado! ✓",
+    exportShare: "Compartilhar",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
     shareLabel: "Comparar",
     shareTitle: "Gera um link para comparar sua coleção com a de um amigo",
@@ -89,6 +90,7 @@ const TRANSLATIONS = {
     exportDownload: "Download",
     exportCopy: "Copy",
     exportCopied: "Copied! ✓",
+    exportShare: "Share",
     exportTotal: (total) => `${total} items (Base + variants)`,
     shareLabel: "Compare",
     shareTitle: "Generates a link to compare your collection with a friend's",
@@ -450,6 +452,7 @@ function applyLanguage() {
   document.getElementById("export-label").textContent = s.exportLabel;
   document.getElementById("export-download").textContent = s.exportDownload;
   document.getElementById("export-copy").textContent = s.exportCopy;
+  document.getElementById("export-share").textContent = s.exportShare;
   document.getElementById("export-close").textContent = s.close;
 
   const shareBtn = document.getElementById("share-btn");
@@ -1060,6 +1063,7 @@ const exportOverlay = document.getElementById("export-overlay");
 const exportImg = document.getElementById("export-img");
 const exportDownloadLink = document.getElementById("export-download");
 const exportCopyBtn = document.getElementById("export-copy");
+const exportShareBtn = document.getElementById("export-share");
 let exportUrl = null;
 let exportBlob = null;
 
@@ -1079,6 +1083,33 @@ exportCopyBtn.addEventListener("click", async () => {
     }, 2000);
   } catch {
     /* usuário negou permissão ou o clipboard falhou — mantém o botão */
+  }
+});
+
+// Compartilhar (Web Share API com arquivo) só existe onde o navegador
+// suporta compartilhar imagens — sobretudo celular (Android/iOS); a maioria
+// dos navegadores desktop não implementa canShare com arquivos.
+function canShareFiles() {
+  if (!navigator.canShare) return false;
+  try {
+    return navigator.canShare({
+      files: [new File([""], "x.png", { type: "image/png" })],
+    });
+  } catch {
+    return false;
+  }
+}
+exportShareBtn.hidden = !canShareFiles();
+
+exportShareBtn.addEventListener("click", async () => {
+  if (!exportBlob) return;
+  const file = new File([exportBlob], exportDownloadLink.download || "sprites.png", {
+    type: "image/png",
+  });
+  try {
+    await navigator.share({ files: [file], title: t().title });
+  } catch {
+    /* usuário cancelou o compartilhamento — sem tratamento especial */
   }
 });
 
