@@ -402,11 +402,12 @@ const ELEMENTALS = [
     name: { pt: "Ironmouse", en: "Ironmouse" },
     wikiName: "Ironmouse Sprite",
     rarity: "Mythic",
+    noVariants: true,
     ability: {
       pt: "Regenera vida aos poucos quando ela está baixa, ficando furtivo e com gravidade reduzida enquanto isso.",
       en: "Regenerates health over time when it's low, gaining Cloak and low gravity while regenerating.",
     },
-    dust: 7500,
+    dust: 6750,
     variantCost: 15000,
   },
   {
