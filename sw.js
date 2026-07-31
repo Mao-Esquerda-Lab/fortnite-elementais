@@ -6,7 +6,7 @@
 // - Imagens da wiki: cache-first, guardadas na primeira visualização.
 //
 // Aumente VERSION ao mudar a lista de arquivos do shell.
-const VERSION = "v19";
+const VERSION = "v20";
 const SHELL_CACHE = `elementais-shell-${VERSION}`;
 const IMAGE_CACHE = "elementais-images-v1";
 
@@ -91,7 +91,8 @@ self.addEventListener("fetch", (event) => {
 
   if (
     url.hostname.endsWith("fandom.com") ||
-    url.hostname.endsWith("wikia.nocookie.net")
+    url.hostname.endsWith("wikia.nocookie.net") ||
+    url.hostname.endsWith("fortnite.gg")
   ) {
     event.respondWith(cacheFirstImage(request));
   }

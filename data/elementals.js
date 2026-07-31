@@ -409,6 +409,10 @@ const ELEMENTALS = [
     id: "john-wick",
     name: { pt: "John Wick", en: "John Wick" },
     wikiName: "John Wick Sprite",
+    // A wiki ainda não tem a imagem certa (Sprite lançou em 30/jul); link
+    // manual do fortnite.gg (parece ser um ícone placeholder genérico da
+    // Epic, "FillerGrunt" — melhor que a letra de fallback mesmo assim).
+    image: "https://fortnite.gg/img/x/sprites/icons/T_Icon_Reload_FillerGrunt_icon_L.webp",
     rarity: "Mythic",
     noVariants: true,
     ability: {
