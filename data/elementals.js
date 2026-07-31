@@ -340,7 +340,9 @@ const ELEMENTALS = [
       pt: "Mais chance de encontrar loot extra ao eliminar jogadores.",
       en: "Higher chance of finding extra loot when eliminating players.",
     },
-    dust: 7500,
+    // Custo reduzido de 7.500 para 6.750 em 24/jul/2026 (balanceamento),
+    // junto com os outros Míticos sem variante (Pollo, Vini Jr.).
+    dust: 6750,
     variantCost: 15000,
   },
   {
@@ -374,11 +376,12 @@ const ELEMENTALS = [
     name: { pt: "Pollo", en: "Pollo" },
     wikiName: "Pollo Sprite",
     rarity: "Mythic",
+    noVariants: true,
     ability: {
       pt: "Regenera aos poucos o escudo seu e do seu esquadrão por um tempo após uma eliminação.",
       en: "Slowly regenerates shield for you and your squad for a while after an elimination.",
     },
-    dust: 7500,
+    dust: 6750,
     variantCost: 15000,
   },
   {
@@ -386,11 +389,12 @@ const ELEMENTALS = [
     name: { pt: "Vini Jr.", en: "Vini Jr." },
     wikiName: "Vini Jr. Sprite",
     rarity: "Mythic",
+    noVariants: true,
     ability: {
       pt: "Deixa o deslizar destrutivo por um tempo após correr, derrubando estruturas e inimigos; acertar um inimigo com o deslizar aumenta a cadência de tiro e a recarga.",
       en: "Makes sliding destructive for a while after sprinting, breaking structures and hitting enemies; slide-kicking an enemy boosts fire rate and reload speed.",
     },
-    dust: 7500,
+    dust: 6750,
     variantCost: 15000,
   },
   {
