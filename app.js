@@ -609,9 +609,18 @@ function renderProgress() {
 }
 
 // Fallback: se a imagem da wiki não carregar, mostra o ícone SVG local.
+// Sem imagem real E sem SVG local, não sobra nada pra mostrar no ícone —
+// nesse caso o card inteiro some da lista em vez de ficar com um espaço
+// vazio no lugar do ícone.
 function iconFallback(img, id) {
-  const holder = img.closest(".elemental-icon");
-  if (holder) holder.innerHTML = ELEMENTAL_ICONS[id] || "";
+  const svg = ELEMENTAL_ICONS[id];
+  if (svg) {
+    const holder = img.closest(".elemental-icon");
+    if (holder) holder.innerHTML = svg;
+    return;
+  }
+  img.closest(".elemental-card")?.remove();
+  if (!grid.children.length) emptyState.hidden = false;
 }
 window.iconFallback = iconFallback;
 
