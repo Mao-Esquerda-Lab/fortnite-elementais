@@ -709,13 +709,22 @@ spriteNav.addEventListener("click", (e) => {
   card.classList.add("nav-flash");
 });
 
-// Fallback das variantes: se a imagem da wiki falhar, o chip fica só com o nome.
-// Esconde sem remover: o espaço fica reservado e o layout não "pula"
-// (remover deslocaria a página durante a navegação rápida).
+// Fallback da variante: se a imagem falhar, essa variante provavelmente não
+// existe de verdade pra esse Elemental — o quadradinho inteiro some da
+// coleção em vez de ficar visível sem imagem (não faz sentido oferecer pra
+// marcar "Tenho"/"Dominado" algo que a pessoa não pode ter).
 function variantImgFallback(img) {
-  img.style.visibility = "hidden";
+  img.closest(".sprite-tile")?.remove();
 }
 window.variantImgFallback = variantImgFallback;
+
+// Fallback do quadradinho Base: diferente das variantes, a Base é o próprio
+// Elemental — sempre existe de verdade —, então só esconde a imagem quebrada
+// e mantém a linha (com os checkboxes) funcionando normalmente.
+function baseTileImgFallback(img) {
+  img.style.visibility = "hidden";
+}
+window.baseTileImgFallback = baseTileImgFallback;
 
 function spriteTile(elemental, s, { variantId, name, image, title, state }) {
   const checkbox = (action, checked, label) => `
@@ -727,11 +736,14 @@ function spriteTile(elemental, s, { variantId, name, image, title, state }) {
       ${label}
     </label>`;
 
+  const onImgError =
+    variantId === "base" ? "baseTileImgFallback(this)" : "variantImgFallback(this)";
+
   return `
     <div class="sprite-tile${state.owned ? " owned" : ""}${state.mastered ? " mastered" : ""}"
          title="${title}">
       <img class="tile-img" src="${image}" alt="" width="36" height="36"
-           loading="lazy" onerror="variantImgFallback(this)" />
+           loading="lazy" onerror="${onImgError}" />
       <span class="tile-name">${name}</span>
       <div class="tile-checks">
         ${checkbox("own", state.owned, s.owned)}
