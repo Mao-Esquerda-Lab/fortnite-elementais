@@ -609,18 +609,9 @@ function renderProgress() {
 }
 
 // Fallback: se a imagem da wiki não carregar, mostra o ícone SVG local.
-// Sem imagem real E sem SVG local, não sobra nada pra mostrar no ícone —
-// nesse caso o card inteiro some da lista em vez de ficar com um espaço
-// vazio no lugar do ícone.
 function iconFallback(img, id) {
-  const svg = ELEMENTAL_ICONS[id];
-  if (svg) {
-    const holder = img.closest(".elemental-icon");
-    if (holder) holder.innerHTML = svg;
-    return;
-  }
-  img.closest(".elemental-card")?.remove();
-  if (!grid.children.length) emptyState.hidden = false;
+  const holder = img.closest(".elemental-icon");
+  if (holder) holder.innerHTML = ELEMENTAL_ICONS[id] || "";
 }
 window.iconFallback = iconFallback;
 
@@ -709,22 +700,10 @@ spriteNav.addEventListener("click", (e) => {
   card.classList.add("nav-flash");
 });
 
-// Fallback da variante: se a imagem falhar, essa variante provavelmente não
-// existe de verdade pra esse Elemental — o quadradinho inteiro some da
-// coleção em vez de ficar visível sem imagem (não faz sentido oferecer pra
-// marcar "Tenho"/"Dominado" algo que a pessoa não pode ter).
 function variantImgFallback(img) {
-  img.closest(".sprite-tile")?.remove();
-}
-window.variantImgFallback = variantImgFallback;
-
-// Fallback do quadradinho Base: diferente das variantes, a Base é o próprio
-// Elemental — sempre existe de verdade —, então só esconde a imagem quebrada
-// e mantém a linha (com os checkboxes) funcionando normalmente.
-function baseTileImgFallback(img) {
   img.style.visibility = "hidden";
 }
-window.baseTileImgFallback = baseTileImgFallback;
+window.variantImgFallback = variantImgFallback;
 
 function spriteTile(elemental, s, { variantId, name, image, title, state }) {
   const checkbox = (action, checked, label) => `
@@ -736,14 +715,11 @@ function spriteTile(elemental, s, { variantId, name, image, title, state }) {
       ${label}
     </label>`;
 
-  const onImgError =
-    variantId === "base" ? "baseTileImgFallback(this)" : "variantImgFallback(this)";
-
   return `
     <div class="sprite-tile${state.owned ? " owned" : ""}${state.mastered ? " mastered" : ""}"
          title="${title}">
       <img class="tile-img" src="${image}" alt="" width="36" height="36"
-           loading="lazy" onerror="${onImgError}" />
+           loading="lazy" onerror="variantImgFallback(this)" />
       <span class="tile-name">${name}</span>
       <div class="tile-checks">
         ${checkbox("own", state.owned, s.owned)}
