@@ -1,6 +1,9 @@
 // Dados dos Elementais ("Sprites") do Fortnite Battle Royale
-// (Capítulo 7, Temporada 3 + evento "Gone Wild").
-// Fonte: fortnite.fandom.com/wiki/Sprites e cobertura da comunidade (jul/2026).
+// (Capítulo 7, Temporada 3 + evento "Gone Wild"; Temporada 4 "Override"
+// a partir de 20/ago/2026).
+// Fonte: fortnite.fandom.com/wiki/Sprites e cobertura da comunidade
+// (jul/2026; Temporada 4 ainda não está na wiki — ver nota antes dos
+// Sprites dela mais abaixo).
 // ESCOPO: apenas Sprites do Chapter 7 em diante — os do Chapter 6 (e
 // anteriores) não fazem parte do app.
 // Esta é a lista CURADA (nomes em PT, habilidades, exceções de variantes).
@@ -92,10 +95,28 @@ const EXTRA_VARIANTS = {
     name: { pt: "Pato", en: "Quack" },
     effect: { pt: "Efeito ainda não revelado", en: "Effect not yet revealed" },
   },
+  // Variante nova da Temporada 4 (Override) — substitui as 5 variantes
+  // padrão nos Sprites dessa temporada (ver `onlyVariants`).
+  "cheat-master": {
+    id: "cheat-master",
+    name: { pt: "Cheat Master", en: "Cheat Master" },
+    effect: {
+      pt: "Deixa qualquer código digitado no console de Cheat Codes sempre correto, não importa o que você digite.",
+      en: "Makes any input at a Cheat Code console count as correct, no matter what you type.",
+    },
+  },
 };
 
 // O nome do arquivo na wiki usa sempre o nome em inglês da variante.
 const makeVariants = (elemental) => {
+  // `onlyVariants`: lista explícita de variantes (substitui a regra padrão
+  // Dourado/Gelatinoso/Galáctico/Gema/Metalizado + extras) — usada pelos
+  // Sprites da Temporada 4, que só têm Dourado + Cheat Master.
+  if (elemental.onlyVariants) {
+    return elemental.onlyVariants
+      .map((id) => SPRITE_VARIANTS.find((v) => v.id === id) || EXTRA_VARIANTS[id])
+      .map((v) => ({ ...v, image: WIKI_ITEM(`${v.name.en} ${elemental.wikiName}`) }));
+  }
   const base = SPRITE_VARIANTS.filter(
     (v) => !(elemental.noHolofoil && v.id === "holofoil")
   );
@@ -437,6 +458,161 @@ const ELEMENTALS = [
   },
   // Sprites já listados na wiki mas ainda não lançados no jogo entram aqui
   // (upcoming: true desabilita os checkboxes e tira do progresso).
+
+  // ---- Chapter 7 Temporada 4 "Override" (lançou 20/ago/2026) ----
+  // A página da wiki (fonte normal do update-sprites.mjs) ainda não lista
+  // esses Sprites — confirmado rodando o scraper manualmente no dia do
+  // lançamento. Nome/raridade/habilidade vêm de cobertura da comunidade
+  // (GameSpot, Destructoid, IGN etc.), não das patch notes oficiais da
+  // Epic, então podem estar incompletos ou levemente errados até a wiki
+  // atualizar. Custo de invocação é uma ESTIMATIVA pela tabela de raridade
+  // do hotfix de 24/jul (nenhuma fonte cita valor exato pra estes ainda).
+  // Variantes: só Dourado + Cheat Master (onlyVariants) — a temporada
+  // trocou o sistema de variantes dos Sprites novos, sem Gelatinoso/
+  // Galáctico/Gema/Metalizado.
+  {
+    id: "8-bit",
+    name: { pt: "8-Bit", en: "8-Bit" },
+    wikiName: "8-Bit Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Garante uma Espingarda 8-Bit no primeiro baú que você abrir, com multiplicador de pontuação.",
+      en: "Find an 8-Bit Shotgun in your first Chest and gain a score multiplier for it.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
+    id: "adventure",
+    name: { pt: "Aventura", en: "Adventure" },
+    wikiName: "Adventure Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Melhora um item aleatório do seu inventário a cada nível.",
+      en: "Upgrade a random item in your inventory at each Level.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
+    id: "bush",
+    name: { pt: "Arbusto", en: "Bush" },
+    wikiName: "Bush Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Cria um Arbusto em você depois de um tempo. No nível máximo, ganha outro a cada eliminação.",
+      en: "Spawns a Bush on you after a duration. At max Level, gain a Bush on elimination.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
+    id: "jonesy",
+    name: { pt: "Jonesy", en: "Jonesy" },
+    wikiName: "Jonesy Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
+      en: "After a short duration, recover some Health or Shield after being damaged.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
+    id: "sonic",
+    name: { pt: "Sonic", en: "Sonic" },
+    wikiName: "Sonic Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Aumenta a velocidade de corrida.",
+      en: "Sprint faster.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    id: "tails",
+    name: { pt: "Tails", en: "Tails" },
+    wikiName: "Tails Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Permite planar no ar com a ajuda da cauda.",
+      en: "Hover with the help of Tails.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    id: "shadow",
+    name: { pt: "Shadow", en: "Shadow" },
+    wikiName: "Shadow Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Recarrega as armas automaticamente com o tempo, mesmo as que não estão equipadas.",
+      en: "Automatically reload weapons over time, even when unequipped.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    id: "killswitch",
+    name: { pt: "Killswitch", en: "Killswitch" },
+    wikiName: "Killswitch Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Entra em Hangtime com precisão melhorada.",
+      en: "Enter Hangtime with improved accuracy.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    id: "jackrabbit",
+    name: { pt: "Jackrabbit", en: "Jackrabbit" },
+    wikiName: "Jackrabbit Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Permite dar mais um pulo enquanto está no ar.",
+      en: "Perform another jump while mid-air.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
+    id: "crown",
+    name: { pt: "Coroa", en: "Crown" },
+    wikiName: "Crown Sprite",
+    rarity: "Mythic",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Ganha Coroas extras (Crown Wins) depois de uma Vitória Royale.",
+      en: "Gain extra Crown Wins after getting a Victory Royale.",
+    },
+    dust: 6750,
+    variantCost: 10000,
+  },
+  {
+    id: "klombo",
+    name: { pt: "Klombo", en: "Klombo" },
+    wikiName: "Klombo Sprite",
+    rarity: "Mythic",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Concede itens aleatórios a cada nível. Só sobe de nível usando itens consumíveis que dão vida ou escudo.",
+      en: "Grants random items at each level. You can only level it up by using consumable items that give Health or Shield.",
+    },
+    dust: 6750,
+    variantCost: 10000,
+  },
 ];
 
 // Se `image` já vier preenchida na entrada (link direto, ex.: quando a URL
