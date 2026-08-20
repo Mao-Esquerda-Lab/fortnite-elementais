@@ -470,6 +470,10 @@ const ELEMENTALS = [
   // Variantes: só Dourado + Cheat Master (onlyVariants) — a temporada
   // trocou o sistema de variantes dos Sprites novos, sem Gelatinoso/
   // Galáctico/Gema/Metalizado.
+  // Falta o Storm Scout Sprite: citado no reveal oficial junto com estes 11,
+  // mas ainda "nos arquivos" — não lançou de verdade (chega num "Sprite
+  // Day" futuro). Nenhuma fonte tem raridade/habilidade dele ainda, então
+  // fica de fora até isso ser revelado (não dá nem pra estimar custo).
   {
     id: "8-bit",
     name: { pt: "8-Bit", en: "8-Bit" },
@@ -542,8 +546,8 @@ const ELEMENTALS = [
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master"],
     ability: {
-      pt: "Permite planar no ar com a ajuda da cauda.",
-      en: "Hover with the help of Tails.",
+      pt: "Permite pairar no ar com a ajuda da cauda, anulando todo o dano de queda.",
+      en: "Hover in mid-air with the help of Tails, and cancels all fall damage.",
     },
     dust: 2700,
     variantCost: 4000,
