@@ -32,7 +32,39 @@ const MIN_CHAPTER = 7;
 // Sprites confirmados como de capítulos anteriores (fora do escopo do app),
 // citados na página sem contexto de capítulo detectável. Remova daqui se
 // algum deles ganhar uma versão do Chapter 7+.
-const EXCLUDED_SPRITES = ["Dash Sprite", "Superman Sprite"];
+const EXCLUDED_SPRITES = [
+  "Dash Sprite",
+  "Superman Sprite",
+  // Sprites de temporadas anteriores à 4 (Override), removidos do app a
+  // pedido do usuário em 20/ago/2026 — o app cobre só a temporada atual.
+  // A wiki continua listando-os (é um catálogo histórico), então sem essa
+  // exclusão o scraper tentaria "readicioná-los" como se fossem novos.
+  "Water Sprite",
+  "Earth Sprite",
+  "Fire Sprite",
+  "Fishy Sprite",
+  "Air Sprite",
+  "Duck Sprite",
+  "Ghost Sprite",
+  "Demon Sprite",
+  "King Sprite",
+  "Aura Sprite",
+  "Striker Sprite",
+  "Dream Sprite",
+  "Punk Sprite",
+  "Boss Sprite",
+  "Peeky Peely Sprite",
+  "Lootin' Llama Sprite",
+  "Seven Sprite",
+  "Zero Point Sprite",
+  "Burnt Peanut",
+  "Grim Sprite",
+  "Batman Sprite",
+  "Pollo Sprite",
+  "Vini Jr. Sprite",
+  "Ironmouse Sprite",
+  "John Wick Sprite",
+];
 
 // Prefixos de variantes: "Gold Water Sprite" não é um Sprite novo.
 const VARIANT_PREFIXES = [
