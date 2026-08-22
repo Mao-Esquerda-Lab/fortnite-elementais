@@ -41,6 +41,25 @@ const TRANSLATIONS = {
     compareOnlyThem: "Só ele(a) tem",
     compareNone: "Nada exclusivo aqui",
     compareInvalidCode: "Este link de comparação é inválido ou está corrompido.",
+    backupLabel: "Backup",
+    backupTitle: "Leva sua coleção inteira para outro aparelho",
+    backupIntro:
+      "O backup leva tudo: coletados, dominados e favoritos. Copie o código (ou baixe o arquivo) neste aparelho e cole no outro.",
+    backupExportLabel: "Código deste aparelho",
+    backupCopy: "Copiar código",
+    backupDownload: "Baixar arquivo",
+    backupFileName: "sprites-backup",
+    backupImportLabel: "Cole aqui o código do outro aparelho",
+    backupImportButton: "Importar",
+    backupFileLabel: "…ou escolha o arquivo baixado",
+    backupInvalid: "Este backup é inválido ou está corrompido.",
+    backupEmpty: "Este backup não tem nenhum Sprite marcado.",
+    backupConfirm: (mine, theirs) =>
+      `Este aparelho tem ${mine} marcação(ões) e o backup tem ${theirs}. Substituir apaga o que está aqui; juntar mantém as duas coleções.`,
+    backupReplace: "Substituir tudo",
+    backupMerge: "Juntar as duas",
+    backupCancel: "Cancelar",
+    backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -114,6 +133,25 @@ const TRANSLATIONS = {
     compareOnlyThem: "Only they have",
     compareNone: "Nothing exclusive here",
     compareInvalidCode: "This comparison link is invalid or corrupted.",
+    backupLabel: "Backup",
+    backupTitle: "Move your whole collection to another device",
+    backupIntro:
+      "A backup carries everything: collected, mastered and favourites. Copy the code (or download the file) on this device and paste it on the other one.",
+    backupExportLabel: "This device's code",
+    backupCopy: "Copy code",
+    backupDownload: "Download file",
+    backupFileName: "sprites-backup",
+    backupImportLabel: "Paste the other device's code here",
+    backupImportButton: "Import",
+    backupFileLabel: "…or pick the downloaded file",
+    backupInvalid: "This backup is invalid or corrupted.",
+    backupEmpty: "This backup has no Sprites marked.",
+    backupConfirm: (mine, theirs) =>
+      `This device has ${mine} mark(s) and the backup has ${theirs}. Replacing wipes what is here; merging keeps both collections.`,
+    backupReplace: "Replace everything",
+    backupMerge: "Merge both",
+    backupCancel: "Cancel",
+    backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -496,6 +534,21 @@ function applyLanguage() {
   document.getElementById("share-close").textContent = s.close;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
+
+  const backupBtn = document.getElementById("backup-btn");
+  backupBtn.title = s.backupTitle;
+  document.getElementById("backup-label").textContent = s.backupLabel;
+  document.getElementById("backup-intro").textContent = s.backupIntro;
+  document.getElementById("backup-export-label").textContent = s.backupExportLabel;
+  document.getElementById("backup-copy-btn").textContent = s.backupCopy;
+  document.getElementById("backup-download").textContent = s.backupDownload;
+  document.getElementById("backup-import-label").textContent = s.backupImportLabel;
+  document.getElementById("backup-import-btn").textContent = s.backupImportButton;
+  document.getElementById("backup-file-label").textContent = s.backupFileLabel;
+  document.getElementById("backup-merge-btn").textContent = s.backupMerge;
+  document.getElementById("backup-replace-btn").textContent = s.backupReplace;
+  document.getElementById("backup-cancel-btn").textContent = s.backupCancel;
+  document.getElementById("backup-close").textContent = s.close;
 
   document.getElementById("sort-label").textContent = s.sortLabel;
   const sortSelect = document.getElementById("sort-select");
@@ -1171,6 +1224,141 @@ document.getElementById("export-btn").addEventListener("click", () => {
   exportSummary();
 });
 
+// ---- Backup: levar a coleção inteira de um aparelho para outro ----
+// Diferente do código de comparação, que é enxuto e omite o que não interessa
+// ao amigo, o backup é FIEL: leva favoritos e os Sprites "Em breve" também,
+// porque o objetivo é o aparelho novo ficar idêntico ao antigo.
+const BACKUP_APP = "fortnite-sprites-locker";
+const BACKUP_VERSION = 1;
+
+// btoa/atob trabalham byte a byte: passar direto uma string com acento
+// gera "InvalidCharacterError". Converte para UTF-8 antes (e de volta na
+// leitura). O laço evita estourar a pilha que o spread causaria.
+function toBase64Url(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  bytes.forEach((b) => {
+    binary += String.fromCharCode(b);
+  });
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function fromBase64Url(code) {
+  const binary = atob(code.replace(/-/g, "+").replace(/_/g, "/"));
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+function encodeBackup(source = collection) {
+  return toBase64Url(
+    JSON.stringify({
+      app: BACKUP_APP,
+      v: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      collection: source,
+    })
+  );
+}
+
+const bool = (value) => value === true;
+
+// Normaliza o que veio de fora: só booleanos, só os campos conhecidos.
+// Ids desconhecidos são MANTIDOS de propósito — o outro aparelho pode estar
+// numa versão mais nova, com Sprites que este ainda não tem, e descartá-los
+// perderia progresso de verdade.
+function sanitizeCollection(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const clean = {};
+  Object.entries(raw).forEach(([id, entry]) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return;
+    const variants = {};
+    Object.entries(entry.variants || {}).forEach(([variantId, state]) => {
+      // Formato antigo da variante: booleano em vez de objeto.
+      if (typeof state === "boolean") {
+        variants[variantId] = { owned: state, mastered: false };
+      } else if (state && typeof state === "object") {
+        variants[variantId] = {
+          owned: bool(state.owned),
+          mastered: bool(state.mastered),
+        };
+      }
+    });
+    clean[id] = {
+      owned: bool(entry.owned),
+      mastered: bool(entry.mastered),
+      favorite: bool(entry.favorite),
+      variants,
+    };
+  });
+  return clean;
+}
+
+// Aceita as duas formas que o usuário tem em mãos: o código de uma linha
+// (copiar/colar) e o JSON do arquivo baixado. Nunca lança — devolve null.
+function decodeBackup(text) {
+  const trimmed = (text || "").trim();
+  if (!trimmed) return null;
+  let payload = null;
+  try {
+    payload = JSON.parse(trimmed);
+  } catch {
+    try {
+      payload = JSON.parse(fromBase64Url(trimmed));
+    } catch {
+      return null;
+    }
+  }
+  if (!payload || payload.app !== BACKUP_APP) return null;
+  if (Number(payload.v) !== BACKUP_VERSION) return null;
+  return sanitizeCollection(payload.collection);
+}
+
+// Quantas marcações uma coleção tem — é o número que o usuário reconhece
+// ("tenho 20 coisas marcadas") e o que a confirmação de importar mostra.
+function countMarks(source) {
+  let total = 0;
+  Object.values(source || {}).forEach((entry) => {
+    if (entry.owned) total += 1;
+    if (entry.mastered) total += 1;
+    if (entry.favorite) total += 1;
+    Object.values(entry.variants || {}).forEach((state) => {
+      if (state.owned) total += 1;
+      if (state.mastered) total += 1;
+    });
+  });
+  return total;
+}
+
+// União: na dúvida, mantém o marcado. Importar juntando nunca desmarca nada.
+function mergeCollections(mine, theirs) {
+  const merged = {};
+  const ids = new Set([...Object.keys(mine), ...Object.keys(theirs)]);
+  ids.forEach((id) => {
+    const a = mine[id] || {};
+    const b = theirs[id] || {};
+    const variants = {};
+    const variantIds = new Set([
+      ...Object.keys(a.variants || {}),
+      ...Object.keys(b.variants || {}),
+    ]);
+    variantIds.forEach((variantId) => {
+      const va = (a.variants || {})[variantId] || {};
+      const vb = (b.variants || {})[variantId] || {};
+      variants[variantId] = {
+        owned: bool(va.owned) || bool(vb.owned),
+        mastered: bool(va.mastered) || bool(vb.mastered),
+      };
+    });
+    merged[id] = {
+      owned: bool(a.owned) || bool(b.owned),
+      mastered: bool(a.mastered) || bool(b.mastered),
+      favorite: bool(a.favorite) || bool(b.favorite),
+      variants,
+    };
+  });
+  return merged;
+}
+
 // ---- Compartilhar/comparar coleção com um amigo (sem backend) ----
 const shareOverlay = document.getElementById("share-overlay");
 const shareLinkInput = document.getElementById("share-link-input");
@@ -1303,6 +1491,143 @@ sharePasteBtn.addEventListener("click", () => {
 document.getElementById("compare-close").addEventListener("click", closeCompareModal);
 compareOverlay.addEventListener("click", (e) => {
   if (e.target === compareOverlay) closeCompareModal();
+});
+
+// ---- Modal de backup ----
+const backupOverlay = document.getElementById("backup-overlay");
+const backupCodeInput = document.getElementById("backup-code-input");
+const backupCopyBtn = document.getElementById("backup-copy-btn");
+const backupDownload = document.getElementById("backup-download");
+const backupPasteInput = document.getElementById("backup-paste-input");
+const backupImportBtn = document.getElementById("backup-import-btn");
+const backupFileInput = document.getElementById("backup-file-input");
+const backupError = document.getElementById("backup-error");
+const backupConfirm = document.getElementById("backup-confirm");
+const backupConfirmText = document.getElementById("backup-confirm-text");
+const backupDone = document.getElementById("backup-done");
+
+// Coleção decodificada aguardando o usuário escolher substituir ou juntar.
+let pendingBackup = null;
+// URL do Blob do arquivo .json; revogada ao fechar, para não vazar memória.
+let backupFileUrl = null;
+
+function openBackupModal() {
+  const s = t();
+  const code = encodeBackup();
+  backupCodeInput.value = code;
+
+  if (backupFileUrl) URL.revokeObjectURL(backupFileUrl);
+  const blob = new Blob([fromBase64Url(code)], { type: "application/json" });
+  backupFileUrl = URL.createObjectURL(blob);
+  backupDownload.href = backupFileUrl;
+  backupDownload.download = `${s.backupFileName}-${new Date()
+    .toISOString()
+    .slice(0, 10)}.json`;
+
+  backupCopyBtn.textContent = s.backupCopy;
+  backupPasteInput.value = "";
+  backupFileInput.value = "";
+  backupError.hidden = true;
+  backupDone.hidden = true;
+  backupConfirm.hidden = true;
+  pendingBackup = null;
+  backupOverlay.hidden = false;
+}
+
+function closeBackupModal() {
+  backupOverlay.hidden = true;
+  if (backupFileUrl) {
+    URL.revokeObjectURL(backupFileUrl);
+    backupFileUrl = null;
+  }
+  pendingBackup = null;
+}
+
+function backupFail(message) {
+  backupError.textContent = message;
+  backupError.hidden = false;
+  backupConfirm.hidden = true;
+  pendingBackup = null;
+}
+
+// Importar sobrescreve dados do aparelho: nunca aplica direto — mostra os
+// números dos dois lados e deixa o usuário escolher substituir ou juntar.
+function proposeBackup(text) {
+  const s = t();
+  backupDone.hidden = true;
+  const theirs = decodeBackup(text);
+  if (!theirs) return backupFail(s.backupInvalid);
+  const theirMarks = countMarks(theirs);
+  if (theirMarks === 0) return backupFail(s.backupEmpty);
+
+  pendingBackup = theirs;
+  backupError.hidden = true;
+  backupConfirmText.textContent = s.backupConfirm(
+    countMarks(collection),
+    theirMarks
+  );
+  backupConfirm.hidden = false;
+}
+
+function applyBackup(merge) {
+  if (!pendingBackup) return;
+  collection = merge
+    ? mergeCollections(collection, pendingBackup)
+    : pendingBackup;
+  saveCollection(collection);
+  pendingBackup = null;
+  backupConfirm.hidden = true;
+  backupPasteInput.value = "";
+  backupFileInput.value = "";
+  backupDone.textContent = t().backupDone(countMarks(collection));
+  backupDone.hidden = false;
+  render();
+  // O código exportado precisa refletir a coleção nova, caso o usuário
+  // queira repassar este aparelho adiante sem fechar o modal.
+  backupCodeInput.value = encodeBackup();
+}
+
+document.getElementById("backup-btn").addEventListener("click", openBackupModal);
+document.getElementById("backup-close").addEventListener("click", closeBackupModal);
+backupOverlay.addEventListener("click", (e) => {
+  if (e.target === backupOverlay) closeBackupModal();
+});
+
+backupCopyBtn.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(backupCodeInput.value);
+    backupCopyBtn.textContent = t().exportCopied;
+    setTimeout(() => {
+      backupCopyBtn.textContent = t().backupCopy;
+    }, 2000);
+  } catch {
+    // Sem permissão/API de clipboard: seleciona para o Ctrl+C manual.
+    backupCodeInput.select();
+  }
+});
+
+backupImportBtn.addEventListener("click", () => {
+  proposeBackup(backupPasteInput.value);
+});
+
+backupFileInput.addEventListener("change", () => {
+  const file = backupFileInput.files && backupFileInput.files[0];
+  if (!file) return;
+  file
+    .text()
+    .then((text) => proposeBackup(text))
+    .catch(() => backupFail(t().backupInvalid));
+});
+
+document.getElementById("backup-merge-btn").addEventListener("click", () => {
+  applyBackup(true);
+});
+document.getElementById("backup-replace-btn").addEventListener("click", () => {
+  applyBackup(false);
+});
+document.getElementById("backup-cancel-btn").addEventListener("click", () => {
+  pendingBackup = null;
+  backupConfirm.hidden = true;
 });
 
 // Botão flutuante de voltar ao topo: aparece depois de rolar um pouco.

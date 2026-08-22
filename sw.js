@@ -3,7 +3,8 @@
 //   rede garante que HTML, CSS e JS venham da MESMA versão do deploy
 //   (cache-first por arquivo misturava versões após uma atualização);
 //   o cache continua atendendo quando estiver offline.
-// - Imagens da wiki: cache-first, guardadas na primeira visualização.
+// - Imagens dos Sprites (IGN/Fandom): cache-first, guardadas na primeira
+//   visualização, para o app abrir offline com a arte.
 //
 // Aumente VERSION ao mudar a lista de arquivos do shell.
 const VERSION = "v20";
@@ -90,6 +91,8 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (
+    // A arte dos Sprites da temporada atual vem do CDN do wiki do IGN.
+    url.hostname.endsWith("ignimgs.com") ||
     url.hostname.endsWith("fandom.com") ||
     url.hostname.endsWith("wikia.nocookie.net") ||
     url.hostname.endsWith("fortnite.gg")
