@@ -7,7 +7,7 @@
 //   visualização, para o app abrir offline com a arte.
 //
 // Aumente VERSION ao mudar a lista de arquivos do shell.
-const VERSION = "v20";
+const VERSION = "v21";
 const SHELL_CACHE = `elementais-shell-${VERSION}`;
 const IMAGE_CACHE = "elementais-images-v1";
 
@@ -17,6 +17,7 @@ const SHELL_FILES = [
   "./styles.css",
   "./app.js",
   "./icons.js",
+  "./data/cheat-codes.js",
   "./data/elementals.js",
   "./data/elementals-auto.js",
   "./manifest.webmanifest",

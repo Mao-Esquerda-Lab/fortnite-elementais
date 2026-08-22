@@ -323,12 +323,20 @@ body {
 
 /* Botão de exportar o resumo da coleção como imagem,
    logo abaixo das barras de progresso, alinhado à direita. */
+/* Exportar, Comparar e Backup ficam lado a lado abaixo das barras. Em telas
+   estreitas quebram para a linha de baixo em vez de transbordar. */
+.progress-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
 .export-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  align-self: flex-end;
-  margin-top: 0.25rem;
   padding: 0.45rem 0.9rem;
   border-radius: 999px;
   border: 1px solid var(--border);
@@ -342,6 +350,17 @@ body {
 
 .export-btn:hover {
   background: var(--surface-hover);
+}
+
+/* No celular os três rótulos não cabem numa linha com o espaçamento padrão:
+   aperta o botão em vez de deixar o Backup cair sozinho para a linha de
+   baixo. Abaixo disto o wrap ainda vale como rede de segurança. */
+@media (max-width: 480px) {
+  .progress-actions .export-btn {
+    gap: 0.3rem;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.8rem;
+  }
 }
 
 /* Visualizador da imagem exportada. */
@@ -470,6 +489,182 @@ body {
   margin: 0;
   color: var(--mythic);
   font-size: 0.85rem;
+}
+
+/* ---- Abas de visualização (Sprites / Códigos) ---- */
+
+.view-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.view-tab {
+  flex: 1;
+  padding: 0.55rem 1rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.view-tab:hover {
+  background: var(--surface-hover);
+}
+
+.view-tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ---- Tabela dos códigos do Painel de Admin ---- */
+
+.codes-intro {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.codes-table {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.codes-table th {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+.codes-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.code-check-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.code-check {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Resgatado fica discreto para o que falta saltar aos olhos. */
+.code-row.done .code-text,
+.code-row.done .code-reward {
+  opacity: 0.5;
+}
+
+.code-cell {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.code-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  /* Código é para digitar no jogo: dá para selecionar com um toque. */
+  user-select: all;
+}
+
+.code-new {
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #0f1115;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.code-copy {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.code-copy:hover {
+  color: var(--accent);
+}
+
+.code-reward {
+  display: block;
+}
+
+.code-note {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+/* No celular a coluna da recompensa é a que sofre: aperta o resto para ela
+   caber sem empurrar a tabela para fora da tela. */
+@media (max-width: 480px) {
+  .codes-table {
+    font-size: 0.82rem;
+  }
+
+  .codes-table th,
+  .codes-table td {
+    padding: 0.5rem 0.3rem;
+  }
+
+  .codes-table th {
+    font-size: 0.68rem;
+    letter-spacing: 0;
+  }
+
+  .code-text {
+    font-size: 0.78rem;
+  }
+
+  /* O cabeçalho "Resgatei" é mais largo que a caixinha e roubava espaço da
+     recompensa. Some visualmente, mas continua no DOM para leitores de tela
+     (e cada caixinha tem aria-label). Um código NUNCA é quebrado no meio:
+     ele é digitado no jogo, e quebrar convida a erro de digitação. */
+  #codes-th-done {
+    font-size: 0;
+  }
+
+  .code-check {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+.codes-source {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
 }
 
 /* ---- Modal de backup ---- */

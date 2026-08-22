@@ -1,6 +1,8 @@
 const STORAGE_KEY = "fortnite-sprites-collection-v1";
 const LANG_KEY = "fortnite-elementals-lang";
 const SORT_KEY = "fortnite-elementals-sort";
+const CODES_KEY = "fortnite-lobby-codes-v1";
+const VIEW_KEY = "fortnite-elementals-view";
 
 const RARITY_COLORS = {
   Rare: "var(--rare)",
@@ -44,7 +46,7 @@ const TRANSLATIONS = {
     backupLabel: "Backup",
     backupTitle: "Leva sua coleção inteira para outro aparelho",
     backupIntro:
-      "O backup leva tudo: coletados, dominados e favoritos. Copie o código (ou baixe o arquivo) neste aparelho e cole no outro.",
+      "O backup leva tudo: coletados, dominados, favoritos e os códigos que você já resgatou. Copie o código (ou baixe o arquivo) neste aparelho e cole no outro.",
     backupExportLabel: "Código deste aparelho",
     backupCopy: "Copiar código",
     backupDownload: "Baixar arquivo",
@@ -60,6 +62,18 @@ const TRANSLATIONS = {
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
+    viewSprites: "Sprites",
+    viewCodes: "Códigos",
+    codesIntro:
+      "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
+    codesThDone: "Resgatei",
+    codesThCode: "Código",
+    codesThReward: "Recompensa",
+    codesNew: "Novo",
+    codesCopy: "Copiar código",
+    codesProgress: (done, total) => `${done} / ${total} resgatados`,
+    codesSource:
+      "Lista do wiki do IGN. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.",
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -136,7 +150,7 @@ const TRANSLATIONS = {
     backupLabel: "Backup",
     backupTitle: "Move your whole collection to another device",
     backupIntro:
-      "A backup carries everything: collected, mastered and favourites. Copy the code (or download the file) on this device and paste it on the other one.",
+      "A backup carries everything: collected, mastered, favourites and the codes you have redeemed. Copy the code (or download the file) on this device and paste it on the other one.",
     backupExportLabel: "This device's code",
     backupCopy: "Copy code",
     backupDownload: "Download file",
@@ -152,6 +166,18 @@ const TRANSLATIONS = {
     backupMerge: "Merge both",
     backupCancel: "Cancel",
     backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
+    viewSprites: "Sprites",
+    viewCodes: "Codes",
+    codesIntro:
+      "Admin Panel codes: on the main menu, click the “… / admin panel” box in the top right, type the code and submit. Tick here the ones you have already redeemed.",
+    codesThDone: "Redeemed",
+    codesThCode: "Code",
+    codesThReward: "Reward",
+    codesNew: "New",
+    codesCopy: "Copy code",
+    codesProgress: (done, total) => `${done} / ${total} redeemed`,
+    codesSource:
+      "List from the IGN wiki. Reward wording is our own translation, not the game's official text.",
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -228,12 +254,39 @@ function saveCollection(collection) {
   storage.set(STORAGE_KEY, JSON.stringify(collection));
 }
 
+// Códigos do lobby já resgatados: { [id do código]: true }. Guardado à parte
+// da coleção porque não tem nada a ver com Sprites — some junto no backup,
+// mas fica fora do código de comparação (comparar é sobre a coleção).
+function loadCodes() {
+  try {
+    const raw = JSON.parse(storage.get(CODES_KEY)) || {};
+    return sanitizeCodes(raw);
+  } catch {
+    return {};
+  }
+}
+
+function sanitizeCodes(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const clean = {};
+  Object.entries(raw).forEach(([id, done]) => {
+    if (done === true) clean[id] = true;
+  });
+  return clean;
+}
+
+function saveCodes() {
+  storage.set(CODES_KEY, JSON.stringify(redeemedCodes));
+}
+
 function loadLang() {
   const saved = storage.get(LANG_KEY);
   return saved === "en" || saved === "pt" ? saved : "pt";
 }
 
 let collection = loadCollection();
+let redeemedCodes = loadCodes();
+let activeView = storage.get(VIEW_KEY) === "codes" ? "codes" : "sprites";
 let lang = loadLang();
 let activeFilter = "all";
 let sortMode = ["default", "rarity", "alpha"].includes(storage.get(SORT_KEY))
@@ -534,6 +587,15 @@ function applyLanguage() {
   document.getElementById("share-close").textContent = s.close;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
+
+  [...viewTabs.children].forEach((tab) => {
+    tab.textContent = tab.dataset.view === "codes" ? s.viewCodes : s.viewSprites;
+  });
+  document.getElementById("codes-intro").textContent = s.codesIntro;
+  document.getElementById("codes-th-done").textContent = s.codesThDone;
+  document.getElementById("codes-th-code").textContent = s.codesThCode;
+  document.getElementById("codes-th-reward").textContent = s.codesThReward;
+  document.getElementById("codes-source").textContent = s.codesSource;
 
   const backupBtn = document.getElementById("backup-btn");
   backupBtn.title = s.backupTitle;
@@ -1224,6 +1286,99 @@ document.getElementById("export-btn").addEventListener("click", () => {
   exportSummary();
 });
 
+// ---- Aba dos códigos do Painel de Admin ----
+const viewTabs = document.getElementById("view-tabs");
+const viewSprites = document.getElementById("view-sprites");
+const viewCodes = document.getElementById("view-codes");
+const codesBody = document.getElementById("codes-body");
+const codesProgressBar = document.getElementById("codes-progress-bar");
+const codesProgressLabel = document.getElementById("codes-progress-label");
+
+const codesDone = () =>
+  CHEAT_CODES.filter((c) => redeemedCodes[c.id] === true).length;
+
+function renderCodes() {
+  const s = t();
+  codesBody.innerHTML = CHEAT_CODES.map((c) => {
+    const done = redeemedCodes[c.id] === true;
+    return `
+      <tr class="code-row${done ? " done" : ""}">
+        <td class="code-check-cell">
+          <input type="checkbox" class="code-check" ${done ? "checked" : ""}
+                 data-code="${c.id}" aria-label="${s.codesThDone}" />
+        </td>
+        <td>
+          <div class="code-cell">
+            <code class="code-text">${c.code}</code>
+            ${c.isNew ? `<span class="code-new">${s.codesNew}</span>` : ""}
+            <button class="code-copy" type="button" data-copy="${c.id}"
+                    title="${s.codesCopy}" aria-label="${s.codesCopy}">⧉</button>
+          </div>
+        </td>
+        <td>
+          <span class="code-reward">${c.reward[lang]}</span>
+          ${c.note ? `<span class="code-note">${c.note[lang]}</span>` : ""}
+        </td>
+      </tr>`;
+  }).join("");
+
+  const done = codesDone();
+  const total = CHEAT_CODES.length;
+  const width = total === 0 ? 0 : (done / total) * 100;
+  codesProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
+  codesProgressLabel.textContent = s.codesProgress(done, total);
+}
+
+function applyView() {
+  viewSprites.hidden = activeView !== "sprites";
+  viewCodes.hidden = activeView !== "codes";
+  [...viewTabs.children].forEach((tab) =>
+    tab.classList.toggle("active", tab.dataset.view === activeView)
+  );
+  // O menu de navegação rápida é grudento e só faz sentido com a grade.
+  spriteNav.hidden = activeView !== "sprites";
+  if (activeView === "codes") renderCodes();
+}
+
+viewTabs.addEventListener("click", (e) => {
+  const tab = e.target.closest("[data-view]");
+  if (!tab || tab.dataset.view === activeView) return;
+  activeView = tab.dataset.view;
+  storage.set(VIEW_KEY, activeView);
+  applyView();
+});
+
+codesBody.addEventListener("click", async (e) => {
+  const copy = e.target.closest("[data-copy]");
+  if (copy) {
+    const entry = CHEAT_CODES.find((c) => c.id === copy.dataset.copy);
+    if (!entry) return;
+    try {
+      await navigator.clipboard.writeText(entry.code);
+      copy.textContent = "✓";
+      setTimeout(() => {
+        copy.textContent = "⧉";
+      }, 1500);
+    } catch {
+      // Sem clipboard: seleciona o texto do código para copiar na mão.
+      const range = document.createRange();
+      range.selectNodeContents(copy.closest(".code-cell").querySelector(".code-text"));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+});
+
+codesBody.addEventListener("change", (e) => {
+  const box = e.target.closest(".code-check");
+  if (!box) return;
+  if (box.checked) redeemedCodes[box.dataset.code] = true;
+  else delete redeemedCodes[box.dataset.code];
+  saveCodes();
+  renderCodes();
+});
+
 // ---- Backup: levar a coleção inteira de um aparelho para outro ----
 // Diferente do código de comparação, que é enxuto e omite o que não interessa
 // ao amigo, o backup é FIEL: leva favoritos e os Sprites "Em breve" também,
@@ -1249,13 +1404,17 @@ function fromBase64Url(code) {
   return new TextDecoder().decode(bytes);
 }
 
-function encodeBackup(source = collection) {
+// `codes` foi acrescentado depois, mantendo a versão 1 de propósito: é um
+// campo novo e opcional, então backups gerados antes dele continuam válidos
+// (importam com nenhum código resgatado) em vez de virarem "inválidos".
+function encodeBackup() {
   return toBase64Url(
     JSON.stringify({
       app: BACKUP_APP,
       v: BACKUP_VERSION,
       exportedAt: new Date().toISOString(),
-      collection: source,
+      collection,
+      codes: redeemedCodes,
     })
   );
 }
@@ -1310,11 +1469,20 @@ function decodeBackup(text) {
   }
   if (!payload || payload.app !== BACKUP_APP) return null;
   if (Number(payload.v) !== BACKUP_VERSION) return null;
-  return sanitizeCollection(payload.collection);
+  const collectionPart = sanitizeCollection(payload.collection);
+  if (!collectionPart) return null;
+  return { collection: collectionPart, codes: sanitizeCodes(payload.codes) };
 }
 
-// Quantas marcações uma coleção tem — é o número que o usuário reconhece
+// Quantas marcações um backup tem — é o número que o usuário reconhece
 // ("tenho 20 coisas marcadas") e o que a confirmação de importar mostra.
+// Conta os códigos resgatados junto, já que o backup leva os dois.
+function countBackupMarks(backup) {
+  return (
+    countMarks(backup.collection) + Object.keys(backup.codes || {}).length
+  );
+}
+
 function countMarks(source) {
   let total = 0;
   Object.values(source || {}).forEach((entry) => {
@@ -1557,13 +1725,13 @@ function proposeBackup(text) {
   backupDone.hidden = true;
   const theirs = decodeBackup(text);
   if (!theirs) return backupFail(s.backupInvalid);
-  const theirMarks = countMarks(theirs);
+  const theirMarks = countBackupMarks(theirs);
   if (theirMarks === 0) return backupFail(s.backupEmpty);
 
   pendingBackup = theirs;
   backupError.hidden = true;
   backupConfirmText.textContent = s.backupConfirm(
-    countMarks(collection),
+    countBackupMarks({ collection, codes: redeemedCodes }),
     theirMarks
   );
   backupConfirm.hidden = false;
@@ -1572,16 +1740,24 @@ function proposeBackup(text) {
 function applyBackup(merge) {
   if (!pendingBackup) return;
   collection = merge
-    ? mergeCollections(collection, pendingBackup)
-    : pendingBackup;
+    ? mergeCollections(collection, pendingBackup.collection)
+    : pendingBackup.collection;
+  // Códigos resgatados são só booleanos: juntar é somar as chaves.
+  redeemedCodes = merge
+    ? { ...redeemedCodes, ...pendingBackup.codes }
+    : { ...pendingBackup.codes };
   saveCollection(collection);
+  saveCodes();
   pendingBackup = null;
   backupConfirm.hidden = true;
   backupPasteInput.value = "";
   backupFileInput.value = "";
-  backupDone.textContent = t().backupDone(countMarks(collection));
+  backupDone.textContent = t().backupDone(
+    countBackupMarks({ collection, codes: redeemedCodes })
+  );
   backupDone.hidden = false;
   render();
+  applyView();
   // O código exportado precisa refletir a coleção nova, caso o usuário
   // queira repassar este aparelho adiante sem fechar o modal.
   backupCodeInput.value = encodeBackup();
@@ -1674,8 +1850,10 @@ langSwitch.addEventListener("click", (e) => {
   storage.set(LANG_KEY, lang);
   applyLanguage();
   render();
+  applyView(); // recompõe a tabela de códigos no idioma novo
 });
 
 applyLanguage();
 render();
+applyView();
 readShareHashOnLoad();

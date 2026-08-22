@@ -43,6 +43,13 @@
   </header>
 
   <main class="container">
+    <!-- Alterna entre a coleção de Sprites e a lista de códigos do lobby. -->
+    <div class="view-tabs" id="view-tabs" role="tablist">
+      <button class="view-tab active" type="button" data-view="sprites" role="tab"></button>
+      <button class="view-tab" type="button" data-view="codes" role="tab"></button>
+    </div>
+
+    <div id="view-sprites">
     <!-- Menu de navegação rápida: um ícone por Elemental; clicar rola até o
          card. Fica grudado abaixo do cabeçalho enquanto a página rola.
          Recolhido é uma linha rolável; o botão expande em várias linhas. -->
@@ -84,23 +91,46 @@
         <div class="progress-bar" id="progress-bar-mastered"></div>
         <span class="progress-label" id="progress-label-mastered"></span>
       </div>
-      <!-- Baixa um PNG com o resumo da coleção (tenho/dominado). -->
-      <button class="export-btn" id="export-btn" type="button">
-        <span aria-hidden="true">📸</span><span id="export-label"></span>
-      </button>
-      <!-- Gera um link para comparar a coleção com a de um amigo (sem backend). -->
-      <button class="export-btn" id="share-btn" type="button">
-        <span aria-hidden="true">🔗</span><span id="share-label"></span>
-      </button>
-      <!-- Backup completo da coleção, para levar de um aparelho a outro. -->
-      <button class="export-btn" id="backup-btn" type="button">
-        <span aria-hidden="true">📦</span><span id="backup-label"></span>
-      </button>
+      <div class="progress-actions">
+        <!-- Baixa um PNG com o resumo da coleção (tenho/dominado). -->
+        <button class="export-btn" id="export-btn" type="button">
+          <span aria-hidden="true">📸</span><span id="export-label"></span>
+        </button>
+        <!-- Gera um link para comparar a coleção com a de um amigo (sem backend). -->
+        <button class="export-btn" id="share-btn" type="button">
+          <span aria-hidden="true">🔗</span><span id="share-label"></span>
+        </button>
+        <!-- Backup completo da coleção, para levar de um aparelho a outro. -->
+        <button class="export-btn" id="backup-btn" type="button">
+          <span aria-hidden="true">📦</span><span id="backup-label"></span>
+        </button>
+      </div>
     </section>
 
     <section id="elemental-grid" class="elemental-grid"></section>
 
     <p id="empty-state" class="empty-state" hidden></p>
+    </div>
+
+    <!-- Aba dos códigos do Painel de Admin: marcar os já resgatados. -->
+    <div id="view-codes" hidden>
+      <p class="codes-intro" id="codes-intro"></p>
+      <div class="progress-row">
+        <div class="progress-bar" id="codes-progress-bar"></div>
+        <span class="progress-label" id="codes-progress-label"></span>
+      </div>
+      <table class="codes-table">
+        <thead>
+          <tr>
+            <th id="codes-th-done"></th>
+            <th id="codes-th-code"></th>
+            <th id="codes-th-reward"></th>
+          </tr>
+        </thead>
+        <tbody id="codes-body"></tbody>
+      </table>
+      <p class="codes-source" id="codes-source"></p>
+    </div>
   </main>
 
   <footer class="footer">
@@ -212,6 +242,7 @@
     </div>
   </div>
 
+  <script src="data/cheat-codes.js"></script>
   <script src="data/elementals.js"></script>
   <script src="data/elementals-auto.js"></script>
   <script src="icons.js"></script>
