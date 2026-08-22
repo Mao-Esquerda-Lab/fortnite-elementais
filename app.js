@@ -251,6 +251,7 @@ const VARIANT_CODES = {
   holofoil: "h",
   cube: "c",
   quack: "q",
+  "cheat-master": "m",
 };
 const VARIANT_CODES_REV = Object.fromEntries(
   Object.entries(VARIANT_CODES).map(([id, code]) => [code, id])
@@ -316,11 +317,13 @@ function decodeCollectionCode(code) {
       for (const part of parts.slice(1)) {
         if (!part) continue;
         const variantId = VARIANT_CODES_REV[part[0]];
+        // Código de variante desconhecido (link de uma versão mais nova do
+        // app): ignora só essa variante, não o resto da entrada — nem tenta
+        // validar os bits, que nesse caso nem são confiáveis.
+        if (!variantId) continue;
         const bits = Number(part.slice(1));
         if (!Number.isInteger(bits) || bits < 0 || bits > 3) return null;
-        // Código de variante desconhecido (link de uma versão mais nova do
-        // app): ignora só essa variante, não o resto da entrada.
-        if (variantId) entry.variants[variantId] = bitsToState(bits);
+        entry.variants[variantId] = bitsToState(bits);
       }
       result[id] = entry;
     }
