@@ -27,7 +27,7 @@ const CHEAT_CODES = [
     code: "GatherAndCraft",
     isNew: true,
     reward: {
-      pt: "Sprite Arbusto Trapaceiro",
+      pt: "Elemental Arbusto Trapaceiro",
       en: "Cheat Master Bush Sprite",
     },
     note: {
@@ -38,28 +38,28 @@ const CHEAT_CODES = [
   {
     id: "play4all",
     code: "Play4All",
-    reward: { pt: "Sprite Jonesy Trapaceiro", en: "Cheat Master Jonesy Sprite" },
+    reward: { pt: "Elemental Jonesy Trapaceiro", en: "Cheat Master Jonesy Sprite" },
   },
   {
     id: "gottagofast",
     code: "GottaGoFast",
-    reward: { pt: "Sprite Sonic Trapaceiro", en: "Cheat Master Sonic Sprite" },
+    reward: { pt: "Elemental Sonic Trapaceiro", en: "Cheat Master Sonic Sprite" },
   },
   {
     id: "iwannaflyhigh",
     code: "IWannaFlyHigh",
-    reward: { pt: "Sprite Tails Trapaceiro", en: "Cheat Master Tails Sprite" },
+    reward: { pt: "Elemental Tails Trapaceiro", en: "Cheat Master Tails Sprite" },
   },
   {
     id: "8bitblast",
     code: "8BitBlast",
-    reward: { pt: "Sprite 8-Bit Trapaceiro", en: "Cheat Master 8-Bit Sprite" },
+    reward: { pt: "Elemental 8-Bit Trapaceiro", en: "Cheat Master 8-Bit Sprite" },
   },
   {
     id: "born2play",
     code: "BORN2PLAY",
     reward: {
-      pt: "Sprite Aventura Trapaceiro",
+      pt: "Elemental Aventura Trapaceiro",
       en: "Cheat Master Adventure Sprite",
     },
   },

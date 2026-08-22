@@ -55,14 +55,14 @@ const TRANSLATIONS = {
     backupImportButton: "Importar",
     backupFileLabel: "…ou escolha o arquivo baixado",
     backupInvalid: "Este backup é inválido ou está corrompido.",
-    backupEmpty: "Este backup não tem nenhum Sprite marcado.",
+    backupEmpty: "Este backup não tem nenhum Elemental marcado.",
     backupConfirm: (mine, theirs) =>
       `Este aparelho tem ${mine} marcação(ões) e o backup tem ${theirs}. Substituir apaga o que está aqui; juntar mantém as duas coleções.`,
     backupReplace: "Substituir tudo",
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
-    viewSprites: "Sprites",
+    viewSprites: "Elementais",
     viewCodes: "Códigos",
     codesIntro:
       "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
@@ -108,7 +108,7 @@ const TRANSLATIONS = {
     installOffline:
       "Depois de instalado, o app abre offline: seu progresso e os ícones já vistos ficam salvos no aparelho.",
     footer:
-      'Sprites, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
+      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
     costUnknown: "ainda não revelado",
     rarities: {
       Rare: "Raro",
