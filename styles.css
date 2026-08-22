@@ -224,6 +224,9 @@ body {
   opacity: 0.45;
 }
 
+/* Sprites "Em breve" não têm ícone SVG local: o fallback mostra a inicial
+   do nome, tanto no menu de navegação quanto no ícone do card. */
+.elemental-icon .nav-letter,
 .nav-icon .nav-letter {
   display: flex;
   align-items: center;
@@ -233,6 +236,13 @@ body {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--muted);
+}
+
+.elemental-icon .nav-letter {
+  font-size: 1.7rem;
+  border: 1px dashed var(--muted);
+  border-radius: 12px;
+  box-sizing: border-box;
 }
 
 .filter-tabs {
@@ -698,6 +708,13 @@ body {
 
 .upcoming-badge + * .tile-check,
 .sprite-tile .tile-check input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Deixa claro que o quadradinho inteiro está travado (Sprites "Em breve"),
+   e não só a caixinha em si. */
+.sprite-tile .tile-check:has(input:disabled) {
   cursor: not-allowed;
   opacity: 0.55;
 }

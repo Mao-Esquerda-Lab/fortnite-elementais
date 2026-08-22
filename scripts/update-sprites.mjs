@@ -1,14 +1,24 @@
 #!/usr/bin/env node
-// Detecta Sprites novos na Fortnite Wiki e os acrescenta em
-// data/elementals-auto.js (só adiciona, nunca remove). Roda diariamente no
-// GitHub Actions (.github/workflows/update-sprites.yml).
+// Detecta Sprites novos e os acrescenta em data/elementals-auto.js (só
+// adiciona, nunca remove). Roda diariamente no GitHub Actions
+// (.github/workflows/update-sprites.yml).
+//
+// FONTES (mudou em 22/ago/2026):
+//   1. wiki do IGN — PRINCIPAL. É a única que lista os Sprites da Temporada
+//      4 (Override), com a seção "Unreleased Sprites List" dos que ainda não
+//      saíram e com a arte de cada variante.
+//   2. Fortnite Wiki (Fandom) — SECUNDÁRIA e best-effort. Só serve para a
+//      raridade, que o IGN não publica por Sprite. O WAF da Fandom responde
+//      403 para clientes não-navegador (inclusive dos IPs do Actions), então
+//      a falha dela NÃO derruba a execução: sem ela, os Sprites novos entram
+//      com raridade "Unknown" e a curadoria manual preenche depois.
 //
 // Uso:
-//   node scripts/update-sprites.mjs                  # busca a página real
-//   node scripts/update-sprites.mjs --fixture x.txt  # usa wikitext local (teste)
+//   node scripts/update-sprites.mjs                   # busca as páginas reais
+//   node scripts/update-sprites.mjs --fixture x.html  # usa HTML do IGN local
 //
-// Sai com código != 0 quando a página não pôde ser lida ou o parse parece
-// quebrado — nesses casos NADA é escrito (fail-closed).
+// Sai com código != 0 quando a fonte principal não pôde ser lida ou o parse
+// parece quebrado — nesses casos NADA é escrito (fail-closed).
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -25,6 +35,15 @@ const UA =
 const PAGE = "Sprites";
 const API_URL = `https://fortnite.fandom.com/api.php?action=parse&page=${PAGE}&prop=wikitext&format=json`;
 const RAW_URL = `https://fortnite.fandom.com/wiki/${PAGE}?action=raw`;
+
+// Fonte principal: o wiki do IGN da temporada atual. Ao virar a temporada,
+// troque esta URL pela página nova (o título traz o capítulo/temporada).
+const IGN_URL =
+  "https://www.ign.com/wikis/fortnite/" +
+  "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List";
+
+// O IGN serve a arte do wiki dele por este CDN.
+const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_]+)_sprite\.png/g;
 
 // O app cobre apenas Sprites do Chapter 7 em diante.
 const MIN_CHAPTER = 7;
@@ -70,6 +89,9 @@ const EXCLUDED_SPRITES = [
 const VARIANT_PREFIXES = [
   "Base",
   "Gold",
+  // Variante exclusiva da Temporada 4 — sem isto, "Cheat Master Klombo
+  // Sprite" entraria como se fosse um Sprite novo.
+  "Cheat Master",
   "Gummy",
   "Galaxy",
   "Gem",
@@ -120,6 +142,85 @@ async function fetchWikitext() {
     }
   }
   throw new Error(`Não consegui baixar a página ${PAGE}: ${lastError.message}`);
+}
+
+async function fetchIgnHtml() {
+  const res = await fetch(IGN_URL, { headers: { "User-Agent": UA } });
+  if (!res.ok) throw new Error(`IGN HTTP ${res.status}`);
+  return res.text();
+}
+
+// O HTML do wiki chega escapado dentro do payload JSON do Next.js do IGN.
+const unescapeIgn = (raw) =>
+  raw
+    .replace(/\\u003c/g, "<")
+    .replace(/\\u003e/g, ">")
+    .replace(/\\u0026/g, "&")
+    .replace(/\\"/g, '"')
+    .replace(/\\n/g, "\n");
+
+// Divide a página nas seções <h2> para saber quais Sprites estão sob o
+// bloco de não lançados ("Upcoming Sprites List" / "Unreleased Sprites List").
+function ignSections(html) {
+  const sections = [];
+  const pattern = /<h2>\s*<span class="mw-headline"[^>]*>([^<]+)<\/span>/g;
+  let current = { title: "", start: 0 };
+  let match;
+  while ((match = pattern.exec(html)) !== null) {
+    current.end = match.index;
+    sections.push(current);
+    current = { title: match[1].trim(), start: match.index };
+  }
+  current.end = html.length;
+  sections.push(current);
+  return sections;
+}
+
+const IGN_VARIANT_SLUGS = { gold_: "gold", cheat_master_: "cheat-master" };
+
+// Extrai de um nome de arquivo do IGN ("Fortnite_gold_klombo_sprite.png") o
+// Sprite base e a variante — devolve null para nomes fora do padrão.
+function ignImageTarget(slug) {
+  for (const [prefix, variant] of Object.entries(IGN_VARIANT_SLUGS)) {
+    if (slug.startsWith(prefix)) return { variant, base: slug.slice(prefix.length) };
+  }
+  return { variant: "base", base: slug };
+}
+
+const compact = (text) => text.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+// Devolve Map: "X Sprite" -> { upcoming, image, variantImages }.
+function parseIgnSprites(rawHtml) {
+  const html = unescapeIgn(rawHtml);
+  const found = new Map();
+
+  for (const section of ignSections(html)) {
+    const body = html.slice(section.start, section.end);
+    // O bloco de não lançados é marcado tanto pelo heading quanto pelo
+    // cabeçalho da tabela — aceitar os dois evita quebrar se o IGN mexer
+    // em um deles.
+    const upcoming =
+      /unreleased|upcoming/i.test(section.title) ||
+      /Unreleased Sprites List/i.test(body);
+
+    for (const match of body.matchAll(/<b>([A-Z0-9][^<]{0,40}? Sprite)<\/b>/g)) {
+      const name = match[1].trim();
+      if (startsWithVariant(name)) continue;
+      if (EXCLUDED_SPRITES.includes(name)) continue;
+      if (!found.has(name)) found.set(name, { upcoming, variantImages: {} });
+    }
+
+    IGN_IMAGE.lastIndex = 0;
+    for (const match of body.matchAll(IGN_IMAGE)) {
+      const { variant, base } = ignImageTarget(match[1]);
+      for (const [name, record] of found) {
+        if (compact(name.replace(/ Sprite$/, "")) !== compact(base)) continue;
+        if (variant === "base") record.image = match[0];
+        else record.variantImages[variant] = match[0];
+      }
+    }
+  }
+  return found;
 }
 
 // Avalia os arquivos de dados do app (JS puro e autossuficiente) para obter
@@ -209,10 +310,11 @@ const slug = (text) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
-function makeEntry(wikiName, rarity, today) {
+function makeEntry(wikiName, info, today) {
   const display = wikiName.replace(/ Sprite$/, "");
+  const rarity = info.rarity || "Unknown";
   const costs = COSTS[rarity];
-  return {
+  const entry = {
     id: slug(display),
     name: { pt: display, en: display },
     wikiName,
@@ -223,9 +325,23 @@ function makeEntry(wikiName, rarity, today) {
       pt: "Habilidade ainda não revelada.",
       en: "Ability not yet revealed.",
     },
-    dust: costs.dust,
-    variantCost: costs.variantCost,
+    // A Temporada 4 só tem estas duas variantes (ver SPRITE_VARIANTS e
+    // EXTRA_VARIANTS em data/elementals.js).
+    onlyVariants: ["gold", "cheat-master"],
   };
+  // Não lançados entram travados no app (selo "Em breve", caixinhas
+  // desabilitadas) e sem custo: a Epic ainda não divulgou nenhum.
+  if (info.upcoming) entry.upcoming = true;
+  if (costs) {
+    entry.dust = costs.dust;
+    entry.variantCost = costs.variantCost;
+  }
+  // A Fandom não tem a arte destes Sprites; quando o IGN tem, usa a dele.
+  if (info.image) entry.image = info.image;
+  if (info.variantImages && Object.keys(info.variantImages).length) {
+    entry.variantImages = info.variantImages;
+  }
+  return entry;
 }
 
 function writeAutoFile(entries) {
@@ -248,7 +364,7 @@ AUTO_ELEMENTALS.forEach((e) => {
   if (ELEMENTALS.some((x) => x.id === e.id || x.wikiName === e.wikiName)) {
     return;
   }
-  e.image = WIKI_ITEM(e.wikiName);
+  e.image = e.image || WIKI_ITEM(e.wikiName);
   e.variants = e.noVariants ? [] : makeVariants(e);
   ELEMENTALS.push(e);
 });
@@ -258,49 +374,35 @@ AUTO_ELEMENTALS.forEach((e) => {
 
 async function main() {
   const fixtureIdx = process.argv.indexOf("--fixture");
-  const wikitext =
+  const ignHtml =
     fixtureIdx !== -1
       ? readFileSync(process.argv[fixtureIdx + 1], "utf8")
-      : await fetchWikitext();
+      : await fetchIgnHtml();
 
   const known = loadKnownElementals();
   const knownNames = new Set(known.map((e) => e.wikiName));
-  // Os "Em breve" (upcoming) podem ainda não aparecer na página da wiki —
-  // as travas de sanidade valem só para os Sprites já lançados. A denylist
-  // também fica de fora, para dados antigos não conflitarem com ela.
+  // Só os Sprites já lançados servem de trava de sanidade: os "Em breve"
+  // podem sair da lista de não lançados a qualquer momento (é justamente o
+  // que acontece quando lançam). A denylist também fica de fora, para dados
+  // antigos não conflitarem com ela.
   const releasedNames = known
     .filter((e) => !e.upcoming && !EXCLUDED_SPRITES.includes(e.wikiName))
     .map((e) => e.wikiName);
 
-  // Fail-closed 1: todos os Sprites lançados precisam continuar citados na
-  // página. Se algum sumiu, ou a página foi reformulada, ou recebemos um
-  // HTML de desafio do WAF — não mexe em nada.
-  const missing = releasedNames.filter((n) => !wikitext.includes(n));
+  const parsed = parseIgnSprites(ignHtml);
+  console.log(`Sprites citados no IGN: ${parsed.size}`);
+  for (const [name, info] of parsed) {
+    console.log(`  - ${name}${info.upcoming ? " (não lançado)" : ""}`);
+  }
+
+  // Fail-closed: todos os Sprites já lançados precisam continuar aparecendo
+  // na página. Se algum sumiu, ou a página mudou de formato, ou recebemos
+  // uma página de erro/bloqueio — não mexe em nada.
+  const missing = releasedNames.filter((n) => !parsed.has(n));
   if (missing.length > 0) {
     throw new Error(
-      `Parse suspeito: a página não cita mais ${missing.join(", ")}. ` +
+      `Parse suspeito: o IGN não lista mais ${missing.join(", ")}. ` +
         "Nada foi alterado."
-    );
-  }
-
-  const parsed = parseSprites(wikitext);
-  console.log(`Sprites citados na página: ${parsed.size}`);
-  for (const [name, rarity] of parsed) {
-    console.log(`  - ${name} (${rarity || "raridade não encontrada"})`);
-  }
-
-  // Fail-closed 2: os padrões de extração precisam reencontrar os Sprites
-  // lançados. Se não reencontram nem os conhecidos, também não achariam os
-  // novos — o formato da página mudou e o parser precisa de ajuste.
-  // (Só vale para nomes com sufixo " Sprite": itens como "Burnt Peanut"
-  // não são extraíveis por padrão e ficam cobertos pela checagem 1.)
-  const notParsed = releasedNames.filter(
-    (n) => n.endsWith(" Sprite") && !parsed.has(n)
-  );
-  if (notParsed.length > 0) {
-    throw new Error(
-      `Parse suspeito: os padrões não reencontraram ${notParsed.join(", ")}. ` +
-        "O formato da página deve ter mudado; nada foi alterado."
     );
   }
 
@@ -317,13 +419,42 @@ async function main() {
     return;
   }
 
+  // A raridade só existe na Fandom, e ela costuma bloquear os IPs do
+  // Actions: se não vier, o Sprite entra com "Unknown" e a curadoria manual
+  // preenche. Nunca derruba a execução.
+  const rarities = await fetchRarities(newNames);
+
   const today = new Date().toISOString().slice(0, 10);
   const entries = [
     ...loadAutoEntries(),
-    ...newNames.map((n) => makeEntry(n, parsed.get(n) || "Rare", today)),
+    ...newNames.map((n) =>
+      makeEntry(n, { ...parsed.get(n), rarity: rarities.get(n) }, today)
+    ),
   ];
   writeAutoFile(entries);
   console.log(`Adicionados: ${newNames.join(", ")}`);
+}
+
+// Best-effort: devolve Map nome -> raridade com o que a Fandom souber dizer
+// sobre os Sprites informados. Erro de rede/WAF vira Map vazio, com aviso.
+async function fetchRarities(names) {
+  const found = new Map();
+  let wikitext;
+  try {
+    wikitext = await fetchWikitext();
+  } catch (err) {
+    console.warn(
+      `Sem raridades da Fandom (${err.message}). ` +
+        'Os Sprites novos entram como "Unknown".'
+    );
+    return found;
+  }
+  const parsed = parseSprites(wikitext);
+  for (const name of names) {
+    const rarity = parsed.get(name);
+    if (rarity) found.set(name, rarity);
+  }
+  return found;
 }
 
 main().catch((err) => {

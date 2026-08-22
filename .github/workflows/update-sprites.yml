@@ -1,4 +1,4 @@
-name: Update Sprites from the wiki
+name: Update Sprites from the IGN wiki
 
 on:
   schedule:
@@ -23,7 +23,7 @@ jobs:
         with:
           ref: main
 
-      - name: Detect new sprites on the wiki
+      - name: Detect new sprites on the IGN wiki
         run: node scripts/update-sprites.mjs
 
       # A main é protegida (mudanças só via pull request), então o robô
@@ -43,7 +43,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/elementals-auto.js
-          git commit -m "Add new Sprites from the wiki: $NEW"
+          git commit -m "Add new Sprites from the IGN wiki: $NEW"
           git push --force origin HEAD:auto/update-sprites
           if [ -z "$(gh pr list --head auto/update-sprites --state open --json number --jq '.[].number')" ]; then
             # Se falhar com "not permitted to create pull requests", habilite
@@ -51,13 +51,15 @@ jobs:
             # Settings > Actions > General. A branch auto/update-sprites já
             # foi enviada — dá para abrir o PR manualmente enquanto isso.
             gh pr create --base main --head auto/update-sprites \
-              --title "Novos Sprites da wiki: $NEW" \
+              --title "Novos Sprites do wiki do IGN: $NEW" \
               --body "$(cat <<'EOF'
-          O robô de atualização encontrou Sprites novos na [Fortnite Wiki](https://fortnite.fandom.com/wiki/Sprites). Eles entram no app com nome em inglês e habilidade "ainda não revelada" até serem curados.
+          O robô de atualização encontrou Sprites novos no [wiki do IGN](https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List). Eles entram no app com nome em inglês e habilidade "ainda não revelada" até serem curados.
+
+          Os que aparecem na seção "Unreleased Sprites List" do IGN entram marcados como `upcoming`: ganham o selo "Em breve", ficam com as caixinhas travadas e não contam no progresso nem no código de comparação.
 
           Ao fazer o merge, o deploy do GitHub Pages roda sozinho e o app atualiza.
 
-          Para curar depois, mova as entradas de `data/elementals-auto.js` para `data/elementals.js` preenchendo: nome em português, texto da habilidade (PT e EN) e exceções de variantes (ex.: sem Metalizado, variantes exclusivas como Cubo/Quack).
+          Para curar depois, mova as entradas de `data/elementals-auto.js` para `data/elementals.js` preenchendo: nome e habilidade em português **como aparecem no jogo** (pt-BR — ex.: "Killswitch" é "Disruptor"), o texto em inglês e as exceções de variantes.
           EOF
           )"
           else
