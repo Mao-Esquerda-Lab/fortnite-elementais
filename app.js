@@ -73,7 +73,7 @@ const TRANSLATIONS = {
     codesCopy: "Copiar código",
     codesProgress: (done, total) => `${done} / ${total} resgatados`,
     codesSource:
-      "Lista do wiki do IGN. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.",
+      'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -108,7 +108,7 @@ const TRANSLATIONS = {
     installOffline:
       "Depois de instalado, o app abre offline: seu progresso e os ícones já vistos ficam salvos no aparelho.",
     footer:
-      'Dados baseados na <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a> e não afiliados à Epic Games. Progresso salvo apenas neste navegador.',
+      'Sprites, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
     costUnknown: "ainda não revelado",
     rarities: {
       Rare: "Raro",
@@ -177,7 +177,7 @@ const TRANSLATIONS = {
     codesCopy: "Copy code",
     codesProgress: (done, total) => `${done} / ${total} redeemed`,
     codesSource:
-      "List from the IGN wiki. Reward wording is our own translation, not the game's official text.",
+      'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>. Reward wording is our own translation, not the game\'s official text.',
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -211,7 +211,7 @@ const TRANSLATIONS = {
     installOffline:
       "Once installed, the app opens offline: your progress and previously viewed icons stay saved on your device.",
     footer:
-      'Data based on the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>, not affiliated with Epic Games. Progress is saved in this browser only.',
+      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
     costUnknown: "not revealed yet",
     rarities: {
       Rare: "Rare",
@@ -595,7 +595,8 @@ function applyLanguage() {
   document.getElementById("codes-th-done").textContent = s.codesThDone;
   document.getElementById("codes-th-code").textContent = s.codesThCode;
   document.getElementById("codes-th-reward").textContent = s.codesThReward;
-  document.getElementById("codes-source").textContent = s.codesSource;
+  // Tem link para a página de origem, então precisa de innerHTML.
+  document.getElementById("codes-source").innerHTML = s.codesSource;
 
   const backupBtn = document.getElementById("backup-btn");
   backupBtn.title = s.backupTitle;
