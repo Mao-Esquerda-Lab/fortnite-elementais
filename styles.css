@@ -472,6 +472,76 @@ body {
   font-size: 0.85rem;
 }
 
+/* ---- Modal de backup ---- */
+
+/* No modal de resumo o botão de baixar fica numa linha de ações; aqui ele
+   é uma ação secundária dentro de uma coluna, então não estica. */
+.share-section .export-download {
+  align-self: flex-start;
+  text-align: center;
+}
+
+.backup-intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* O <input type="file"> nativo não dá para estilizar: fica escondido e o
+   <label> ao redor é o que o usuário vê e clica. */
+.backup-file {
+  align-self: flex-start;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.backup-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.backup-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.backup-confirm p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.backup-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Substituir apaga o que está no aparelho — cor de alerta para não ser
+   confundido com o botão de juntar, que é sempre seguro. */
+.backup-danger {
+  border-color: var(--mythic);
+  color: var(--mythic);
+}
+
+.backup-done {
+  margin: 0;
+  color: var(--rare);
+  font-size: 0.85rem;
+}
+
 .compare-box {
   height: auto;
   max-height: min(88vh, 900px);

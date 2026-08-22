@@ -92,6 +92,10 @@
       <button class="export-btn" id="share-btn" type="button">
         <span aria-hidden="true">🔗</span><span id="share-label"></span>
       </button>
+      <!-- Backup completo da coleção, para levar de um aparelho a outro. -->
+      <button class="export-btn" id="backup-btn" type="button">
+        <span aria-hidden="true">📦</span><span id="backup-label"></span>
+      </button>
     </section>
 
     <section id="elemental-grid" class="elemental-grid"></section>
@@ -141,6 +145,53 @@
       </div>
       <div class="export-actions">
         <button class="export-close" id="share-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup: exporta a coleção inteira deste aparelho (incluindo favoritos,
+       que o link de comparação não leva) e importa a de outro. -->
+  <div class="export-overlay" id="backup-overlay" hidden>
+    <div class="export-box share-box">
+      <p class="backup-intro" id="backup-intro"></p>
+
+      <div class="share-section">
+        <label class="share-field-label" id="backup-export-label" for="backup-code-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="backup-code-input" type="text" readonly />
+          <button class="export-copy" id="backup-copy-btn" type="button"></button>
+        </div>
+        <a class="export-download" id="backup-download"></a>
+      </div>
+
+      <div class="share-section">
+        <label class="share-field-label" id="backup-import-label" for="backup-paste-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="backup-paste-input" type="text" />
+          <button class="export-copy" id="backup-import-btn" type="button"></button>
+        </div>
+        <!-- Alternativa ao copiar/colar: o arquivo baixado acima. -->
+        <label class="backup-file">
+          <input type="file" id="backup-file-input" accept="application/json,.json,.txt" />
+          <span id="backup-file-label"></span>
+        </label>
+        <p class="share-error" id="backup-error" hidden></p>
+      </div>
+
+      <!-- Importar sobrescreve dados: confirma antes, mostrando os números. -->
+      <div class="backup-confirm" id="backup-confirm" hidden>
+        <p id="backup-confirm-text"></p>
+        <div class="backup-confirm-actions">
+          <button class="export-copy" id="backup-merge-btn" type="button"></button>
+          <button class="export-copy backup-danger" id="backup-replace-btn" type="button"></button>
+          <button class="export-close" id="backup-cancel-btn" type="button"></button>
+        </div>
+      </div>
+
+      <p class="backup-done" id="backup-done" hidden></p>
+
+      <div class="export-actions">
+        <button class="export-close" id="backup-close" type="button"></button>
       </div>
     </div>
   </div>

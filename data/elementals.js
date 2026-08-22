@@ -27,11 +27,83 @@ const WIKI_ITEM = (fileBase) =>
     `${fileBase} - Item - Fortnite.png`
   )}`;
 
-// Sprites que a Fortnite Wiki ainda não tem (os "Em breve" mais recentes)
-// aparecem no wiki do IGN, que serve as imagens deste CDN. Usado só onde a
-// wiki falha — a fonte preferida continua sendo WIKI_ITEM.
+// A Fortnite Wiki NÃO tem os arquivos dos Sprites desta temporada — o
+// Special:FilePath dela não resolve para nenhum deles, e por isso as
+// imagens não carregavam. A arte vem do wiki do IGN, que tem os 12 Sprites
+// nas três variantes; o hotlink a partir do domínio do Pages foi conferido.
 const IGN_ITEM = (fileBase) =>
   `https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/${fileBase}.png`;
+
+// Caminho da arte no CDN do IGN, por Sprite e por variante ("base" é o
+// Sprite sem variante). O trecho "a/a3" é o hash do arquivo no MediaWiki
+// deles: muda se a imagem for reenviada, então se alguma sumir é só pegar a
+// URL nova na página do IGN. Sprite que não estiver aqui cai no WIKI_ITEM.
+const IGN_ART = {
+  "8-bit": {
+    base: "0/0b/Fortnite_8bit_sprite",
+    gold: "9/9e/Fortnite_gold_8bit_sprite",
+    "cheat-master": "8/84/Fortnite_cheat_master_8bit_sprite",
+  },
+  "adventure": {
+    base: "d/db/Fortnite_adventure_sprite",
+    gold: "7/71/Fortnite_gold_adventure_sprite",
+    "cheat-master": "1/19/Fortnite_cheat_master_adventure_sprite",
+  },
+  "bush": {
+    base: "2/28/Fortnite_bush_sprite",
+    gold: "f/fa/Fortnite_gold_bush_sprite",
+    "cheat-master": "6/6d/Fortnite_cheat_master_bush_sprite",
+  },
+  "jonesy": {
+    base: "e/ed/Fortnite_jonesy_sprite",
+    gold: "6/68/Fortnite_gold_jonesy_sprite",
+    "cheat-master": "2/2a/Fortnite_cheat_master_jonesy_sprite",
+  },
+  "sonic": {
+    base: "a/ab/Fortnite_sonic_sprite",
+    gold: "5/55/Fortnite_gold_sonic_sprite",
+    "cheat-master": "7/7b/Fortnite_cheat_master_sonic_sprite",
+  },
+  "tails": {
+    base: "8/8a/Fortnite_tails_sprite",
+    gold: "7/7c/Fortnite_gold_tails_sprite",
+    "cheat-master": "d/d8/Fortnite_cheat_master_tails_sprite",
+  },
+  "shadow": {
+    base: "6/64/Fortnite_shadow_sprite",
+    gold: "3/3c/Fortnite_gold_shadow_sprite",
+    "cheat-master": "6/6d/Fortnite_cheat_master_shadow_sprite",
+  },
+  "killswitch": {
+    base: "a/a0/Fortnite_killswitch_sprite",
+    gold: "7/76/Fortnite_gold_killswitch_sprite",
+    "cheat-master": "1/18/Fortnite_cheat_master_killswitch_sprite",
+  },
+  "jackrabbit": {
+    base: "1/18/Fortnite_jackrabbit_sprite",
+    gold: "3/3e/Fortnite_gold_jackrabbit_sprite",
+    "cheat-master": "1/1f/Fortnite_cheat_master_jackrabbit_sprite",
+  },
+  "crown": {
+    base: "b/b2/Fortnite_crown_sprite",
+    gold: "5/59/Fortnite_gold_crown_sprite",
+    "cheat-master": "1/17/Fortnite_cheat_master_crown_sprite",
+  },
+  "klombo": {
+    base: "8/8e/Fortnite_klombo_sprite",
+    gold: "c/ce/Fortnite_gold_klombo_sprite",
+    "cheat-master": "1/1e/Fortnite_cheat_master_klombo_sprite",
+  },
+  "storm-scout": {
+    base: "a/a3/Fortnite_storm_scout_sprite",
+    gold: "6/64/Fortnite_gold_storm_scout_sprite",
+    "cheat-master": "3/31/Fortnite_cheat_master_storm_scout_sprite",
+  },};
+
+const ignArt = (elementalId, variantId) => {
+  const art = IGN_ART[elementalId];
+  return art && art[variantId] ? IGN_ITEM(art[variantId]) : null;
+};
 
 // Todas as variantes herdam a raridade do Sprite base — são versões
 // "especiais" com drop menor, não um tier de raridade próprio.
@@ -67,11 +139,12 @@ const EXTRA_VARIANTS = {
   },
 };
 
-// O nome do arquivo na wiki usa sempre o nome em inglês da variante.
-// `variantImages` (opcional) sobrescreve isso por variante, para Sprites cujo
-// arquivo ainda não existe na wiki — ver IGN_ITEM acima.
+// Ordem de preferência da arte de uma variante: link explícito na entrada
+// (`variantImages`, usado pelo gerador automático) > tabela do IGN > nome
+// adivinhado na wiki, que usa sempre o nome em inglês da variante.
 const variantImage = (elemental, v) =>
   (elemental.variantImages && elemental.variantImages[v.id]) ||
+  ignArt(elemental.id, v.id) ||
   WIKI_ITEM(`${v.name.en} ${elemental.wikiName}`);
 
 const makeVariants = (elemental) => {
@@ -266,11 +339,6 @@ const ELEMENTALS = [
     rarity: "Unknown",
     upcoming: true,
     onlyVariants: ["gold", "cheat-master"],
-    image: IGN_ITEM("a/a3/Fortnite_storm_scout_sprite"),
-    variantImages: {
-      gold: IGN_ITEM("6/64/Fortnite_gold_storm_scout_sprite"),
-      "cheat-master": IGN_ITEM("3/31/Fortnite_cheat_master_storm_scout_sprite"),
-    },
     ability: {
       pt: "Aplica Sobrecarga automaticamente depois que você toma dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
       en: "Applies Overdrive automatically after you take storm damage, and at max level reveals where future circles will land.",
@@ -308,6 +376,6 @@ const ELEMENTALS = [
 // adivinhada a partir de wikiName não bate com o nome real do arquivo na
 // wiki), ela tem prioridade — nunca é sobrescrita pela URL adivinhada.
 ELEMENTALS.forEach((e) => {
-  e.image = e.image || WIKI_ITEM(e.wikiName);
+  e.image = e.image || ignArt(e.id, "base") || WIKI_ITEM(e.wikiName);
   e.variants = e.noVariants ? [] : makeVariants(e);
 });
