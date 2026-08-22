@@ -7,6 +7,8 @@ const RARITY_COLORS = {
   Epic: "var(--epic)",
   Legendary: "var(--legendary)",
   Mythic: "var(--mythic)",
+  // Sprites "Em breve" que a Epic ainda não classificou.
+  Unknown: "var(--muted)",
 };
 
 const TRANSLATIONS = {
@@ -74,7 +76,14 @@ const TRANSLATIONS = {
       "Depois de instalado, o app abre offline: seu progresso e os ícones já vistos ficam salvos no aparelho.",
     footer:
       'Dados baseados na <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a> e não afiliados à Epic Games. Progresso salvo apenas neste navegador.',
-    rarities: { Rare: "Raro", Epic: "Épico", Legendary: "Lendário", Mythic: "Mítico" },
+    costUnknown: "ainda não revelado",
+    rarities: {
+      Rare: "Raro",
+      Epic: "Épico",
+      Legendary: "Lendário",
+      Mythic: "Mítico",
+      Unknown: "Raridade a definir",
+    },
   },
   en: {
     htmlLang: "en",
@@ -139,7 +148,14 @@ const TRANSLATIONS = {
       "Once installed, the app opens offline: your progress and previously viewed icons stay saved on your device.",
     footer:
       'Data based on the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>, not affiliated with Epic Games. Progress is saved in this browser only.',
-    rarities: { Rare: "Rare", Epic: "Epic", Legendary: "Legendary", Mythic: "Mythic" },
+    costUnknown: "not revealed yet",
+    rarities: {
+      Rare: "Rare",
+      Epic: "Epic",
+      Legendary: "Legendary",
+      Mythic: "Mythic",
+      Unknown: "Rarity TBD",
+    },
   },
 };
 
@@ -203,7 +219,10 @@ function t() {
   return TRANSLATIONS[lang];
 }
 
+// Sprites "Em breve" ainda não têm custo divulgado: nesses casos `n` vem
+// indefinido e o card mostra "ainda não revelado" no lugar do número.
 function fmtNumber(n) {
+  if (n == null) return t().costUnknown;
   return n.toLocaleString(lang === "pt" ? "pt-BR" : "en-US");
 }
 
@@ -422,9 +441,15 @@ function sortElementals(list) {
     );
   }
   if (sortMode === "rarity") {
+    // Raridade desconhecida ("Em breve") não está em RARITY_ORDER: indexOf
+    // devolveria -1 e jogaria esses Sprites para o começo — vão para o fim.
+    const rank = (e) => {
+      const i = RARITY_ORDER.indexOf(e.rarity);
+      return i === -1 ? RARITY_ORDER.length : i;
+    };
     return [...list].sort(
       (a, b) =>
-        RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity) ||
+        rank(a) - rank(b) ||
         a.name[lang].localeCompare(b.name[lang], lang === "pt" ? "pt-BR" : "en")
     );
   }
@@ -612,9 +637,15 @@ function renderProgress() {
 }
 
 // Fallback: se a imagem da wiki não carregar, mostra o ícone SVG local.
+// Sem SVG local (ex.: Sprites "Em breve", que não têm ícone desenhado),
+// mostra a inicial do nome — mesmo comportamento do menu de navegação.
 function iconFallback(img, id) {
   const holder = img.closest(".elemental-icon");
-  if (holder) holder.innerHTML = ELEMENTAL_ICONS[id] || "";
+  if (!holder) return;
+  const elemental = ELEMENTALS.find((e) => e.id === id);
+  holder.innerHTML =
+    ELEMENTAL_ICONS[id] ||
+    `<span class="nav-letter">${elemental ? elemental.name[lang][0] : "?"}</span>`;
 }
 window.iconFallback = iconFallback;
 

@@ -5,6 +5,10 @@
 // Fonte: cobertura da comunidade (GameSpot, Destructoid etc.), já que a
 // wiki ainda não lista esses Sprites — ver nota antes da lista abaixo.
 // Esta é a lista CURADA (nomes em PT, habilidades, exceções de variantes).
+// Os nomes e textos em PT devem ser os DO JOGO (pt-BR), não traduções
+// livres: "Killswitch" é "Disruptor" e "Cheat Master" é "Trapaceiro" no
+// cliente brasileiro. Sites de fã (spritelocker, IGN) traduzem por conta
+// própria e divergem — servem para raridade/arte, não para o texto em PT.
 // Sprites novos chegam sozinhos via data/elementals-auto.js (workflow
 // update-sprites.yml) e devem ser movidos para cá ao serem traduzidos.
 //
@@ -22,6 +26,12 @@ const WIKI_ITEM = (fileBase) =>
   `https://fortnite.fandom.com/wiki/Special:FilePath/${encodeURIComponent(
     `${fileBase} - Item - Fortnite.png`
   )}`;
+
+// Sprites que a Fortnite Wiki ainda não tem (os "Em breve" mais recentes)
+// aparecem no wiki do IGN, que serve as imagens deste CDN. Usado só onde a
+// wiki falha — a fonte preferida continua sendo WIKI_ITEM.
+const IGN_ITEM = (fileBase) =>
+  `https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/${fileBase}.png`;
 
 // Todas as variantes herdam a raridade do Sprite base — são versões
 // "especiais" com drop menor, não um tier de raridade próprio.
@@ -49,7 +59,7 @@ const SPRITE_VARIANTS = [
 const EXTRA_VARIANTS = {
   "cheat-master": {
     id: "cheat-master",
-    name: { pt: "Cheat Master", en: "Cheat Master" },
+    name: { pt: "Trapaceiro", en: "Cheat Master" },
     effect: {
       pt: "Deixa qualquer código digitado no console de Cheat Codes sempre correto, não importa o que você digite.",
       en: "Makes any input at a Cheat Code console count as correct, no matter what you type.",
@@ -58,6 +68,12 @@ const EXTRA_VARIANTS = {
 };
 
 // O nome do arquivo na wiki usa sempre o nome em inglês da variante.
+// `variantImages` (opcional) sobrescreve isso por variante, para Sprites cujo
+// arquivo ainda não existe na wiki — ver IGN_ITEM acima.
+const variantImage = (elemental, v) =>
+  (elemental.variantImages && elemental.variantImages[v.id]) ||
+  WIKI_ITEM(`${v.name.en} ${elemental.wikiName}`);
+
 const makeVariants = (elemental) => {
   // `onlyVariants`: lista explícita de variantes (substitui a regra padrão
   // Dourado/Gelatinoso/Galáctico/Gema/Metalizado + extras) — usada pelos
@@ -65,7 +81,7 @@ const makeVariants = (elemental) => {
   if (elemental.onlyVariants) {
     return elemental.onlyVariants
       .map((id) => SPRITE_VARIANTS.find((v) => v.id === id) || EXTRA_VARIANTS[id])
-      .map((v) => ({ ...v, image: WIKI_ITEM(`${v.name.en} ${elemental.wikiName}`) }));
+      .map((v) => ({ ...v, image: variantImage(elemental, v) }));
   }
   const base = SPRITE_VARIANTS.filter(
     (v) => !(elemental.noHolofoil && v.id === "holofoil")
@@ -73,7 +89,7 @@ const makeVariants = (elemental) => {
   const extras = (elemental.extraVariants || []).map((id) => EXTRA_VARIANTS[id]);
   return [...base, ...extras].map((v) => ({
     ...v,
-    image: WIKI_ITEM(`${v.name.en} ${elemental.wikiName}`),
+    image: variantImage(elemental, v),
   }));
 };
 
@@ -84,10 +100,12 @@ const makeVariants = (elemental) => {
 // Epic, então podem estar incompletos ou levemente errados até a wiki
 // atualizar. Custo de invocação é uma ESTIMATIVA pela tabela de raridade
 // do hotfix de 24/jul (nenhuma fonte cita valor exato pra estes ainda).
-// Falta o Storm Scout Sprite: citado no reveal oficial junto com estes 11,
-// mas ainda "nos arquivos" — não lançou de verdade (chega num "Sprite
-// Day" futuro). Nenhuma fonte tem raridade/habilidade dele ainda, então
-// fica de fora até isso ser revelado (não dá nem pra estimar custo).
+// Os Sprites ainda não lançados entram com `upcoming: true`: aparecem no
+// app com o selo "Em breve", com as caixinhas travadas, e ficam de fora do
+// progresso, do código de comparação e da imagem de resumo. Fonte da lista:
+// a seção "Unreleased Sprites List" do wiki do IGN (checada em 22/ago/2026).
+// Conforme forem lançando, é só tirar o `upcoming` e preencher raridade,
+// habilidade e custos.
 //
 // Sprites de temporadas anteriores entram aqui de novo só se a curadoria
 // futura decidir voltar a cobri-los (removidos a pedido do usuário em
@@ -186,12 +204,12 @@ const ELEMENTALS = [
   },
   {
     id: "killswitch",
-    name: { pt: "Killswitch", en: "Killswitch" },
+    name: { pt: "Disruptor", en: "Killswitch" },
     wikiName: "Killswitch Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master"],
     ability: {
-      pt: "Entra em Hangtime com precisão melhorada.",
+      pt: "Ative a câmera lenta com precisão melhorada ao mirar enquanto pula.",
       en: "Enter Hangtime with improved accuracy.",
     },
     dust: 2700,
@@ -236,6 +254,54 @@ const ELEMENTALS = [
     dust: 6750,
     variantCost: 10000,
   },
+  {
+    // Único "Em breve" com arte já publicada (as três variantes) e com
+    // habilidade descrita — datamine noticiado pelo accountshark.net.
+    // A raridade NÃO foi anunciada pela Epic ("Its rarity has not been
+    // announced"); o spritelocker.com chuta Raro no catálogo dele, mas aqui
+    // fica "Unknown" até sair confirmação.
+    id: "storm-scout",
+    name: { pt: "Storm Scout", en: "Storm Scout" },
+    wikiName: "Storm Scout Sprite",
+    rarity: "Unknown",
+    upcoming: true,
+    onlyVariants: ["gold", "cheat-master"],
+    image: IGN_ITEM("a/a3/Fortnite_storm_scout_sprite"),
+    variantImages: {
+      gold: IGN_ITEM("6/64/Fortnite_gold_storm_scout_sprite"),
+      "cheat-master": IGN_ITEM("3/31/Fortnite_cheat_master_storm_scout_sprite"),
+    },
+    ability: {
+      pt: "Aplica Sobrecarga automaticamente depois que você toma dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
+      en: "Applies Overdrive automatically after you take storm damage, and at max level reveals where future circles will land.",
+    },
+  },
+  // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
+  // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
+  // com nome e autor.
+  ...[
+    { id: "bullet", pt: "Bala", en: "Bullet", author: "Enorull" },
+    {
+      id: "dumpster-dive",
+      pt: "Mergulho na Lixeira",
+      en: "Dumpster Dive",
+      author: "StinkyPrincessGoose",
+    },
+    { id: "honey", pt: "Mel", en: "Honey", author: "Conejito_sam" },
+    { id: "pond", pt: "Lago", en: "Pond", author: "Pine & Kiri" },
+    { id: "x-ray", pt: "Raio-X", en: "X-Ray", author: "Avila215" },
+  ].map((c) => ({
+    id: c.id,
+    name: { pt: c.pt, en: c.en },
+    wikiName: `${c.en} Sprite`,
+    rarity: "Unknown",
+    upcoming: true,
+    noVariants: true,
+    ability: {
+      pt: `Vencedor do concurso Design-A-Sprite (por ${c.author}). Habilidade ainda não revelada.`,
+      en: `Design-A-Sprite Contest winner (by ${c.author}). Ability not revealed yet.`,
+    },
+  })),
 ];
 
 // Se `image` já vier preenchida na entrada (link direto, ex.: quando a URL
