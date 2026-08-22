@@ -914,6 +914,35 @@ body {
   outline: 2px solid var(--rarity-color, var(--accent));
 }
 
+/* Alinhamento entre cards da mesma linha.
+   Cada card é uma coluna independente, e a descrição do Elemental tem de 1
+   a 3 linhas: isso empurrava a lista de variantes para alturas diferentes,
+   deixando "Base / Dourado / Trapaceiro" desalinhados entre os cards
+   vizinhos. Com subgrid, os quatro blocos do card (cabeçalho, descrição,
+   coleção e custos) passam a ocupar as MESMAS faixas da grade externa, de
+   modo que cada bloco fica na mesma altura em todos os cards da linha —
+   a faixa cresce até caber a maior descrição.
+   O botão de favoritar não entra na conta: é `position: absolute`.
+   Sem suporte a subgrid (navegador antigo), o flex acima continua valendo
+   e o layout volta a ser o de antes, só desalinhado. */
+@supports (grid-template-rows: subgrid) {
+  .elemental-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    /* Repete o gap do flex: o subgrid herdaria o da grade externa (1rem). */
+    row-gap: 0.6rem;
+  }
+
+  /* No flex, o `margin-top: auto` era o que empurrava os custos para o
+     rodapé do card. No subgrid a própria faixa já faz isso, e o auto passa
+     a desalinhar: quem tem uma linha de custo a menos (Elementais sem
+     variante) descia até o fim da faixa. */
+  .elemental-card .costs-block {
+    margin-top: 0;
+  }
+}
+
 .card-head {
   display: flex;
   align-items: center;
