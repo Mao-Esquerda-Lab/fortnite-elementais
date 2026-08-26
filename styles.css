@@ -599,6 +599,29 @@ body {
   text-transform: uppercase;
 }
 
+/* Expirado: o IGN tirou da lista, então não adianta mais digitar. Fica
+   visível (riscado) em vez de sumir, para não parecer que o app perdeu o
+   código — e vai para o fim da tabela. */
+.code-expired {
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--mythic);
+  color: var(--mythic);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.code-row.expired .code-text {
+  text-decoration: line-through;
+}
+
+.code-row.expired .code-text,
+.code-row.expired .code-reward {
+  opacity: 0.45;
+}
+
 .code-copy {
   border: none;
   background: none;

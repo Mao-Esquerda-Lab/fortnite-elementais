@@ -64,6 +64,12 @@ const CHEAT_CODES = [
     },
   },
   {
+    // Detectado pelo robô em 26/ago/2026 e traduzido na mão em seguida.
+    id: "jonesyisgolden",
+    code: "JONESYISGOLDEN",
+    reward: { pt: "Elemental Jonesy Dourado", en: "Gold Jonesy Sprite" },
+  },
+  {
     id: "overridexp",
     code: "OverrideXP",
     reward: { pt: "40.000 de XP", en: "40,000 XP" },

@@ -27,6 +27,8 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MANUAL_FILE = join(ROOT, "data", "elementals.js");
 const AUTO_FILE = join(ROOT, "data", "elementals-auto.js");
+const CODES_MANUAL_FILE = join(ROOT, "data", "cheat-codes.js");
+const CODES_AUTO_FILE = join(ROOT, "data", "cheat-codes-auto.js");
 
 // O WAF da Fandom bloqueia clientes "não navegador" (ver pages.yml).
 const UA =
@@ -41,6 +43,12 @@ const RAW_URL = `https://fortnite.fandom.com/wiki/${PAGE}?action=raw`;
 const IGN_URL =
   "https://www.ign.com/wikis/fortnite/" +
   "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List";
+
+// Segunda página do IGN: os códigos do Painel de Admin. Ao virar a
+// temporada, confira se ela continua sendo a lista da temporada corrente.
+const IGN_CODES_URL =
+  "https://www.ign.com/wikis/fortnite/" +
+  "All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards";
 
 // O IGN serve a arte do wiki dele por este CDN.
 const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_]+)_sprite\.png/g;
@@ -114,6 +122,13 @@ const COSTS = {
 // Se o parse "encontrar" mais novidades que isso de uma vez, é quase certo
 // que o formato da página mudou e o parser quebrou — aborta sem escrever.
 const MAX_NEW_PER_RUN = 10;
+
+// Travas da lista de códigos. Marcar como expirado é a única operação que
+// "tira" algo do app, então ela é a mais desconfiada das duas: se a página
+// vier com poucos códigos (parse quebrado, página de erro) ou se muitos
+// sumirem de uma vez, nada é escrito.
+const MIN_CODES_ON_PAGE = 8;
+const MAX_EXPIRED_PER_RUN = 5;
 
 async function fetchWikitext() {
   const attempts = [
@@ -304,6 +319,199 @@ function parseSprites(wikitext) {
   return found;
 }
 
+// ---- Códigos do Painel de Admin (segunda fonte, mesma página-mãe) ----
+
+async function fetchIgnCodesHtml() {
+  const res = await fetch(IGN_CODES_URL, { headers: { "User-Agent": UA } });
+  if (!res.ok) throw new Error(`IGN (códigos) HTTP ${res.status}`);
+  return res.text();
+}
+
+// O HTML do IGN traz entidades numéricas (&#x2022; nos bullets) que o
+// replace de tags sozinho não resolve.
+const unescapeEntities = (text) =>
+  text
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+
+// Rótulos que o IGN injeta dentro das células (botão de copiar, selo de
+// novidade) e que não fazem parte do conteúdo.
+const CODE_CELL_NOISE = /^(copy|copied|new code!?)$/i;
+
+const codeCellLines = (cell) =>
+  unescapeEntities(cell.replace(/<[^>]+>/g, "\n"))
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line && !CODE_CELL_NOISE.test(line));
+
+// Devolve Map: id -> { code, isNew, note, reward }.
+function parseIgnCodes(rawHtml) {
+  const html = unescapeIgn(rawHtml);
+  const found = new Map();
+
+  for (const row of html.matchAll(/<tr>(.*?)<\/tr>/gs)) {
+    // Linha de cabeçalho não é código.
+    if (/<th[\s>]/i.test(row[1])) continue;
+    const cells = [...row[1].matchAll(/<td[^>]*>(.*?)<\/td>/gs)].map((m) => m[1]);
+    if (cells.length !== 2) continue;
+
+    const left = codeCellLines(cells[0]);
+    const right = codeCellLines(cells[1]);
+    if (!left.length || !right.length) continue;
+
+    const code = left[0];
+    // Os códigos do jogo são alfanuméricos; qualquer outra coisa na célula
+    // é texto solto que não deve virar entrada.
+    if (!/^[A-Za-z0-9]{4,32}$/.test(code)) continue;
+
+    const id = slug(code);
+    // A página renderiza a mesma tabela duas vezes; vale a primeira.
+    if (found.has(id)) continue;
+
+    found.set(id, {
+      code,
+      isNew: /NEW CODE/i.test(cells[0]),
+      note: left.slice(1).join(" ") || null,
+      // Recompensas com mais de um item vêm em bullets separados.
+      reward: right.map((line) => line.replace(/^•\s*/, "")).join(" e "),
+    });
+  }
+  return found;
+}
+
+function loadKnownCodes() {
+  const manual = readFileSync(CODES_MANUAL_FILE, "utf8");
+  let auto = "";
+  try {
+    auto = readFileSync(CODES_AUTO_FILE, "utf8");
+  } catch {
+    // Primeira execução: o arquivo automático ainda não existe.
+  }
+  return new Function(`${manual}\n${auto}\n;return CHEAT_CODES;`)();
+}
+
+function loadAutoCodes() {
+  let auto = "";
+  try {
+    auto = readFileSync(CODES_AUTO_FILE, "utf8");
+  } catch {
+    return [];
+  }
+  return new Function(
+    `const CHEAT_CODES=[];${auto}\n;return AUTO_CHEAT_CODES;`
+  )();
+}
+
+// Código novo entra sem tradução: o texto em PT repete o inglês até alguém
+// curar, do mesmo jeito que Sprite novo entra com "ainda não revelada".
+function makeCodeEntry(id, info, today) {
+  const entry = {
+    id,
+    code: info.code,
+    autoAdded: today,
+    reward: { pt: info.reward, en: info.reward },
+    untranslated: true,
+  };
+  if (info.isNew) entry.isNew = true;
+  if (info.note) entry.note = { pt: info.note, en: info.note };
+  return entry;
+}
+
+function writeCodesAutoFile(entries, expiredIds) {
+  const content = `// ARQUIVO GERADO AUTOMATICAMENTE — não edite à mão.
+// Gerado por scripts/update-sprites.mjs (workflow update-sprites.yml), que
+// lê a página de códigos do Painel de Admin no wiki do IGN todo dia.
+//
+// AUTO_CHEAT_CODES: códigos que ainda não estão em data/cheat-codes.js.
+// Entram com a recompensa em inglês nos dois idiomas (untranslated: true)
+// até serem curados — para curar, MOVA a entrada para data/cheat-codes.js
+// traduzindo o texto: o gerador pula o que já está na lista manual e a
+// cópia daqui some na próxima execução.
+//
+// AUTO_EXPIRED_CODES: ids que o IGN deixou de listar. Ficam visíveis no app
+// marcados como expirados, em vez de sumirem — assim dá para saber que não
+// adianta mais tentar. Se um código voltar à página, sai desta lista sozinho.
+const AUTO_CHEAT_CODES = ${JSON.stringify(entries, null, 2)};
+
+const AUTO_EXPIRED_CODES = ${JSON.stringify(expiredIds, null, 2)};
+
+AUTO_CHEAT_CODES.forEach((c) => {
+  if (!CHEAT_CODES.some((x) => x.id === c.id)) CHEAT_CODES.push(c);
+});
+
+// Reatribui sempre (e não só marca): um código que reaparecer na página sai
+// da lista de expirados e volta a valer.
+const AUTO_EXPIRED_SET = new Set(AUTO_EXPIRED_CODES);
+CHEAT_CODES.forEach((c) => {
+  c.expired = AUTO_EXPIRED_SET.has(c.id);
+});
+`;
+  writeFileSync(CODES_AUTO_FILE, content);
+}
+
+// Devolve o resumo do que mudou (ou null quando nada muda), já tendo
+// escrito o arquivo. Erros de rede/parse sobem para quem chama.
+async function updateCodes(fixtureHtml, today) {
+  const html = fixtureHtml ?? (await fetchIgnCodesHtml());
+  const parsed = parseIgnCodes(html);
+  console.log(`Códigos citados no IGN: ${parsed.size}`);
+
+  // Fail-closed 1: página curta demais é parse quebrado ou página de erro.
+  if (parsed.size < MIN_CODES_ON_PAGE) {
+    throw new Error(
+      `Parse suspeito: só ${parsed.size} códigos na página ` +
+        `(mínimo ${MIN_CODES_ON_PAGE}). Nada foi alterado.`
+    );
+  }
+
+  const known = loadKnownCodes();
+  const knownIds = new Set(known.map((c) => c.id));
+
+  const newIds = [...parsed.keys()].filter((id) => !knownIds.has(id));
+  const expiredIds = known
+    .filter((c) => !parsed.has(c.id))
+    .map((c) => c.id)
+    .sort();
+
+  // Fail-closed 2: muitos sumindo de uma vez é sinal de página reformulada,
+  // não de expiração real.
+  const newlyExpired = expiredIds.filter(
+    (id) => !known.find((c) => c.id === id)?.expired
+  );
+  if (newlyExpired.length > MAX_EXPIRED_PER_RUN) {
+    throw new Error(
+      `Parse suspeito: ${newlyExpired.length} códigos sumiriam de uma vez ` +
+        `(limite ${MAX_EXPIRED_PER_RUN}). Nada foi alterado.`
+    );
+  }
+
+  const unexpired = known
+    .filter((c) => c.expired && parsed.has(c.id))
+    .map((c) => c.id);
+
+  if (!newIds.length && !newlyExpired.length && !unexpired.length) {
+    console.log("Nenhum código novo nem expirado — nada a fazer.");
+    return null;
+  }
+
+  const entries = [
+    ...loadAutoCodes(),
+    ...newIds.map((id) => makeCodeEntry(id, parsed.get(id), today)),
+  ];
+  writeCodesAutoFile(entries, expiredIds);
+  return {
+    added: newIds.map((id) => parsed.get(id).code),
+    expired: newlyExpired,
+    unexpired,
+  };
+}
+
 const slug = (text) =>
   text
     .toLowerCase()
@@ -372,12 +580,8 @@ AUTO_ELEMENTALS.forEach((e) => {
   writeFileSync(AUTO_FILE, content);
 }
 
-async function main() {
-  const fixtureIdx = process.argv.indexOf("--fixture");
-  const ignHtml =
-    fixtureIdx !== -1
-      ? readFileSync(process.argv[fixtureIdx + 1], "utf8")
-      : await fetchIgnHtml();
+async function updateSprites(fixtureHtml, today) {
+  const ignHtml = fixtureHtml ?? (await fetchIgnHtml());
 
   const known = loadKnownElementals();
   const knownNames = new Set(known.map((e) => e.wikiName));
@@ -424,7 +628,6 @@ async function main() {
   // preenche. Nunca derruba a execução.
   const rarities = await fetchRarities(newNames);
 
-  const today = new Date().toISOString().slice(0, 10);
   const entries = [
     ...loadAutoEntries(),
     ...newNames.map((n) =>
@@ -455,6 +658,44 @@ async function fetchRarities(names) {
     if (rarity) found.set(name, rarity);
   }
   return found;
+}
+
+// As duas fontes são independentes: uma quebrar não impede a outra de
+// atualizar. O processo só sai com erro no fim, para o Actions marcar a
+// execução como falha e alguém olhar.
+async function main() {
+  const fixture = (flag) => {
+    const idx = process.argv.indexOf(flag);
+    return idx === -1 ? null : readFileSync(process.argv[idx + 1], "utf8");
+  };
+  const today = new Date().toISOString().slice(0, 10);
+  const failures = [];
+
+  try {
+    await updateSprites(fixture("--fixture"), today);
+  } catch (err) {
+    console.error(`Sprites: ${err.message}`);
+    failures.push("Sprites");
+  }
+
+  try {
+    const changed = await updateCodes(fixture("--codes-fixture"), today);
+    if (changed) {
+      if (changed.added.length)
+        console.log(`Códigos adicionados: ${changed.added.join(", ")}`);
+      if (changed.expired.length)
+        console.log(`Códigos marcados como expirados: ${changed.expired.join(", ")}`);
+      if (changed.unexpired.length)
+        console.log(`Códigos que voltaram à página: ${changed.unexpired.join(", ")}`);
+    }
+  } catch (err) {
+    console.error(`Códigos: ${err.message}`);
+    failures.push("Códigos");
+  }
+
+  if (failures.length) {
+    throw new Error(`Falhou em: ${failures.join(" e ")}.`);
+  }
 }
 
 main().catch((err) => {
