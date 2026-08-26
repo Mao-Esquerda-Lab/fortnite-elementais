@@ -1,4 +1,4 @@
-name: Update Sprites from the IGN wiki
+name: Update Sprites and codes from the IGN wiki
 
 on:
   schedule:
@@ -23,7 +23,7 @@ jobs:
         with:
           ref: main
 
-      - name: Detect new sprites on the IGN wiki
+      - name: Detect new sprites and codes on the IGN wiki
         run: node scripts/update-sprites.mjs
 
       # A main é protegida (mudanças só via pull request), então o robô
@@ -34,16 +34,22 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if git diff --quiet -- data/elementals-auto.js; then
+          git add data/elementals-auto.js data/cheat-codes-auto.js
+          if git diff --cached --quiet; then
             echo "Nenhuma mudança para publicar."
             exit 0
           fi
-          NEW=$(git diff -- data/elementals-auto.js \
+          SPRITES=$(git diff --cached -- data/elementals-auto.js \
             | sed -n 's/^+.*"wikiName": "\(.*\)".*/\1/p' | paste -sd ', ' -)
+          CODES=$(git diff --cached -- data/cheat-codes-auto.js \
+            | sed -n 's/^+.*"code": "\(.*\)".*/\1/p' | paste -sd ', ' -)
+          NEW=$(printf '%s' "${SPRITES:+Sprites: $SPRITES}${SPRITES:+${CODES:+; }}${CODES:+códigos: $CODES}")
+          # Só marcar expirados também é mudança, e aí as duas listas acima
+          # ficam vazias — o assunto do commit precisa dizer alguma coisa.
+          NEW=${NEW:-atualização da lista}
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/elementals-auto.js
-          git commit -m "Add new Sprites from the IGN wiki: $NEW"
+          git commit -m "Atualiza dados a partir do wiki do IGN ($NEW)"
           git push --force origin HEAD:auto/update-sprites
           if [ -z "$(gh pr list --head auto/update-sprites --state open --json number --jq '.[].number')" ]; then
             # Se falhar com "not permitted to create pull requests", habilite
@@ -51,15 +57,17 @@ jobs:
             # Settings > Actions > General. A branch auto/update-sprites já
             # foi enviada — dá para abrir o PR manualmente enquanto isso.
             gh pr create --base main --head auto/update-sprites \
-              --title "Novos Sprites do wiki do IGN: $NEW" \
+              --title "Dados novos do wiki do IGN: $NEW" \
               --body "$(cat <<'EOF'
-          O robô de atualização encontrou Sprites novos no [wiki do IGN](https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List). Eles entram no app com nome em inglês e habilidade "ainda não revelada" até serem curados.
+          O robô de atualização encontrou novidades no wiki do IGN — na [página dos Sprites](https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List) e/ou na [dos códigos do Painel de Admin](https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards).
 
-          Os que aparecem na seção "Unreleased Sprites List" do IGN entram marcados como `upcoming`: ganham o selo "Em breve", ficam com as caixinhas travadas e não contam no progresso nem no código de comparação.
+          **Sprites novos** entram no app com nome em inglês e habilidade "ainda não revelada" até serem curados. Os que aparecem na seção "Unreleased Sprites List" entram marcados como `upcoming`: ganham o selo "Em breve", ficam com as caixinhas travadas e não contam no progresso nem no código de comparação.
+
+          **Códigos novos** entram com a recompensa em inglês nos dois idiomas (`untranslated: true`) até serem traduzidos. **Códigos que sumiram** da página do IGN entram em `AUTO_EXPIRED_CODES`: continuam visíveis no app, riscados e com o selo "Expirado", no fim da tabela, e saem da conta do progresso. Se um código voltar à página, ele desexpira sozinho na execução seguinte.
 
           Ao fazer o merge, o deploy do GitHub Pages roda sozinho e o app atualiza.
 
-          Para curar depois, mova as entradas de `data/elementals-auto.js` para `data/elementals.js` preenchendo: nome e habilidade em português **como aparecem no jogo** (pt-BR — ex.: "Killswitch" é "Disruptor"), o texto em inglês e as exceções de variantes.
+          Para curar depois, mova as entradas de `data/elementals-auto.js` para `data/elementals.js` (ou de `data/cheat-codes-auto.js` para `data/cheat-codes.js`) preenchendo o texto em português **como aparece no jogo** (pt-BR — ex.: "Killswitch" é "Disruptor", "Cheat Master" é "Trapaceiro").
           EOF
           )"
           else

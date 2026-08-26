@@ -72,8 +72,10 @@ const TRANSLATIONS = {
     codesNew: "Novo",
     codesCopy: "Copiar código",
     codesProgress: (done, total) => `${done} / ${total} resgatados`,
+    codesExpired: "Expirado",
+    codesExpiredHint: "O IGN tirou este código da lista — não deve mais funcionar.",
     codesSource:
-      'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
+      'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, atualizada todo dia. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -176,8 +178,10 @@ const TRANSLATIONS = {
     codesNew: "New",
     codesCopy: "Copy code",
     codesProgress: (done, total) => `${done} / ${total} redeemed`,
+    codesExpired: "Expired",
+    codesExpiredHint: "IGN dropped this code from the list — it should no longer work.",
     codesSource:
-      'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>. Reward wording is our own translation, not the game\'s official text.',
+      'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>, refreshed daily. Reward wording is our own translation, not the game\'s official text.',
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -1295,15 +1299,29 @@ const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
 const codesProgressLabel = document.getElementById("codes-progress-label");
 
+// Expirado não conta no progresso, nem em cima nem embaixo: não adianta
+// mais resgatar, então cobrar por ele deixaria a barra impossível de fechar.
+const activeCodes = () => CHEAT_CODES.filter((c) => !c.expired);
+
 const codesDone = () =>
-  CHEAT_CODES.filter((c) => redeemedCodes[c.id] === true).length;
+  activeCodes().filter((c) => redeemedCodes[c.id] === true).length;
+
+// Expirados vão para o fim da lista, na ordem original dentro de cada grupo.
+const sortedCodes = () => [
+  ...CHEAT_CODES.filter((c) => !c.expired),
+  ...CHEAT_CODES.filter((c) => c.expired),
+];
 
 function renderCodes() {
   const s = t();
-  codesBody.innerHTML = CHEAT_CODES.map((c) => {
-    const done = redeemedCodes[c.id] === true;
-    return `
-      <tr class="code-row${done ? " done" : ""}">
+  codesBody.innerHTML = sortedCodes()
+    .map((c) => {
+      const done = redeemedCodes[c.id] === true;
+      const classes = ["code-row"];
+      if (done) classes.push("done");
+      if (c.expired) classes.push("expired");
+      return `
+      <tr class="${classes.join(" ")}">
         <td class="code-check-cell">
           <input type="checkbox" class="code-check" ${done ? "checked" : ""}
                  data-code="${c.id}" aria-label="${s.codesThDone}" />
@@ -1311,7 +1329,8 @@ function renderCodes() {
         <td>
           <div class="code-cell">
             <code class="code-text">${c.code}</code>
-            ${c.isNew ? `<span class="code-new">${s.codesNew}</span>` : ""}
+            ${c.expired ? `<span class="code-expired" title="${s.codesExpiredHint}">${s.codesExpired}</span>` : ""}
+            ${c.isNew && !c.expired ? `<span class="code-new">${s.codesNew}</span>` : ""}
             <button class="code-copy" type="button" data-copy="${c.id}"
                     title="${s.codesCopy}" aria-label="${s.codesCopy}">⧉</button>
           </div>
@@ -1321,10 +1340,11 @@ function renderCodes() {
           ${c.note ? `<span class="code-note">${c.note[lang]}</span>` : ""}
         </td>
       </tr>`;
-  }).join("");
+    })
+    .join("");
 
   const done = codesDone();
-  const total = CHEAT_CODES.length;
+  const total = activeCodes().length;
   const width = total === 0 ? 0 : (done / total) * 100;
   codesProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
   codesProgressLabel.textContent = s.codesProgress(done, total);
