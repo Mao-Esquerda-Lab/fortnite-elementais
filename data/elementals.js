@@ -237,6 +237,23 @@ const ELEMENTALS = [
     variantCost: 2700,
   },
   {
+    // Lançado em 29/ago/2026, no fim de semana da Sonic Power Hour, com as
+    // três variantes de uma vez (base, Dourado e Trapaceiro). Raridade Rara
+    // confirmada pela cobertura do lançamento — antes disso ficava como
+    // "Unknown" porque os rastreadores divergiam entre Rara e Lendária.
+    id: "storm-scout",
+    name: { pt: "Storm Scout", en: "Storm Scout" },
+    wikiName: "Storm Scout Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Concede Sobrecarga e Energia infinita depois que você toma 10 de dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
+      en: "Grants Overdrive and unlimited Energy after you take 10 Storm damage, and at max level reveals where future circles will land.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
     id: "sonic",
     name: { pt: "Sonic", en: "Sonic" },
     wikiName: "Sonic Sprite",
@@ -326,23 +343,6 @@ const ELEMENTALS = [
     },
     dust: 6750,
     variantCost: 10000,
-  },
-  {
-    // Único "Em breve" com arte já publicada (as três variantes) e com
-    // habilidade descrita — datamine noticiado pelo accountshark.net.
-    // A raridade NÃO foi anunciada pela Epic ("Its rarity has not been
-    // announced"); o spritelocker.com chuta Raro no catálogo dele, mas aqui
-    // fica "Unknown" até sair confirmação.
-    id: "storm-scout",
-    name: { pt: "Storm Scout", en: "Storm Scout" },
-    wikiName: "Storm Scout Sprite",
-    rarity: "Unknown",
-    upcoming: true,
-    onlyVariants: ["gold", "cheat-master"],
-    ability: {
-      pt: "Aplica Sobrecarga automaticamente depois que você toma dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
-      en: "Applies Overdrive automatically after you take storm damage, and at max level reveals where future circles will land.",
-    },
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
