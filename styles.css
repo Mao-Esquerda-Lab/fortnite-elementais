@@ -683,6 +683,91 @@ body {
   }
 }
 
+/* ---- Adicionar código à mão ---- */
+
+/* Fica entre a barra de progresso e a tabela: é sobre a tabela, mas é ação
+   ocasional — por isso o formulário nasce fechado, só o botão aparece. */
+.codes-add {
+  margin: 0.9rem 0 0.25rem;
+}
+
+.codes-add-toggle {
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.codes-add-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.codes-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  background: var(--surface);
+}
+
+/* `display: flex` na classe vence o `display: none` que o navegador dá ao
+   [hidden]; sem isto o formulário nasceria aberto. */
+.codes-add-form[hidden] {
+  display: none;
+}
+
+.codes-add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* O código é para ser digitado no jogo depois: mesma cara da tabela. */
+#codes-add-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+}
+
+.codes-add-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Selo do que o usuário mesmo acrescentou — some quando o IGN publicar o
+   código, então é discreto de propósito: não é novidade da fonte, é dele. */
+.code-custom {
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.code-remove {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.code-remove:hover {
+  color: var(--mythic);
+}
+
 .codes-source {
   margin: 0.9rem 0 0;
   color: var(--muted);

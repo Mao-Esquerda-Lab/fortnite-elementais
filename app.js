@@ -2,6 +2,8 @@ const STORAGE_KEY = "fortnite-sprites-collection-v1";
 const LANG_KEY = "fortnite-elementals-lang";
 const SORT_KEY = "fortnite-elementals-sort";
 const CODES_KEY = "fortnite-lobby-codes-v1";
+// Códigos que o usuário digitou à mão, antes de o IGN publicá-los.
+const CUSTOM_CODES_KEY = "fortnite-lobby-custom-codes-v1";
 const VIEW_KEY = "fortnite-elementals-view";
 
 const RARITY_COLORS = {
@@ -46,7 +48,7 @@ const TRANSLATIONS = {
     backupLabel: "Backup",
     backupTitle: "Leva sua coleção inteira para outro aparelho",
     backupIntro:
-      "O backup leva tudo: coletados, dominados, favoritos e os códigos que você já resgatou. Copie o código (ou baixe o arquivo) neste aparelho e cole no outro.",
+      "O backup leva tudo: coletados, dominados, favoritos, os códigos que você já resgatou e os que você adicionou à mão. Copie o código (ou baixe o arquivo) neste aparelho e cole no outro.",
     backupExportLabel: "Código deste aparelho",
     backupCopy: "Copiar código",
     backupDownload: "Baixar arquivo",
@@ -74,6 +76,20 @@ const TRANSLATIONS = {
     codesProgress: (done, total) => `${done} / ${total} resgatados`,
     codesExpired: "Expirado",
     codesExpiredHint: "O IGN tirou este código da lista — não deve mais funcionar.",
+    codesAdd: "Adicionar código",
+    codesAddTitle:
+      "Para códigos que você viu antes de entrarem na lista automática",
+    codesAddCodeLabel: "Código, como aparece no jogo",
+    codesAddRewardLabel: "Recompensa (opcional)",
+    codesAddRewardPlaceholder: "Ex.: 2.000 de Pó de Elemental",
+    codesAddSubmit: "Adicionar",
+    codesAddInvalid: "O código tem só letras e números, de 2 a 32 caracteres.",
+    codesAddDuplicate: "Este código já está na lista.",
+    codesCustom: "Seu",
+    codesCustomHint:
+      "Código que você adicionou à mão. Quando o IGN publicar, a entrada oficial (traduzida) toma o lugar desta sozinha.",
+    codesNoReward: "Recompensa não informada",
+    codesRemove: "Remover este código",
     codesSource:
       'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, atualizada todo dia. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     tabAll: "Todos",
@@ -152,7 +168,7 @@ const TRANSLATIONS = {
     backupLabel: "Backup",
     backupTitle: "Move your whole collection to another device",
     backupIntro:
-      "A backup carries everything: collected, mastered, favourites and the codes you have redeemed. Copy the code (or download the file) on this device and paste it on the other one.",
+      "A backup carries everything: collected, mastered, favourites, the codes you have redeemed and the ones you added by hand. Copy the code (or download the file) on this device and paste it on the other one.",
     backupExportLabel: "This device's code",
     backupCopy: "Copy code",
     backupDownload: "Download file",
@@ -180,6 +196,19 @@ const TRANSLATIONS = {
     codesProgress: (done, total) => `${done} / ${total} redeemed`,
     codesExpired: "Expired",
     codesExpiredHint: "IGN dropped this code from the list — it should no longer work.",
+    codesAdd: "Add a code",
+    codesAddTitle: "For codes you saw before they reached the automatic list",
+    codesAddCodeLabel: "Code, exactly as it appears in game",
+    codesAddRewardLabel: "Reward (optional)",
+    codesAddRewardPlaceholder: "e.g. 2,000 Sprite Dust",
+    codesAddSubmit: "Add",
+    codesAddInvalid: "A code is 2 to 32 letters and digits only.",
+    codesAddDuplicate: "This code is already on the list.",
+    codesCustom: "Yours",
+    codesCustomHint:
+      "A code you added by hand. Once IGN publishes it, the official (translated) entry takes this one's place on its own.",
+    codesNoReward: "Reward not filled in",
+    codesRemove: "Remove this code",
     codesSource:
       'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>, refreshed daily. Reward wording is our own translation, not the game\'s official text.',
     tabAll: "All",
@@ -283,6 +312,52 @@ function saveCodes() {
   storage.set(CODES_KEY, JSON.stringify(redeemedCodes));
 }
 
+// Códigos que o usuário acrescentou à mão: [{ id, code, reward }]. A ação
+// diária só lê o IGN, que às vezes demora um dia para publicar um código
+// que já circula no jogo — aqui o usuário não precisa esperar.
+//
+// O id sai do próprio código com a MESMA regra do robô (scripts/
+// update-sprites.mjs), de propósito: quando o IGN publicar o código, a
+// entrada oficial (traduzida) toma o lugar da manual sem duplicar a linha e
+// sem perder o "já resgatei", que é guardado por id.
+const codeId = (code) =>
+  code.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+// A caixa do jogo aceita só letras e números; o limite alto é o do IGN.
+const VALID_CODE = /^[A-Za-z0-9]{2,32}$/;
+const REWARD_MAX = 80;
+
+function sanitizeCustomCodes(raw) {
+  if (!Array.isArray(raw)) return [];
+  const clean = [];
+  const seen = new Set();
+  raw.forEach((entry) => {
+    if (!entry || typeof entry !== "object") return;
+    const code = typeof entry.code === "string" ? entry.code.trim() : "";
+    if (!VALID_CODE.test(code)) return;
+    const id = codeId(code);
+    if (seen.has(id)) return;
+    // O oficial ganha: se o IGN já publicou, a cópia manual sai de cena.
+    if (CHEAT_CODES.some((c) => c.id === id)) return;
+    seen.add(id);
+    const reward = typeof entry.reward === "string" ? entry.reward.trim() : "";
+    clean.push({ id, code, reward: reward.slice(0, REWARD_MAX) });
+  });
+  return clean;
+}
+
+function loadCustomCodes() {
+  try {
+    return sanitizeCustomCodes(JSON.parse(storage.get(CUSTOM_CODES_KEY)));
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomCodes() {
+  storage.set(CUSTOM_CODES_KEY, JSON.stringify(customCodes));
+}
+
 function loadLang() {
   const saved = storage.get(LANG_KEY);
   return saved === "en" || saved === "pt" ? saved : "pt";
@@ -290,6 +365,14 @@ function loadLang() {
 
 let collection = loadCollection();
 let redeemedCodes = loadCodes();
+let customCodes = loadCustomCodes();
+// Quando o IGN publica um código que o usuário já tinha digitado, a cópia
+// manual sai da lista ao carregar (a oficial vem traduzida). Gravar de volta
+// aqui tira ela também do armazenamento, em vez de deixá-la sobrando para
+// sempre. Sem mudança, reescreve o mesmo conteúdo — é idempotente.
+if (JSON.stringify(customCodes) !== storage.get(CUSTOM_CODES_KEY)) {
+  saveCustomCodes();
+}
 let activeView = storage.get(VIEW_KEY) === "codes" ? "codes" : "sprites";
 let lang = loadLang();
 let activeFilter = "all";
@@ -601,6 +684,15 @@ function applyLanguage() {
   document.getElementById("codes-th-reward").textContent = s.codesThReward;
   // Tem link para a página de origem, então precisa de innerHTML.
   document.getElementById("codes-source").innerHTML = s.codesSource;
+  const codesAddBtn = document.getElementById("codes-add-toggle");
+  codesAddBtn.textContent = `+ ${s.codesAdd}`;
+  codesAddBtn.title = s.codesAddTitle;
+  document.getElementById("codes-add-code-label").textContent = s.codesAddCodeLabel;
+  document.getElementById("codes-add-reward-label").textContent =
+    s.codesAddRewardLabel;
+  document.getElementById("codes-add-reward").placeholder =
+    s.codesAddRewardPlaceholder;
+  document.getElementById("codes-add-submit").textContent = s.codesAddSubmit;
 
   const backupBtn = document.getElementById("backup-btn");
   backupBtn.title = s.backupTitle;
@@ -1299,18 +1391,42 @@ const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
 const codesProgressLabel = document.getElementById("codes-progress-label");
 
+// O que o usuário digitou entra na tabela com a mesma cara das entradas do
+// robô. A recompensa vale nos dois idiomas: é o texto dele, não tem tradução
+// para escolher.
+const customCodeEntries = () =>
+  customCodes.map((c) => ({
+    id: c.id,
+    code: c.code,
+    custom: true,
+    reward: { pt: c.reward, en: c.reward },
+  }));
+
+// Os manuais vêm primeiro: são o que acabou de ser digitado, e a lista do
+// IGN é longa o bastante para o novo sumir no meio dela.
+const allCodes = () => [...customCodeEntries(), ...CHEAT_CODES];
+
 // Expirado não conta no progresso, nem em cima nem embaixo: não adianta
 // mais resgatar, então cobrar por ele deixaria a barra impossível de fechar.
-const activeCodes = () => CHEAT_CODES.filter((c) => !c.expired);
+const activeCodes = () => allCodes().filter((c) => !c.expired);
 
 const codesDone = () =>
   activeCodes().filter((c) => redeemedCodes[c.id] === true).length;
 
 // Expirados vão para o fim da lista, na ordem original dentro de cada grupo.
 const sortedCodes = () => [
-  ...CHEAT_CODES.filter((c) => !c.expired),
-  ...CHEAT_CODES.filter((c) => c.expired),
+  ...allCodes().filter((c) => !c.expired),
+  ...allCodes().filter((c) => c.expired),
 ];
+
+// A tabela é montada com innerHTML e passou a mostrar texto digitado por
+// gente: o do próprio usuário e, via backup, o de quem mandou o backup.
+const escapeHtml = (text) =>
+  String(text).replace(
+    /[&<>"']/g,
+    (ch) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]
+  );
 
 function renderCodes() {
   const s = t();
@@ -1320,6 +1436,7 @@ function renderCodes() {
       const classes = ["code-row"];
       if (done) classes.push("done");
       if (c.expired) classes.push("expired");
+      const reward = c.reward[lang];
       return `
       <tr class="${classes.join(" ")}">
         <td class="code-check-cell">
@@ -1328,16 +1445,25 @@ function renderCodes() {
         </td>
         <td>
           <div class="code-cell">
-            <code class="code-text">${c.code}</code>
+            <code class="code-text">${escapeHtml(c.code)}</code>
             ${c.expired ? `<span class="code-expired" title="${s.codesExpiredHint}">${s.codesExpired}</span>` : ""}
             ${c.isNew && !c.expired ? `<span class="code-new">${s.codesNew}</span>` : ""}
+            ${c.custom ? `<span class="code-custom" title="${s.codesCustomHint}">${s.codesCustom}</span>` : ""}
             <button class="code-copy" type="button" data-copy="${c.id}"
                     title="${s.codesCopy}" aria-label="${s.codesCopy}">⧉</button>
+            ${
+              c.custom
+                ? `<button class="code-remove" type="button" data-remove="${c.id}"
+                    title="${s.codesRemove}" aria-label="${s.codesRemove}">✕</button>`
+                : ""
+            }
           </div>
         </td>
         <td>
-          <span class="code-reward">${c.reward[lang]}</span>
-          ${c.note ? `<span class="code-note">${c.note[lang]}</span>` : ""}
+          <span class="code-reward">${
+            reward ? escapeHtml(reward) : `<em>${s.codesNoReward}</em>`
+          }</span>
+          ${c.note ? `<span class="code-note">${escapeHtml(c.note[lang])}</span>` : ""}
         </td>
       </tr>`;
     })
@@ -1370,9 +1496,20 @@ viewTabs.addEventListener("click", (e) => {
 });
 
 codesBody.addEventListener("click", async (e) => {
+  const remove = e.target.closest("[data-remove]");
+  if (remove) {
+    customCodes = customCodes.filter((c) => c.id !== remove.dataset.remove);
+    saveCustomCodes();
+    // O "já resgatei" fica: se o código voltar (à mão ou pelo IGN), o
+    // progresso volta com ele, e uma chave sobrando não aparece em lugar
+    // nenhum.
+    renderCodes();
+    return;
+  }
+
   const copy = e.target.closest("[data-copy]");
   if (copy) {
-    const entry = CHEAT_CODES.find((c) => c.id === copy.dataset.copy);
+    const entry = allCodes().find((c) => c.id === copy.dataset.copy);
     if (!entry) return;
     try {
       await navigator.clipboard.writeText(entry.code);
@@ -1397,6 +1534,54 @@ codesBody.addEventListener("change", (e) => {
   if (box.checked) redeemedCodes[box.dataset.code] = true;
   else delete redeemedCodes[box.dataset.code];
   saveCodes();
+  renderCodes();
+});
+
+// ---- Adicionar um código à mão ----
+const codesAddToggle = document.getElementById("codes-add-toggle");
+const codesAddForm = document.getElementById("codes-add-form");
+const codesAddCode = document.getElementById("codes-add-code");
+const codesAddReward = document.getElementById("codes-add-reward");
+const codesAddError = document.getElementById("codes-add-error");
+
+function toggleCodesAdd(open) {
+  codesAddForm.hidden = !open;
+  codesAddToggle.setAttribute("aria-expanded", String(open));
+  if (open) codesAddCode.focus();
+  else {
+    codesAddCode.value = "";
+    codesAddReward.value = "";
+    codesAddError.hidden = true;
+  }
+}
+
+codesAddToggle.addEventListener("click", () => {
+  toggleCodesAdd(codesAddForm.hidden);
+});
+
+codesAddForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const s = t();
+  const code = codesAddCode.value.trim();
+  if (!VALID_CODE.test(code)) {
+    codesAddError.textContent = s.codesAddInvalid;
+    codesAddError.hidden = false;
+    return;
+  }
+  const id = codeId(code);
+  // Vale para os dois lados: já digitado antes, ou já publicado pelo IGN
+  // (aí a linha oficial, traduzida, é a que interessa).
+  if (allCodes().some((c) => c.id === id)) {
+    codesAddError.textContent = s.codesAddDuplicate;
+    codesAddError.hidden = false;
+    return;
+  }
+  customCodes = [
+    { id, code, reward: codesAddReward.value.trim().slice(0, REWARD_MAX) },
+    ...customCodes,
+  ];
+  saveCustomCodes();
+  toggleCodesAdd(false);
   renderCodes();
 });
 
@@ -1425,9 +1610,10 @@ function fromBase64Url(code) {
   return new TextDecoder().decode(bytes);
 }
 
-// `codes` foi acrescentado depois, mantendo a versão 1 de propósito: é um
-// campo novo e opcional, então backups gerados antes dele continuam válidos
-// (importam com nenhum código resgatado) em vez de virarem "inválidos".
+// `codes` e `customCodes` foram acrescentados depois, mantendo a versão 1 de
+// propósito: são campos novos e opcionais, então backups gerados antes deles
+// continuam válidos (importam sem código resgatado / sem código manual) em
+// vez de virarem "inválidos".
 function encodeBackup() {
   return toBase64Url(
     JSON.stringify({
@@ -1436,6 +1622,7 @@ function encodeBackup() {
       exportedAt: new Date().toISOString(),
       collection,
       codes: redeemedCodes,
+      customCodes,
     })
   );
 }
@@ -1492,7 +1679,11 @@ function decodeBackup(text) {
   if (Number(payload.v) !== BACKUP_VERSION) return null;
   const collectionPart = sanitizeCollection(payload.collection);
   if (!collectionPart) return null;
-  return { collection: collectionPart, codes: sanitizeCodes(payload.codes) };
+  return {
+    collection: collectionPart,
+    codes: sanitizeCodes(payload.codes),
+    customCodes: sanitizeCustomCodes(payload.customCodes),
+  };
 }
 
 // Quantas marcações um backup tem — é o número que o usuário reconhece
@@ -1747,7 +1938,10 @@ function proposeBackup(text) {
   const theirs = decodeBackup(text);
   if (!theirs) return backupFail(s.backupInvalid);
   const theirMarks = countBackupMarks(theirs);
-  if (theirMarks === 0) return backupFail(s.backupEmpty);
+  // Um backup só com códigos digitados à mão não tem marcação nenhuma, e
+  // ainda assim tem o que trazer — não é backup vazio.
+  if (theirMarks === 0 && !theirs.customCodes.length)
+    return backupFail(s.backupEmpty);
 
   pendingBackup = theirs;
   backupError.hidden = true;
@@ -1767,8 +1961,19 @@ function applyBackup(merge) {
   redeemedCodes = merge
     ? { ...redeemedCodes, ...pendingBackup.codes }
     : { ...pendingBackup.codes };
+  // Códigos manuais são uma lista: juntar é a união por id, mantendo o texto
+  // deste aparelho quando os dois têm o mesmo código.
+  customCodes = merge
+    ? [
+        ...customCodes,
+        ...pendingBackup.customCodes.filter(
+          (theirs) => !customCodes.some((mine) => mine.id === theirs.id)
+        ),
+      ]
+    : [...pendingBackup.customCodes];
   saveCollection(collection);
   saveCodes();
+  saveCustomCodes();
   pendingBackup = null;
   backupConfirm.hidden = true;
   backupPasteInput.value = "";
