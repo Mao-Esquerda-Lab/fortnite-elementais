@@ -119,6 +119,34 @@
         <div class="progress-bar" id="codes-progress-bar"></div>
         <span class="progress-label" id="codes-progress-label"></span>
       </div>
+      <!-- Código novo costuma circular no jogo antes de o IGN publicar, e a
+           ação diária só lê o IGN. Este formulário é a ponte: o código entra
+           na lista deste aparelho na hora, e a entrada oficial toma o lugar
+           dele quando o robô finalmente trouxer o código. -->
+      <div class="codes-add">
+        <button class="codes-add-toggle" id="codes-add-toggle" type="button"
+                aria-expanded="false" aria-controls="codes-add-form"></button>
+        <form class="codes-add-form" id="codes-add-form" hidden>
+          <div class="codes-add-field">
+            <label class="share-field-label" id="codes-add-code-label"
+                   for="codes-add-code"></label>
+            <input class="share-input" id="codes-add-code" type="text"
+                   maxlength="32" autocomplete="off" autocapitalize="off"
+                   autocorrect="off" spellcheck="false" />
+          </div>
+          <div class="codes-add-field">
+            <label class="share-field-label" id="codes-add-reward-label"
+                   for="codes-add-reward"></label>
+            <input class="share-input" id="codes-add-reward" type="text"
+                   maxlength="80" autocomplete="off" />
+          </div>
+          <p class="share-error" id="codes-add-error" hidden></p>
+          <div class="codes-add-actions">
+            <button class="export-copy" id="codes-add-submit" type="submit"></button>
+          </div>
+        </form>
+      </div>
+
       <table class="codes-table">
         <thead>
           <tr>
