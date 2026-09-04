@@ -27,6 +27,48 @@ const AUTO_ELEMENTALS = [
       "cheat-master"
     ],
     "upcoming": true
+  },
+  {
+    "id": "overshield",
+    "name": {
+      "pt": "Overshield",
+      "en": "Overshield"
+    },
+    "wikiName": "Overshield Sprite",
+    "rarity": "Unknown",
+    "autoAdded": "2026-09-04",
+    "ability": {
+      "pt": "Habilidade ainda não revelada.",
+      "en": "Ability not yet revealed."
+    },
+    "onlyVariants": [
+      "gold",
+      "cheat-master"
+    ],
+    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/1/10/Fortnite_overshield_sprite.png",
+    "variantImages": {
+      "cheat-master": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/b/bf/Fortnite_cheat_master_overshield_sprite.png",
+      "gold": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/2/2c/Fortnite_gold_overshield_sprite.png"
+    }
+  },
+  {
+    "id": "mega-man",
+    "name": {
+      "pt": "Mega Man",
+      "en": "Mega Man"
+    },
+    "wikiName": "Mega Man Sprite",
+    "rarity": "Unknown",
+    "autoAdded": "2026-09-04",
+    "ability": {
+      "pt": "Habilidade ainda não revelada.",
+      "en": "Ability not yet revealed."
+    },
+    "onlyVariants": [
+      "gold",
+      "cheat-master"
+    ],
+    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/4/41/Fortnite_mega_man_sprite.png"
   }
 ];
 

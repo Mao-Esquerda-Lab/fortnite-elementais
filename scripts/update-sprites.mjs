@@ -51,7 +51,7 @@ const IGN_CODES_URL =
   "All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards";
 
 // O IGN serve a arte do wiki dele por este CDN.
-const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_]+)_sprite\.png/g;
+const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_-]+)_sprite\.png/g;
 
 // O app cobre apenas Sprites do Chapter 7 em diante.
 const MIN_CHAPTER = 7;
@@ -107,6 +107,9 @@ const VARIANT_PREFIXES = [
   "Cube",
   "Quack",
   "Rift",
+  // Nova variante, aparecendo aos poucos por Sprite desde 03/set/2026 — sem
+  // isto, "Loot Hacker Klombo Sprite" entraria como se fosse um Sprite novo.
+  "Loot Hacker",
 ];
 
 const RARITIES = ["Mythic", "Legendary", "Epic", "Rare"];
@@ -218,7 +221,10 @@ function parseIgnSprites(rawHtml) {
       /unreleased|upcoming/i.test(section.title) ||
       /Unreleased Sprites List/i.test(body);
 
-    for (const match of body.matchAll(/<b>([A-Z0-9][^<]{0,40}? Sprite)<\/b>/g)) {
+    // Sprites mais recentes vêm como <b><br>Nome Sprite</b> (com um <br>
+    // solto logo depois do <b>), em vez do <b>Nome Sprite</b> de antes — o
+    // <br>? opcional aceita as duas formas.
+    for (const match of body.matchAll(/<b>(?:<br\s*\/?>)?([A-Z0-9][^<]{0,40}? Sprite)<\/b>/g)) {
       const name = match[1].trim();
       if (startsWithVariant(name)) continue;
       if (EXCLUDED_SPRITES.includes(name)) continue;
@@ -246,12 +252,44 @@ function loadKnownElementals() {
   return new Function(`${manual}\n${auto}\n;return ELEMENTALS;`)();
 }
 
+// Lê só a declaração "const NOME = [...]" de um arquivo gerado, sem rodar o
+// resto do script — que anexa a lista principal e MUTA os objetos (calcula
+// `image`/`variants`/`expired`). Reaproveitar esse resultado como base do
+// próximo `entries` gravaria esses campos computados como se fossem dado
+// real (ex.: `image: ""`, `variants: []`, travados por causa dos stubs).
+function readGeneratedArray(source, varName) {
+  const marker = `const ${varName} = `;
+  const start = source.indexOf(marker);
+  if (start === -1) return [];
+  const arrayStart = start + marker.length;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  let end = -1;
+  for (let i = arrayStart; i < source.length; i++) {
+    const ch = source[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === "[") depth++;
+    else if (ch === "]") {
+      depth--;
+      if (depth === 0) {
+        end = i + 1;
+        break;
+      }
+    }
+  }
+  return end === -1 ? [] : new Function(`return ${source.slice(arrayStart, end)};`)();
+}
+
 function loadAutoEntries() {
   const auto = readFileSync(AUTO_FILE, "utf8");
-  return new Function(
-    `const ELEMENTALS=[],WIKI_ITEM=()=>"",makeVariants=()=>[];` +
-      `${auto}\n;return AUTO_ELEMENTALS;`
-  )();
+  return readGeneratedArray(auto, "AUTO_ELEMENTALS");
 }
 
 const startsWithVariant = (name) =>
@@ -409,9 +447,7 @@ function loadAutoCodes() {
   } catch {
     return [];
   }
-  return new Function(
-    `const CHEAT_CODES=[];${auto}\n;return AUTO_CHEAT_CODES;`
-  )();
+  return readGeneratedArray(auto, "AUTO_CHEAT_CODES");
 }
 
 // Código novo entra sem tradução: o texto em PT repete o inglês até alguém
