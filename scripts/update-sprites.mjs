@@ -340,44 +340,50 @@ const unescapeEntities = (text) =>
     .replace(/&gt;/g, ">")
     .replace(/&amp;/g, "&");
 
-// Rótulos que o IGN injeta dentro das células (botão de copiar, selo de
-// novidade) e que não fazem parte do conteúdo.
-const CODE_CELL_NOISE = /^(copy|copied|new code!?)$/i;
-
-const codeCellLines = (cell) =>
+// Extrai as linhas de texto "limpas" de uma célula da tabela (tags viram
+// quebra de linha, entidades são resolvidas, linhas em branco somem).
+const cellLines = (cell) =>
   unescapeEntities(cell.replace(/<[^>]+>/g, "\n"))
     .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line && !CODE_CELL_NOISE.test(line));
+    .filter(Boolean);
+
+// Cada código ocupa duas linhas da tabela (mudou em 03/set/2026): a
+// primeira traz o código dentro de <checkbox copyable="true">, a segunda
+// tem o rótulo "Reward:" e a recompensa. Sem o atributo copyable, o
+// <checkbox> é só um nome de recompensa (ex.: um Sprite ganho), não código.
+const CODE_ROW = /<checkbox copyable="true"[^>]*>([^<]+)<\/checkbox>/;
+const REWARD_ROW =
+  /class="gh-blue-cell"[^>]*>\s*Reward:[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>/;
 
 // Devolve Map: id -> { code, isNew, note, reward }.
 function parseIgnCodes(rawHtml) {
   const html = unescapeIgn(rawHtml);
   const found = new Map();
 
-  for (const row of html.matchAll(/<tr>(.*?)<\/tr>/gs)) {
-    // Linha de cabeçalho não é código.
-    if (/<th[\s>]/i.test(row[1])) continue;
-    const cells = [...row[1].matchAll(/<td[^>]*>(.*?)<\/td>/gs)].map((m) => m[1]);
-    if (cells.length !== 2) continue;
+  const rows = [...html.matchAll(/<tr>(.*?)<\/tr>/gs)].map((m) => m[1]);
+  for (let i = 0; i < rows.length; i++) {
+    const codeMatch = rows[i].match(CODE_ROW);
+    if (!codeMatch) continue;
 
-    const left = codeCellLines(cells[0]);
-    const right = codeCellLines(cells[1]);
-    if (!left.length || !right.length) continue;
-
-    const code = left[0];
-    // Os códigos do jogo são alfanuméricos; qualquer outra coisa na célula
-    // é texto solto que não deve virar entrada.
+    const code = codeMatch[1].trim();
+    // Os códigos do jogo são alfanuméricos; qualquer outra coisa é texto
+    // solto que não deve virar entrada.
     if (!/^[A-Za-z0-9]{4,32}$/.test(code)) continue;
 
     const id = slug(code);
     // A página renderiza a mesma tabela duas vezes; vale a primeira.
     if (found.has(id)) continue;
 
+    const rewardMatch = (rows[i + 1] || "").match(REWARD_ROW);
+    if (!rewardMatch) continue;
+    const right = cellLines(rewardMatch[1]);
+    if (!right.length) continue;
+
     found.set(id, {
       code,
-      isNew: /NEW CODE/i.test(cells[0]),
-      note: left.slice(1).join(" ") || null,
+      isNew: /NEW CODE/i.test(rows[i]),
+      note: null,
       // Recompensas com mais de um item vêm em bullets separados.
       reward: right.map((line) => line.replace(/^•\s*/, "")).join(" e "),
     });

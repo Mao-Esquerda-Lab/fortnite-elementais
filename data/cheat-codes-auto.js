@@ -11,7 +11,52 @@
 // AUTO_EXPIRED_CODES: ids que o IGN deixou de listar. Ficam visíveis no app
 // marcados como expirados, em vez de sumirem — assim dá para saber que não
 // adianta mais tentar. Se um código voltar à página, sai desta lista sozinho.
-const AUTO_CHEAT_CODES = [];
+const AUTO_CHEAT_CODES = [
+  {
+    "id": "insertcointocontinue",
+    "code": "InsertCoinToContinue",
+    "autoAdded": "2026-09-04",
+    "reward": {
+      "pt": "Transforms you into an arcade machine temporarily",
+      "en": "Transforms you into an arcade machine temporarily"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "chatwheredoyoufindthekey",
+    "code": "ChatWhereDoYouFindTheKey",
+    "autoAdded": "2026-09-04",
+    "reward": {
+      "pt": "2x Extraction Accelerator",
+      "en": "2x Extraction Accelerator"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "invalidcheat",
+    "code": "INVALIDCHEAT",
+    "autoAdded": "2026-09-04",
+    "reward": {
+      "pt": "2x Cheat Code Locator",
+      "en": "2x Cheat Code Locator"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "yourthoughtsaremine",
+    "code": "YourThoughtsAreMine",
+    "autoAdded": "2026-09-04",
+    "reward": {
+      "pt": "5,000 Sprite Dust e Void Master Geno Skin Edit Style e Void Conduits of Power Back Bling Edit Style e (Must complete e Geno's Story quests first e before you can redeem)",
+      "en": "5,000 Sprite Dust e Void Master Geno Skin Edit Style e Void Conduits of Power Back Bling Edit Style e (Must complete e Geno's Story quests first e before you can redeem)"
+    },
+    "untranslated": true,
+    "isNew": true
+  }
+];
 
 const AUTO_EXPIRED_CODES = [];
 
