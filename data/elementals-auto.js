@@ -10,25 +10,6 @@
 // próxima execução.
 const AUTO_ELEMENTALS = [
   {
-    "id": "onigiri",
-    "name": {
-      "pt": "Onigiri",
-      "en": "Onigiri"
-    },
-    "wikiName": "Onigiri Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-08-31",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "upcoming": true
-  },
-  {
     "id": "overshield",
     "name": {
       "pt": "Overshield",
