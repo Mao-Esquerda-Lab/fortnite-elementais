@@ -88,6 +88,7 @@ const IGN_ART = {
     base: "b/b2/Fortnite_crown_sprite",
     gold: "5/59/Fortnite_gold_crown_sprite",
     "cheat-master": "1/17/Fortnite_cheat_master_crown_sprite",
+    "loot-hacker": "8/82/Fortnite_loot_hacker_crown_sprite",
   },
   "klombo": {
     base: "8/8e/Fortnite_klombo_sprite",
@@ -103,6 +104,14 @@ const IGN_ART = {
     base: "0/09/Fortnite_x-ray_sprite",
     gold: "6/6d/Fortnite_gold_x-ray_sprite",
     "cheat-master": "5/54/Fortnite_cheat_master_x-ray_sprite",
+  },
+  // O arquivo base no IGN é "..._CORRECT.png" (corrigiram uma arte errada
+  // publicada antes) — foge do padrão "Fortnite_{slug}_sprite.png" das
+  // outras entradas, por isso precisa do link explícito aqui.
+  "onigiri": {
+    base: "6/62/Fortnite_onigiri_sprite_CORRECT",
+    gold: "4/4a/Fortnite_gold_onigiri_sprite",
+    "cheat-master": "0/0d/Fortnite_cheat_master_onigiri_sprite",
   },
 };
 
@@ -141,6 +150,18 @@ const EXTRA_VARIANTS = {
     effect: {
       pt: "Deixa qualquer código digitado no console de Cheat Codes sempre correto, não importa o que você digite.",
       en: "Makes any input at a Cheat Code console count as correct, no matter what you type.",
+    },
+  },
+  // Variante nova (03/set/2026). A Epic liberou só a do Crown até agora —
+  // as outras já têm silhueta no Sprite Locker do jogo, mas o IGN confirma
+  // que ainda não estão habilitadas para resgate. Só entra no
+  // `onlyVariants` de um Sprite quando a Epic realmente liberar a dele.
+  "loot-hacker": {
+    id: "loot-hacker",
+    name: { pt: "Loot Hacker", en: "Loot Hacker" },
+    effect: {
+      pt: "Aumenta a chance de itens aparecerem nos seus Loot Hacks.",
+      en: "Increases chance of spawning items from your Loot Hacks.",
     },
   },
 };
@@ -238,6 +259,21 @@ const ELEMENTALS = [
     ability: {
       pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
       en: "After a short duration, recover some Health or Shield after being damaged.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
+    // Vinha como AUTO_ELEMENTALS (data/elementals-auto.js) desde 31/ago,
+    // ainda "Em breve"; já lançado com raridade e habilidade divulgadas.
+    id: "onigiri",
+    name: { pt: "Onigiri", en: "Onigiri" },
+    wikiName: "Onigiri Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Concede Sobrecarga depois de usar um item consumível, com duração maior a cada nível.",
+      en: "Grants Overdrive after using a Consumable item, lasting longer per level.",
     },
     dust: 100,
     variantCost: 2700,
@@ -342,11 +378,13 @@ const ELEMENTALS = [
     variantCost: 6750,
   },
   {
+    // A única com a variante Loot Hacker liberada até agora (ver
+    // EXTRA_VARIANTS) — nos outros Sprites ela ainda é só silhueta.
     id: "crown",
     name: { pt: "Coroa", en: "Crown" },
     wikiName: "Crown Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Ganha Coroas extras (Crown Wins) depois de uma Vitória Royale.",
       en: "Gain extra Crown Wins after getting a Victory Royale.",
