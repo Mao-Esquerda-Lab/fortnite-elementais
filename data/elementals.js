@@ -98,7 +98,13 @@ const IGN_ART = {
     base: "a/a3/Fortnite_storm_scout_sprite",
     gold: "6/64/Fortnite_gold_storm_scout_sprite",
     "cheat-master": "3/31/Fortnite_cheat_master_storm_scout_sprite",
-  },};
+  },
+  "x-ray": {
+    base: "0/09/Fortnite_x-ray_sprite",
+    gold: "6/6d/Fortnite_gold_x-ray_sprite",
+    "cheat-master": "5/54/Fortnite_cheat_master_x-ray_sprite",
+  },
+};
 
 const ignArt = (elementalId, variantId) => {
   const art = IGN_ART[elementalId];
@@ -319,6 +325,23 @@ const ELEMENTALS = [
     variantCost: 6750,
   },
   {
+    // Lançado em 03/set/2026, já com as variantes Dourado e Trapaceiro.
+    // Vinha até então como vencedor "Design-A-Sprite" sem data (ver bloco
+    // abaixo). PT "Raio-X" é tradução nossa provisória — ainda não
+    // conferida no cliente em português.
+    id: "x-ray",
+    name: { pt: "Raio-X", en: "X-Ray" },
+    wikiName: "X-Ray Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Marca periodicamente os inimigos próximos. A frequência e o raio de detecção aumentam a cada nível.",
+      en: "Periodically marks nearby enemies. Frequency and radius increases with each level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
     id: "crown",
     name: { pt: "Coroa", en: "Crown" },
     wikiName: "Crown Sprite",
@@ -357,7 +380,6 @@ const ELEMENTALS = [
     },
     { id: "honey", pt: "Mel", en: "Honey", author: "Conejito_sam" },
     { id: "pond", pt: "Lago", en: "Pond", author: "Pine & Kiri" },
-    { id: "x-ray", pt: "Raio-X", en: "X-Ray", author: "Avila215" },
   ].map((c) => ({
     id: c.id,
     name: { pt: c.pt, en: c.en },
