@@ -55,6 +55,17 @@ const AUTO_CHEAT_CODES = [
     },
     "untranslated": true,
     "isNew": true
+  },
+  {
+    "id": "whereisthedustytree",
+    "code": "WhereIsTheDustyTree",
+    "autoAdded": "2026-09-05",
+    "reward": {
+      "pt": "5,000 Sprite Dust",
+      "en": "5,000 Sprite Dust"
+    },
+    "untranslated": true,
+    "isNew": true
   }
 ];
 
