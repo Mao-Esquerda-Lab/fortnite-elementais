@@ -26,6 +26,16 @@ const CHEAT_CODES = [
     reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
   },
   {
+    // Mesmo lançamento do WhereIsTheDustyTree (04/set/2026), achado no
+    // r/FortniteOver40 — não estava na tabela do IGN ainda.
+    id: "brb",
+    code: "brb",
+    reward: {
+      pt: "Transforma você numa privada temporariamente",
+      en: "Transforms you into a toilet temporarily",
+    },
+  },
+  {
     id: "h0p0nvc",
     code: "H0p0nVC",
     reward: { pt: "2.000 de Pó de Elemental", en: "2,000 Sprite Dust" },
