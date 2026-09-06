@@ -301,6 +301,42 @@ const ELEMENTALS = [
     variantCost: 2700,
   },
   {
+    // Raridade e habilidade confirmadas pela cobertura do lançamento
+    // (v42.10, 04/set/2026) — ficava "Unknown" até então. Nome em PT
+    // ("Sobrescudo") confirmado pelo usuário.
+    id: "overshield",
+    name: { pt: "Sobrescudo", en: "Overshield" },
+    wikiName: "Overshield Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Concede Sobrescudo, com a quantidade aumentando a cada nível.",
+      en: "Grants Overshield, with the amount increasing at higher Levels.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
+    // Vinha como AUTO_ELEMENTALS (data/elementals-auto.js) desde 04/set;
+    // raridade e habilidade confirmadas pela cobertura do lançamento
+    // (v42.10). Sem hash de arte confirmado no IGN para as variantes
+    // Dourado/Trapaceiro ainda — caem no ícone local até alguém achar o
+    // link certo (ver `variantImage` e `IGN_ART`).
+    id: "mega-man",
+    name: { pt: "Mega Man", en: "Mega Man" },
+    wikiName: "Mega Man Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master"],
+    image:
+      "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/4/41/Fortnite_mega_man_sprite.png",
+    ability: {
+      pt: "Reduz o atrito ao deslizar, fazendo você escorregar mais longe — e ainda mais longe em níveis mais altos.",
+      en: "Reduces friction while Sliding, so you slide farther — and even farther at higher Levels.",
+    },
+    dust: 100,
+    variantCost: 2700,
+  },
+  {
     id: "sonic",
     name: { pt: "Sonic", en: "Sonic" },
     wikiName: "Sonic Sprite",
@@ -409,21 +445,6 @@ const ELEMENTALS = [
     },
     dust: 6750,
     variantCost: 10000,
-  },
-  {
-    // Vinha como AUTO_ELEMENTALS (data/elementals-auto.js) desde 04/set;
-    // já lançado (arte Dourada/Trapaceiro no IGN), mas raridade e
-    // habilidade ainda não divulgadas pela Epic/wiki. Nome em PT
-    // confirmado pelo usuário: "Sobrescudo".
-    id: "overshield",
-    name: { pt: "Sobrescudo", en: "Overshield" },
-    wikiName: "Overshield Sprite",
-    rarity: "Unknown",
-    onlyVariants: ["gold", "cheat-master"],
-    ability: {
-      pt: "Habilidade ainda não revelada.",
-      en: "Ability not yet revealed.",
-    },
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
