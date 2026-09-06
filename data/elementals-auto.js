@@ -8,27 +8,7 @@
 // variantes especiais etc.), MOVA a entrada para data/elementals.js: o
 // gerador pula Sprites que já estão na lista manual e a cópia daqui some na
 // próxima execução.
-const AUTO_ELEMENTALS = [
-  {
-    "id": "mega-man",
-    "name": {
-      "pt": "Mega Man",
-      "en": "Mega Man"
-    },
-    "wikiName": "Mega Man Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-09-04",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/4/41/Fortnite_mega_man_sprite.png"
-  }
-];
+const AUTO_ELEMENTALS = [];
 
 // Anexa à lista principal os que ainda não existem lá, montando imagem e
 // variantes com os mesmos helpers de data/elementals.js.
