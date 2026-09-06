@@ -289,7 +289,7 @@ const ELEMENTALS = [
     // confirmada pela cobertura do lançamento — antes disso ficava como
     // "Unknown" porque os rastreadores divergiam entre Rara e Lendária.
     id: "storm-scout",
-    name: { pt: "Storm Scout", en: "Storm Scout" },
+    name: { pt: "Meteorológico", en: "Storm Scout" },
     wikiName: "Storm Scout Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master"],

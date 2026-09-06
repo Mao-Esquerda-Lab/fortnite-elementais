@@ -15,17 +15,24 @@
 // aceitar qualquer caixa (maiúscula/minúscula), mas mantemos a grafia do IGN
 // porque é a que eles testaram. O `id` é a chave estável do que já foi
 // resgatado (nunca mude: quebraria o progresso salvo e os backups antigos).
+//
+// Ordem: os mais novos entram no COMEÇO da lista, não no fim — e só o mais
+// recente carrega `isNew: true` (tira o `isNew` do que tinha antes).
 const CHEAT_CODES = [
+  {
+    id: "whereisthedustytree",
+    code: "WhereIsTheDustyTree",
+    isNew: true,
+    reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
+  },
   {
     id: "h0p0nvc",
     code: "H0p0nVC",
-    isNew: true,
     reward: { pt: "2.000 de Pó de Elemental", en: "2,000 Sprite Dust" },
   },
   {
     id: "gatherandcraft",
     code: "GatherAndCraft",
-    isNew: true,
     reward: {
       pt: "Elemental Arbusto Trapaceiro",
       en: "Cheat Master Bush Sprite",
@@ -162,10 +169,5 @@ const CHEAT_CODES = [
       pt: "Transforma você num bloco de Tetris temporariamente",
       en: "Transforms you into a Tetris block temporarily",
     },
-  },
-  {
-    id: "whereisthedustytree",
-    code: "WhereIsTheDustyTree",
-    reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
   },
 ];
