@@ -163,4 +163,9 @@ const CHEAT_CODES = [
       en: "Transforms you into a Tetris block temporarily",
     },
   },
+  {
+    id: "whereisthedustytree",
+    code: "WhereIsTheDustyTree",
+    reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
+  },
 ];
