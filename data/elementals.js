@@ -113,6 +113,11 @@ const IGN_ART = {
     gold: "4/4a/Fortnite_gold_onigiri_sprite",
     "cheat-master": "0/0d/Fortnite_cheat_master_onigiri_sprite",
   },
+  "overshield": {
+    base: "1/10/Fortnite_overshield_sprite",
+    gold: "2/2c/Fortnite_gold_overshield_sprite",
+    "cheat-master": "b/bf/Fortnite_cheat_master_overshield_sprite",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -404,6 +409,21 @@ const ELEMENTALS = [
     },
     dust: 6750,
     variantCost: 10000,
+  },
+  {
+    // Vinha como AUTO_ELEMENTALS (data/elementals-auto.js) desde 04/set;
+    // já lançado (arte Dourada/Trapaceiro no IGN), mas raridade e
+    // habilidade ainda não divulgadas pela Epic/wiki. Nome em PT
+    // confirmado pelo usuário: "Sobrescudo".
+    id: "overshield",
+    name: { pt: "Sobrescudo", en: "Overshield" },
+    wikiName: "Overshield Sprite",
+    rarity: "Unknown",
+    onlyVariants: ["gold", "cheat-master"],
+    ability: {
+      pt: "Habilidade ainda não revelada.",
+      en: "Ability not yet revealed.",
+    },
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
