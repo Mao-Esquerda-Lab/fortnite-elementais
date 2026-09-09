@@ -66,10 +66,34 @@ const AUTO_CHEAT_CODES = [
     },
     "untranslated": true,
     "isNew": true
+  },
+  {
+    "id": "noprollama",
+    "code": "NOPROLLAMA",
+    "autoAdded": "2026-09-09",
+    "reward": {
+      "pt": "1x Llama Supply Drop",
+      "en": "1x Llama Supply Drop"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "dustinthewind",
+    "code": "DustInTheWind",
+    "autoAdded": "2026-09-09",
+    "reward": {
+      "pt": "5,000 Sprite Dust",
+      "en": "5,000 Sprite Dust"
+    },
+    "untranslated": true,
+    "isNew": true
   }
 ];
 
-const AUTO_EXPIRED_CODES = [];
+const AUTO_EXPIRED_CODES = [
+  "brb"
+];
 
 AUTO_CHEAT_CODES.forEach((c) => {
   if (!CHEAT_CODES.some((x) => x.id === c.id)) CHEAT_CODES.push(c);
