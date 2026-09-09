@@ -386,13 +386,13 @@ const cellLines = (cell) =>
     .map((line) => line.trim())
     .filter(Boolean);
 
-// Cada código ocupa duas linhas da tabela (mudou em 03/set/2026): a
-// primeira traz o código dentro de <checkbox copyable="true">, a segunda
-// tem o rótulo "Reward:" e a recompensa. Sem o atributo copyable, o
-// <checkbox> é só um nome de recompensa (ex.: um Sprite ganho), não código.
+// Cada código ocupa duas linhas da tabela: a primeira traz o código dentro
+// de <checkbox copyable="true">, a segunda tem o rótulo "Reward" (perdeu o
+// ":" em 09/set/2026) e a recompensa. Sem o atributo copyable, o <checkbox>
+// é só um nome de recompensa (ex.: um Sprite ganho), não código.
 const CODE_ROW = /<checkbox copyable="true"[^>]*>([^<]+)<\/checkbox>/;
 const REWARD_ROW =
-  /class="gh-blue-cell"[^>]*>\s*Reward:[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>/;
+  /class="gh-blue-cell"[^>]*>\s*Reward\s*:?\s*<[\s\S]*?<td[^>]*>([\s\S]*?)<\/td>/;
 
 // Devolve Map: id -> { code, isNew, note, reward }.
 function parseIgnCodes(rawHtml) {
