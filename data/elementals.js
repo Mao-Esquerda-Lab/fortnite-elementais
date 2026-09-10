@@ -157,9 +157,9 @@ const EXTRA_VARIANTS = {
       en: "Makes any input at a Cheat Code console count as correct, no matter what you type.",
     },
   },
-  // Variante nova (03/set/2026). A Epic liberou só a do Crown até agora —
-  // as outras já têm silhueta no Sprite Locker do jogo, mas o IGN confirma
-  // que ainda não estão habilitadas para resgate. Só entra no
+  // Variante nova (03/set/2026, só no Crown no lançamento). Na "New Sprites
+  // Day" de 10/set/2026 a Epic liberou o Loot Hacker pros outros 14 Sprites
+  // da temporada de uma vez — só o Mega Man ficou de fora. Só entra no
   // `onlyVariants` de um Sprite quando a Epic realmente liberar a dele.
   "loot-hacker": {
     id: "loot-hacker",
@@ -221,7 +221,7 @@ const ELEMENTALS = [
     name: { pt: "8-Bit", en: "8-Bit" },
     wikiName: "8-Bit Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Garante uma Espingarda 8-Bit no primeiro baú que você abrir, com multiplicador de pontuação.",
       en: "Find an 8-Bit Shotgun in your first Chest and gain a score multiplier for it.",
@@ -234,7 +234,7 @@ const ELEMENTALS = [
     name: { pt: "Aventura", en: "Adventure" },
     wikiName: "Adventure Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Melhora um item aleatório do seu inventário a cada nível.",
       en: "Upgrade a random item in your inventory at each Level.",
@@ -247,7 +247,7 @@ const ELEMENTALS = [
     name: { pt: "Arbusto", en: "Bush" },
     wikiName: "Bush Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Cria um Arbusto em você depois de um tempo. No nível máximo, ganha outro a cada eliminação.",
       en: "Spawns a Bush on you after a duration. At max Level, gain a Bush on elimination.",
@@ -260,7 +260,7 @@ const ELEMENTALS = [
     name: { pt: "Jonesy", en: "Jonesy" },
     wikiName: "Jonesy Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
       en: "After a short duration, recover some Health or Shield after being damaged.",
@@ -275,7 +275,7 @@ const ELEMENTALS = [
     name: { pt: "Onigiri", en: "Onigiri" },
     wikiName: "Onigiri Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Concede Sobrecarga depois de usar um item consumível, com duração maior a cada nível.",
       en: "Grants Overdrive after using a Consumable item, lasting longer per level.",
@@ -292,7 +292,7 @@ const ELEMENTALS = [
     name: { pt: "Meteorológico", en: "Storm Scout" },
     wikiName: "Storm Scout Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Concede Sobrecarga e Energia infinita depois que você toma 10 de dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
       en: "Grants Overdrive and unlimited Energy after you take 10 Storm damage, and at max level reveals where future circles will land.",
@@ -308,7 +308,7 @@ const ELEMENTALS = [
     name: { pt: "Sobrescudo", en: "Overshield" },
     wikiName: "Overshield Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Concede Sobrescudo, com a quantidade aumentando a cada nível.",
       en: "Grants Overshield, with the amount increasing at higher Levels.",
@@ -321,7 +321,8 @@ const ELEMENTALS = [
     // raridade e habilidade confirmadas pela cobertura do lançamento
     // (v42.10). Sem hash de arte confirmado no IGN para as variantes
     // Dourado/Trapaceiro ainda — caem no ícone local até alguém achar o
-    // link certo (ver `variantImage` e `IGN_ART`).
+    // link certo (ver `variantImage` e `IGN_ART`). É o único Sprite da
+    // temporada sem variante Loot Hacker na leva de 10/set/2026.
     id: "mega-man",
     name: { pt: "Mega Man", en: "Mega Man" },
     wikiName: "Mega Man Sprite",
@@ -341,7 +342,7 @@ const ELEMENTALS = [
     name: { pt: "Sonic", en: "Sonic" },
     wikiName: "Sonic Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Aumenta a velocidade de corrida.",
       en: "Sprint faster.",
@@ -354,7 +355,7 @@ const ELEMENTALS = [
     name: { pt: "Tails", en: "Tails" },
     wikiName: "Tails Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Permite pairar no ar com a ajuda da cauda, anulando todo o dano de queda.",
       en: "Hover in mid-air with the help of Tails, and cancels all fall damage.",
@@ -367,7 +368,7 @@ const ELEMENTALS = [
     name: { pt: "Shadow", en: "Shadow" },
     wikiName: "Shadow Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Recarrega as armas automaticamente com o tempo, mesmo as que não estão equipadas.",
       en: "Automatically reload weapons over time, even when unequipped.",
@@ -380,7 +381,7 @@ const ELEMENTALS = [
     name: { pt: "Disruptor", en: "Killswitch" },
     wikiName: "Killswitch Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Ative a câmera lenta com precisão melhorada ao mirar enquanto pula.",
       en: "Enter Hangtime with improved accuracy.",
@@ -393,7 +394,7 @@ const ELEMENTALS = [
     name: { pt: "Jackrabbit", en: "Jackrabbit" },
     wikiName: "Jackrabbit Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Permite dar mais um pulo enquanto está no ar.",
       en: "Perform another jump while mid-air.",
@@ -410,7 +411,7 @@ const ELEMENTALS = [
     name: { pt: "Raio-X", en: "X-Ray" },
     wikiName: "X-Ray Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Marca periodicamente os inimigos próximos. A frequência e o raio de detecção aumentam a cada nível.",
       en: "Periodically marks nearby enemies. Frequency and radius increases with each level.",
@@ -419,8 +420,9 @@ const ELEMENTALS = [
     variantCost: 6750,
   },
   {
-    // A única com a variante Loot Hacker liberada até agora (ver
-    // EXTRA_VARIANTS) — nos outros Sprites ela ainda é só silhueta.
+    // Foi a primeira com a variante Loot Hacker liberada (03/set/2026); os
+    // outros Sprites da temporada ganharam a deles na "New Sprites Day" de
+    // 10/set/2026 (ver EXTRA_VARIANTS) — só o Mega Man ficou de fora.
     id: "crown",
     name: { pt: "Coroa", en: "Crown" },
     wikiName: "Crown Sprite",
@@ -438,7 +440,7 @@ const ELEMENTALS = [
     name: { pt: "Klombo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
     ability: {
       pt: "Concede itens aleatórios a cada nível. Só sobe de nível usando itens consumíveis que dão vida ou escudo.",
       en: "Grants random items at each level. You can only level it up by using consumable items that give Health or Shield.",
