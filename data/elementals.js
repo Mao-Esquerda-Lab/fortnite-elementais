@@ -43,46 +43,55 @@ const IGN_ART = {
     base: "0/0b/Fortnite_8bit_sprite",
     gold: "9/9e/Fortnite_gold_8bit_sprite",
     "cheat-master": "8/84/Fortnite_cheat_master_8bit_sprite",
+    "loot-hacker": "b/be/Fortnite_loot_hacker_8-bit_sprite",
   },
   "adventure": {
     base: "d/db/Fortnite_adventure_sprite",
     gold: "7/71/Fortnite_gold_adventure_sprite",
     "cheat-master": "1/19/Fortnite_cheat_master_adventure_sprite",
+    "loot-hacker": "5/55/Fortnite_loot_hacker_adventure_sprite",
   },
   "bush": {
     base: "2/28/Fortnite_bush_sprite",
     gold: "f/fa/Fortnite_gold_bush_sprite",
     "cheat-master": "6/6d/Fortnite_cheat_master_bush_sprite",
+    "loot-hacker": "0/00/Fortnite_loot_hacker_bush_sprite",
   },
   "jonesy": {
     base: "e/ed/Fortnite_jonesy_sprite",
     gold: "6/68/Fortnite_gold_jonesy_sprite",
     "cheat-master": "2/2a/Fortnite_cheat_master_jonesy_sprite",
+    "loot-hacker": "8/87/Fortnite_loot_hacker_jonesy_sprite",
   },
   "sonic": {
     base: "a/ab/Fortnite_sonic_sprite",
     gold: "5/55/Fortnite_gold_sonic_sprite",
     "cheat-master": "7/7b/Fortnite_cheat_master_sonic_sprite",
+    "loot-hacker": "f/ff/Fortnite_loot_hacker_sonic_sprite",
   },
   "tails": {
     base: "8/8a/Fortnite_tails_sprite",
     gold: "7/7c/Fortnite_gold_tails_sprite",
     "cheat-master": "d/d8/Fortnite_cheat_master_tails_sprite",
+    "loot-hacker": "a/a4/Fortnite_loot_hacker_tails_sprite",
   },
   "shadow": {
     base: "6/64/Fortnite_shadow_sprite",
     gold: "3/3c/Fortnite_gold_shadow_sprite",
     "cheat-master": "6/6d/Fortnite_cheat_master_shadow_sprite",
+    "loot-hacker": "c/c6/Fortnite_loot_hacker_shadow_sprite",
   },
   "killswitch": {
     base: "a/a0/Fortnite_killswitch_sprite",
     gold: "7/76/Fortnite_gold_killswitch_sprite",
     "cheat-master": "1/18/Fortnite_cheat_master_killswitch_sprite",
+    "loot-hacker": "1/17/Fortnite_loot_hacker_killswitch_sprite",
   },
   "jackrabbit": {
     base: "1/18/Fortnite_jackrabbit_sprite",
     gold: "3/3e/Fortnite_gold_jackrabbit_sprite",
     "cheat-master": "1/1f/Fortnite_cheat_master_jackrabbit_sprite",
+    "loot-hacker": "e/e6/Fortnite_loot_hacker_jackrabbit_sprite",
   },
   "crown": {
     base: "b/b2/Fortnite_crown_sprite",
@@ -94,16 +103,19 @@ const IGN_ART = {
     base: "8/8e/Fortnite_klombo_sprite",
     gold: "c/ce/Fortnite_gold_klombo_sprite",
     "cheat-master": "1/1e/Fortnite_cheat_master_klombo_sprite",
+    "loot-hacker": "1/14/Fortnite_loot_hacker_klombo_sprite",
   },
   "storm-scout": {
     base: "a/a3/Fortnite_storm_scout_sprite",
     gold: "6/64/Fortnite_gold_storm_scout_sprite",
     "cheat-master": "3/31/Fortnite_cheat_master_storm_scout_sprite",
+    "loot-hacker": "d/df/Fortnite_loot_hacker_storm_scout_sprite",
   },
   "x-ray": {
     base: "0/09/Fortnite_x-ray_sprite",
     gold: "6/6d/Fortnite_gold_x-ray_sprite",
     "cheat-master": "5/54/Fortnite_cheat_master_x-ray_sprite",
+    "loot-hacker": "a/ae/Fortnite_loot_hacker_x-ray_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (corrigiram uma arte errada
   // publicada antes) — foge do padrão "Fortnite_{slug}_sprite.png" das
@@ -112,11 +124,13 @@ const IGN_ART = {
     base: "6/62/Fortnite_onigiri_sprite_CORRECT",
     gold: "4/4a/Fortnite_gold_onigiri_sprite",
     "cheat-master": "0/0d/Fortnite_cheat_master_onigiri_sprite",
+    "loot-hacker": "b/b2/Fortnite_loot_hacker_onigiri_sprite",
   },
   "overshield": {
     base: "1/10/Fortnite_overshield_sprite",
     gold: "2/2c/Fortnite_gold_overshield_sprite",
     "cheat-master": "b/bf/Fortnite_cheat_master_overshield_sprite",
+    "loot-hacker": "8/88/Fortnite_loot_hacker_overshield_sprite",
   },
 };
 
@@ -161,9 +175,10 @@ const EXTRA_VARIANTS = {
   // Day" de 10/set/2026 a Epic liberou o Loot Hacker pros outros 14 Sprites
   // da temporada de uma vez — só o Mega Man ficou de fora. Só entra no
   // `onlyVariants` de um Sprite quando a Epic realmente liberar a dele.
+  // Nome em PT ("Hacker de Saque") confirmado pelo usuário.
   "loot-hacker": {
     id: "loot-hacker",
-    name: { pt: "Loot Hacker", en: "Loot Hacker" },
+    name: { pt: "Hacker de Saque", en: "Loot Hacker" },
     effect: {
       pt: "Aumenta a chance de itens aparecerem nos seus Loot Hacks.",
       en: "Increases chance of spawning items from your Loot Hacks.",
