@@ -334,15 +334,14 @@ const ELEMENTALS = [
   {
     // Vinha como AUTO_ELEMENTALS (data/elementals-auto.js) desde 04/set;
     // raridade e habilidade confirmadas pela cobertura do lançamento
-    // (v42.10). Sem hash de arte confirmado no IGN para as variantes
-    // Dourado/Trapaceiro ainda — caem no ícone local até alguém achar o
-    // link certo (ver `variantImage` e `IGN_ART`). É o único Sprite da
-    // temporada sem variante Loot Hacker na leva de 10/set/2026.
+    // (v42.10). Não tem variantes (nem Dourado/Trapaceiro nem Loot
+    // Hacker) — confirmado pelo usuário, apesar da lista de `onlyVariants`
+    // errada que tinha entrado antes.
     id: "mega-man",
     name: { pt: "Mega Man", en: "Mega Man" },
     wikiName: "Mega Man Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master"],
+    noVariants: true,
     image:
       "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/4/41/Fortnite_mega_man_sprite.png",
     ability: {
