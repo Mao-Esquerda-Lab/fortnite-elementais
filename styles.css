@@ -36,6 +36,16 @@ body {
   color: var(--text);
 }
 
+/* Botões e campos de formulário não herdam a fonte da página por padrão —
+   cada navegador usa a fonte nativa do sistema pra eles, então sem isso
+   cada um mostra diferente. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 /* Cabeçalho fixo e opaco, igual na web e no app instalado.
    O padding com env(safe-area-inset-top) cobre a barra de status/notch. */
 .app-header {
@@ -838,28 +848,6 @@ body {
   height: 1px;
   opacity: 0;
   pointer-events: none;
-}
-
-/* Texto de ação discreto (ex.: "esqueci minha senha") — igual a .backup-file
-   visualmente, mas num <button>, que precisa desse reset por cima do
-   estilo nativo do navegador (fundo, borda 3D, fonte do sistema). */
-.link-btn {
-  appearance: none;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  align-self: flex-start;
-  font-size: 0.85rem;
-  color: var(--muted);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
-.link-btn:hover {
-  color: var(--accent);
 }
 
 .backup-confirm {
