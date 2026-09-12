@@ -61,6 +61,7 @@ const TRANSLATIONS = {
     friendErrorOwnCode: "Esse é o seu próprio código.",
     friendErrorAlreadyAdded: "Você já adicionou esse amigo.",
     friendWaitingMutual: "Aguardando ele(a) adicionar você de volta",
+    friendListTitle: "Meus amigos",
     friendListEmpty: "Você ainda não adicionou nenhum amigo.",
     friendRemoveButton: "Remover amizade",
     friendCompareUnavailable: "Não foi possível carregar a coleção desse amigo agora.",
@@ -237,6 +238,7 @@ const TRANSLATIONS = {
     friendErrorOwnCode: "That's your own code.",
     friendErrorAlreadyAdded: "You already added that friend.",
     friendWaitingMutual: "Waiting for them to add you back",
+    friendListTitle: "My friends",
     friendListEmpty: "You haven't added any friends yet.",
     friendRemoveButton: "Remove friendship",
     friendCompareUnavailable: "Couldn't load that friend's collection right now.",
@@ -802,10 +804,9 @@ function applyLanguage() {
   document.getElementById("friends-section-title").textContent = s.friendsSectionTitle;
   document.getElementById("friends-intro").textContent = s.friendsIntro;
   document.getElementById("friends-signed-out-hint").textContent = s.friendsSignedOutHint;
-  document.getElementById("friend-code-label").textContent = s.friendCodeLabel;
-  document.getElementById("friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("friend-add-label").textContent = s.friendAddLabel;
   document.getElementById("friend-add-btn").textContent = s.friendAddButton;
+  document.getElementById("friend-list-title").textContent = s.friendListTitle;
   document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
   document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
   document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;

@@ -1026,6 +1026,12 @@ textarea {
   font-size: 1rem;
 }
 
+#friend-list-title {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .friend-list {
   margin: 0;
   padding: 0;
@@ -1085,10 +1091,15 @@ textarea {
    "remover código" (.code-remove) da aba Códigos, mas sem esperar o hover
    pra avisar que é uma ação destrutiva. */
 .friend-remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  min-height: 2.2rem;
   border: none;
   background: none;
   color: var(--mythic);
-  font-size: 1.4rem;
+  font-size: 1.9rem;
   font-weight: 700;
   line-height: 1;
   padding: 0.25rem;
