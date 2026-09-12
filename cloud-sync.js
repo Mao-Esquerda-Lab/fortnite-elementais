@@ -422,6 +422,7 @@ async function main() {
     // "create"), e só "create" é permitido pela regra — então uma colisão
     // simplesmente falha, e tenta de novo. Nunca faz getDoc-antes-de-escrever
     // (isso reintroduziria a mesma corrida que essa técnica evita).
+    let lastError = null;
     for (let i = 0; i < 8; i++) {
       const candidate = randomFriendCode();
       try {
@@ -433,11 +434,15 @@ async function main() {
         );
         friendCode = candidate;
         return friendCode;
-      } catch {
-        // Colisão (permission-denied) — tenta outro código.
+      } catch (err) {
+        // Pode ser colisão de verdade (permission-denied esperado — tenta
+        // outro código) ou qualquer outro erro (regras ainda não publicadas,
+        // banco não criado, etc.) — guarda pra reportar se todas falharem.
+        lastError = err;
       }
     }
-    console.warn("[cloud-sync] não foi possível gerar um código de amigo");
+    console.warn("[cloud-sync] não foi possível gerar um código de amigo:", lastError);
+    setFriendError(authErrorMessage(bridge, lastError));
     return null;
   }
 
