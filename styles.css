@@ -52,20 +52,31 @@ textarea {
   font-family: inherit;
 }
 
-/* Cabeçalho fixo e opaco, igual na web e no app instalado.
-   O padding com env(safe-area-inset-top) cobre a barra de status/notch. */
+/* Cabeçalho fixo e opaco, igual na web e no app instalado. O padding aqui
+   é só a área segura (notch/Dynamic Island/barra de status no iOS, inclusive
+   nas laterais em paisagem) — nenhum espaçamento visual. Separado da linha
+   de conteúdo (.app-header-row) de propósito: tentar embutir os dois num
+   `calc()` só (como era antes) deixava o ícone e os botões posicionados a
+   partir do meio da área segura em vez de abaixo dela, cortando o cabeçalho
+   e desalinhando o toque nos botões no iOS. */
 .app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 60;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0
+    env(safe-area-inset-left, 0px);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: calc(0.55rem + env(safe-area-inset-top, 0px)) 0.75rem 0.55rem;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 0.75rem;
 }
 
 .topbar {
@@ -112,11 +123,12 @@ textarea {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Ícone do app centralizado na barra do cabeçalho. */
+/* Ícone do app centralizado na linha de conteúdo do cabeçalho (não mais
+   relativo à área segura — .app-header-row já começa abaixo dela). */
 .header-icon {
   position: absolute;
   left: 50%;
-  top: calc(50% + env(safe-area-inset-top, 0px) / 2);
+  top: 50%;
   transform: translate(-50%, -50%);
   width: 2rem;
   height: 2rem;
