@@ -79,6 +79,26 @@ textarea {
   color: var(--muted);
 }
 
+.friend-code-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  margin: 0.75rem auto 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.friend-code-banner strong {
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 /* Ícone do app centralizado na barra do cabeçalho. */
 .header-icon {
   position: absolute;
