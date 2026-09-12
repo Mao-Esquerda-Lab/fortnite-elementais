@@ -81,6 +81,19 @@ body {
   object-fit: cover;
 }
 
+/* .share-section define display:flex, o que por si só venceria o atributo
+   "hidden" (regra padrão do navegador) nos três painéis do modal de conta,
+   que alternam entre si trocando esse atributo. */
+#account-overlay [hidden] {
+  display: none !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .lang-switch {
   display: flex;
   gap: 0.35rem;
@@ -108,6 +121,23 @@ body {
 
 .refresh-btn:hover {
   background: var(--surface-hover);
+}
+
+.account-btn {
+  position: relative;
+}
+
+/* Bolinha indicando que há uma conta conectada neste aparelho. */
+.account-btn.signed-in::after {
+  content: "";
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--rare);
+  border: 1px solid var(--bg);
 }
 
 .lang-btn {

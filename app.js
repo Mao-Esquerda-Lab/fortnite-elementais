@@ -64,6 +64,30 @@ const TRANSLATIONS = {
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
+    accountLabel: "Conta",
+    accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
+    accountEmailLabel: "E-mail",
+    accountPasswordLabel: "Senha",
+    accountLoginButton: "Entrar",
+    accountSignupButton: "Criar conta",
+    accountForgotPassword: "Esqueci minha senha",
+    accountResetSent: "Enviamos um link para redefinir sua senha.",
+    accountLogout: "Sair",
+    accountResync: "Sincronizar de novo",
+    accountSignedInAs: (email) => `Conectado como ${email}`,
+    accountUnconfigured:
+      "A sincronização por conta ainda não foi configurada neste app.",
+    accountSyncedUp: "Sua coleção deste aparelho foi salva na sua conta.",
+    accountSyncedOk: "Sincronizado com sua conta.",
+    accountSyncedDown: "A coleção da sua conta foi baixada para este aparelho.",
+    accountSyncNotDone: "Ainda não sincronizado — revise abaixo quando quiser.",
+    accountErrorWrongPassword: "E-mail ou senha incorretos.",
+    accountErrorEmailInUse: "Este e-mail já tem uma conta.",
+    accountErrorInvalidEmail: "Este e-mail não parece válido.",
+    accountErrorWeakPassword: "A senha precisa ter pelo menos 6 caracteres.",
+    accountErrorTooMany: "Muitas tentativas — espere um pouco e tente de novo.",
+    accountErrorNetwork: "Sem conexão com o servidor de contas. Tente de novo.",
+    accountErrorGeneric: "Não foi possível completar essa ação. Tente de novo.",
     viewSprites: "Elementais",
     viewCodes: "Códigos",
     codesIntro:
@@ -184,6 +208,29 @@ const TRANSLATIONS = {
     backupMerge: "Merge both",
     backupCancel: "Cancel",
     backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
+    accountLabel: "Account",
+    accountTitle: "Sync your collection across devices with an account",
+    accountEmailLabel: "Email",
+    accountPasswordLabel: "Password",
+    accountLoginButton: "Log in",
+    accountSignupButton: "Create account",
+    accountForgotPassword: "Forgot password",
+    accountResetSent: "We sent you a link to reset your password.",
+    accountLogout: "Log out",
+    accountResync: "Sync again",
+    accountSignedInAs: (email) => `Signed in as ${email}`,
+    accountUnconfigured: "Account sync hasn't been set up on this app yet.",
+    accountSyncedUp: "Your collection on this device was saved to your account.",
+    accountSyncedOk: "Synced with your account.",
+    accountSyncedDown: "Your account's collection was downloaded to this device.",
+    accountSyncNotDone: "Not synced yet — review it below whenever you're ready.",
+    accountErrorWrongPassword: "Wrong email or password.",
+    accountErrorEmailInUse: "This email already has an account.",
+    accountErrorInvalidEmail: "This email doesn't look valid.",
+    accountErrorWeakPassword: "Password needs at least 6 characters.",
+    accountErrorTooMany: "Too many attempts — wait a bit and try again.",
+    accountErrorNetwork: "Can't reach the account server. Try again.",
+    accountErrorGeneric: "Couldn't complete that action. Try again.",
     viewSprites: "Sprites",
     viewCodes: "Codes",
     codesIntro:
@@ -283,8 +330,17 @@ function loadCollection() {
   }
 }
 
+// Avisa o cloud-sync.js (opcional, carregado à parte) que algo mudou, sem
+// este arquivo precisar saber se ele existe ou está configurado.
+function notifyDataChanged(source) {
+  window.dispatchEvent(
+    new CustomEvent("spriteslocker:data-changed", { detail: { source } })
+  );
+}
+
 function saveCollection(collection) {
   storage.set(STORAGE_KEY, JSON.stringify(collection));
+  notifyDataChanged("collection");
 }
 
 // Códigos do lobby já resgatados: { [id do código]: true }. Guardado à parte
@@ -310,6 +366,7 @@ function sanitizeCodes(raw) {
 
 function saveCodes() {
   storage.set(CODES_KEY, JSON.stringify(redeemedCodes));
+  notifyDataChanged("codes");
 }
 
 // Códigos que o usuário acrescentou à mão: [{ id, code, reward }]. A ação
@@ -356,6 +413,7 @@ function loadCustomCodes() {
 
 function saveCustomCodes() {
   storage.set(CUSTOM_CODES_KEY, JSON.stringify(customCodes));
+  notifyDataChanged("customCodes");
 }
 
 function loadLang() {
@@ -709,6 +767,26 @@ function applyLanguage() {
   document.getElementById("backup-replace-btn").textContent = s.backupReplace;
   document.getElementById("backup-cancel-btn").textContent = s.backupCancel;
   document.getElementById("backup-close").textContent = s.close;
+
+  const accountBtn = document.getElementById("account-btn");
+  accountBtn.title = s.accountTitle;
+  document.getElementById("account-label").textContent = s.accountLabel;
+  document.getElementById("account-title").textContent = s.accountTitle;
+  document.getElementById("account-close").textContent = s.close;
+  document.getElementById("account-unconfigured-text").textContent =
+    s.accountUnconfigured;
+  document.getElementById("account-email-label").textContent = s.accountEmailLabel;
+  document.getElementById("account-password-label").textContent =
+    s.accountPasswordLabel;
+  document.getElementById("account-login-btn").textContent = s.accountLoginButton;
+  document.getElementById("account-signup-btn").textContent = s.accountSignupButton;
+  document.getElementById("account-forgot-link").textContent =
+    s.accountForgotPassword;
+  document.getElementById("account-resync-btn").textContent = s.accountResync;
+  document.getElementById("account-logout-btn").textContent = s.accountLogout;
+  // O cloud-sync.js (opcional) refaz seus próprios textos dinâmicos (e-mail
+  // conectado, status de sincronização) neste idioma.
+  window.dispatchEvent(new CustomEvent("spriteslocker:lang-changed"));
 
   document.getElementById("sort-label").textContent = s.sortLabel;
   const sortSelect = document.getElementById("sort-select");
@@ -1615,17 +1693,19 @@ function fromBase64Url(code) {
 // propósito: são campos novos e opcionais, então backups gerados antes deles
 // continuam válidos (importam sem código resgatado / sem código manual) em
 // vez de virarem "inválidos".
+function backupSnapshot() {
+  return {
+    app: BACKUP_APP,
+    v: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    collection,
+    codes: redeemedCodes,
+    customCodes,
+  };
+}
+
 function encodeBackup() {
-  return toBase64Url(
-    JSON.stringify({
-      app: BACKUP_APP,
-      v: BACKUP_VERSION,
-      exportedAt: new Date().toISOString(),
-      collection,
-      codes: redeemedCodes,
-      customCodes,
-    })
-  );
+  return toBase64Url(JSON.stringify(backupSnapshot()));
 }
 
 const bool = (value) => value === true;
@@ -2084,3 +2164,28 @@ applyLanguage();
 render();
 applyView();
 readShareHashOnLoad();
+
+// ---- Ponte para o cloud-sync.js (opcional, login/sincronização por conta) ----
+// Este arquivo não sabe se cloud-sync.js existe ou está configurado; toda a
+// validação/merge de dados vindos de fora continua só aqui, reaproveitando o
+// fluxo de backup/importação já existente.
+window.SpritesLockerBridge = {
+  getSnapshotJSON: () => backupSnapshot(),
+  hasLocalMarks: () =>
+    countBackupMarks({ collection, codes: redeemedCodes }) > 0 ||
+    customCodes.length > 0,
+  // Aplica um snapshot da nuvem sem abrir o modal — usado nos casos em que a
+  // sincronização é automática (conta nova, aparelho já pareado, ou aparelho
+  // novo sem nada local para perder).
+  applyRemoteSnapshot(remoteSnapshot, mode) {
+    proposeBackup(JSON.stringify(remoteSnapshot));
+    applyBackup(mode === "merge");
+  },
+  // Conflito de verdade (aparelho novo para a conta, com dados locais): abre
+  // o mesmo modal de importar backup, já com a comparação nuvem x local.
+  openReviewModal(remoteSnapshot) {
+    openBackupModal();
+    proposeBackup(JSON.stringify(remoteSnapshot));
+  },
+  t: () => t(),
+};
