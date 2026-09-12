@@ -120,7 +120,7 @@ const TRANSLATIONS = {
     accountPolicyNumber: "um número",
     accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
-    viewCompareTab: "Comparar com amigos",
+    viewCompareTab: "Comparar",
     viewCodes: "Códigos",
     codesIntro:
       "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
@@ -295,7 +295,7 @@ const TRANSLATIONS = {
     accountPolicyNumber: "a number",
     accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
-    viewCompareTab: "Compare with friends",
+    viewCompareTab: "Compare",
     viewCodes: "Codes",
     codesIntro:
       "Admin Panel codes: on the main menu, click the “… / admin panel” box in the top right, type the code and submit. Tick here the ones you have already redeemed.",
@@ -1951,7 +1951,7 @@ const compareStats = document.getElementById("compare-stats");
 const compareOnlyYou = document.getElementById("compare-only-you");
 const compareOnlyThem = document.getElementById("compare-only-them");
 
-// Chamado sempre que a aba "Comparar com amigos" fica visível (applyView()).
+// Chamado sempre que a aba "Comparar" fica visível (applyView()).
 function refreshShareLink() {
   const s = t();
   shareLinkInput.value = `${location.origin}${location.pathname}#c=${encodeCollectionCode()}`;

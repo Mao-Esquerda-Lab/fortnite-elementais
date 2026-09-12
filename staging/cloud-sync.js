@@ -543,17 +543,18 @@ async function main() {
         const compareBtn = f.mutual
           ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
           : "";
-        // Sem nome (raro — só contas de antes dessa função existir): mostra
-        // só o código, igual sempre foi.
-        const identity = f.username
-          ? `<span class="friend-row-name">${escapeHtml(f.username)}</span><span class="friend-row-code">${escapeHtml(f.code)}</span>`
-          : `<span class="friend-row-code">${escapeHtml(f.code)}</span>`;
+        // O nome sempre ocupa a mesma coluna (mesmo vazio, em contas raras de
+        // antes dessa função existir) — é o que mantém as linhas 100%
+        // alinhadas independente do tamanho de cada nome.
+        const codeClass = f.username ? "friend-row-code friend-row-code-secondary" : "friend-row-code";
         return `<li class="friend-row">
-          ${identity}
+          <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
+          <span class="${codeClass}">${escapeHtml(f.code)}</span>
           <span class="friend-row-status">${status}</span>
           <div class="friend-row-actions">
             ${compareBtn}
-            <button class="export-copy backup-danger" data-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.friendRemoveButton)}</button>
+            <button class="friend-remove-btn" data-remove-uid="${escapeHtml(f.uid)}" type="button"
+                    title="${escapeHtml(s.friendRemoveButton)}" aria-label="${escapeHtml(s.friendRemoveButton)}">🗑️</button>
           </div>
         </li>`;
       })
