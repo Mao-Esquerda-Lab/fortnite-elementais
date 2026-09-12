@@ -64,7 +64,8 @@ const TRANSLATIONS = {
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
-    accountLabel: "Conta",
+    accountLabelSignedOut: "Fazer login",
+    accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
     accountEmailLabel: "E-mail",
     accountPasswordLabel: "Senha",
@@ -212,7 +213,8 @@ const TRANSLATIONS = {
     backupMerge: "Merge both",
     backupCancel: "Cancel",
     backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
-    accountLabel: "Account",
+    accountLabelSignedOut: "Log in",
+    accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
     accountEmailLabel: "Email",
     accountPasswordLabel: "Password",
@@ -778,7 +780,7 @@ function applyLanguage() {
 
   const accountBtn = document.getElementById("account-btn");
   accountBtn.title = s.accountTitle;
-  document.getElementById("account-label").textContent = s.accountLabel;
+  document.getElementById("account-label").textContent = s.accountLabelSignedOut;
   document.getElementById("account-title").textContent = s.accountTitle;
   document.getElementById("account-close").textContent = s.close;
   document.getElementById("account-unconfigured-text").textContent =

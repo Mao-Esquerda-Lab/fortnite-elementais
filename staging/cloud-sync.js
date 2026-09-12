@@ -75,6 +75,7 @@ async function main() {
   const els = {
     overlay: document.getElementById("account-overlay"),
     btn: document.getElementById("account-btn"),
+    label: document.getElementById("account-label"),
     close: document.getElementById("account-close"),
     unconfiguredText: document.getElementById("account-unconfigured-text"),
     modeTabs: document.getElementById("account-mode-tabs"),
@@ -183,10 +184,17 @@ async function main() {
   }
   window.addEventListener("spriteslocker:data-changed", schedulePush);
 
+  function setAccountLabel(signedIn) {
+    els.label.textContent = signedIn
+      ? bridge.t().accountLabelSignedIn
+      : bridge.t().accountLabelSignedOut;
+  }
+
   function renderSignedIn(user, statusKey) {
     els.signedInEmail.textContent = bridge.t().accountSignedInAs(user.email);
     if (statusKey) els.syncStatus.textContent = bridge.t()[statusKey];
     els.btn.classList.add("signed-in");
+    setAccountLabel(true);
     showPanel("signed-in");
   }
 
@@ -195,12 +203,14 @@ async function main() {
     if (user && signedInUid) {
       els.signedInEmail.textContent = bridge.t().accountSignedInAs(user.email);
     }
+    setAccountLabel(!!signedInUid);
   });
 
   async function handleAuthChange(user) {
     if (!user) {
       signedInUid = null;
       els.btn.classList.remove("signed-in");
+      setAccountLabel(false);
       showPanel("signed-out");
       return;
     }
