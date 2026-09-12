@@ -304,6 +304,10 @@ async function main() {
   // da conta nova — handleAuthChange() grava e limpa em seguida.
   let pendingUsername = null;
   let friendsCache = []; // [{ uid, code, username, mutual }]
+  // uid do amigo com o "tem certeza?" aberto na lista (no máximo um por
+  // vez) — nunca remove direto no clique do ✕, só troca a linha por uma
+  // confirmação inline.
+  let pendingRemoveUid = null;
 
   function schedulePush() {
     if (!signedInUid) return;
@@ -466,16 +470,20 @@ async function main() {
       const snap = await dbApi.getDoc(dbApi.doc(db, "users", signedInUid));
       if (snap.exists()) {
         myUsername = snap.data().username || null;
-        if (friendCode) return friendCode;
+        // O valor lido agora do Firestore sempre tem prioridade sobre o
+        // cache local — o cache só serve de fallback (abaixo, e no catch)
+        // pra quando não dá pra confirmar o valor atual.
         if (snap.data().friendCode) {
           friendCode = snap.data().friendCode;
           return friendCode;
         }
+        if (friendCode) return friendCode;
       } else if (friendCode) {
         return friendCode;
       }
     } catch (err) {
       console.warn("[cloud-sync] falha ao buscar código de amigo:", err);
+      if (friendCode) return friendCode;
     }
     // Tenta um código aleatório por vez, sem checar antes se já existe: uma
     // escrita numa doc que já existe conta como "update" pro Firestore (não
@@ -556,14 +564,29 @@ async function main() {
     els.friendListEmpty.hidden = friendsCache.length !== 0;
     els.friendList.innerHTML = friendsCache
       .map((f) => {
-        const status = f.mutual ? "" : escapeHtml(s.friendWaitingMutual);
-        const compareBtn = f.mutual
-          ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
-          : "";
         // O nome sempre ocupa a mesma coluna (mesmo vazio, em contas raras de
         // antes dessa função existir) — é o que mantém as linhas 100%
         // alinhadas independente do tamanho de cada nome.
         const codeClass = f.username ? "friend-row-code friend-row-code-secondary" : "friend-row-code";
+
+        // Confirmação inline no lugar do status/ações normais — nunca some
+        // um amigo direto no clique do ✕.
+        if (f.uid === pendingRemoveUid) {
+          return `<li class="friend-row">
+            <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
+            <span class="${codeClass}">${escapeHtml(f.code)}</span>
+            <span class="friend-row-status">${escapeHtml(s.friendRemoveConfirm)}</span>
+            <div class="friend-row-actions">
+              <button class="export-copy backup-danger" data-confirm-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.friendRemoveConfirmYes)}</button>
+              <button class="export-copy" data-cancel-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.backupCancel)}</button>
+            </div>
+          </li>`;
+        }
+
+        const status = f.mutual ? "" : escapeHtml(s.friendWaitingMutual);
+        const compareBtn = f.mutual
+          ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
+          : "";
         return `<li class="friend-row">
           <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
           <span class="${codeClass}">${escapeHtml(f.code)}</span>
@@ -587,6 +610,7 @@ async function main() {
     els.friendsSection.hidden = false;
     els.friendsSignedOutHint.hidden = true;
     setFriendError("");
+    pendingRemoveUid = null;
 
     const code = await ensureFriendCode();
     setFriendCodeDisplays(code);
@@ -633,10 +657,12 @@ async function main() {
   }
 
   async function removeFriend(friendUid) {
+    pendingRemoveUid = null;
     try {
       await dbApi.deleteDoc(dbApi.doc(db, "users", signedInUid, "friends", friendUid));
     } catch (err) {
       console.warn("[cloud-sync] falha ao remover amigo:", err);
+      renderFriendsList();
       return;
     }
     friendsCache = friendsCache.filter((f) => f.uid !== friendUid);
@@ -696,8 +722,21 @@ async function main() {
   els.friendList.addEventListener("click", (e) => {
     const compareBtn = e.target.closest("[data-compare-uid]");
     if (compareBtn) return compareWithFriend(compareBtn.dataset.compareUid);
+    // O ✕ só abre a confirmação inline na própria linha — nunca remove
+    // direto. data-confirm-remove-uid/data-cancel-remove-uid são os botões
+    // dessa confirmação.
     const removeBtn = e.target.closest("[data-remove-uid]");
-    if (removeBtn) removeFriend(removeBtn.dataset.removeUid);
+    if (removeBtn) {
+      pendingRemoveUid = removeBtn.dataset.removeUid;
+      return renderFriendsList();
+    }
+    const confirmBtn = e.target.closest("[data-confirm-remove-uid]");
+    if (confirmBtn) return removeFriend(confirmBtn.dataset.confirmRemoveUid);
+    const cancelBtn = e.target.closest("[data-cancel-remove-uid]");
+    if (cancelBtn) {
+      pendingRemoveUid = null;
+      return renderFriendsList();
+    }
   });
 
   function setAuthError(message) {
