@@ -1555,6 +1555,7 @@ const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
 const viewFriends = document.getElementById("view-friends");
 const viewCodes = document.getElementById("view-codes");
+const friendsTabBtn = document.querySelector('#view-tabs [data-view="friends"]');
 const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
 const codesProgressLabel = document.getElementById("codes-progress-label");
@@ -2298,5 +2299,18 @@ window.SpritesLockerBridge = {
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
   // modal somente-leitura já usado pelo código de compartilhamento.
   openCompareModal: (theirCollection) => openCompareModal(theirCollection),
+  // Mostra/esconde a aba "Comparar" conforme o login (cloud-sync.js, opcional
+  // — sem ele a aba fica sempre visível, igual sempre foi). Se a aba some
+  // enquanto ela era a atual (ex.: usuário saiu da conta com "Comparar"
+  // aberta), volta pra "Elementais" em vez de deixar uma aba escondida
+  // "selecionada" sem nenhum botão apontando pra ela.
+  setCompareAvailable(available) {
+    friendsTabBtn.hidden = !available;
+    if (!available && activeView === "friends") {
+      activeView = "sprites";
+      storage.set(VIEW_KEY, activeView);
+      applyView();
+    }
+  },
   t: () => t(),
 };
