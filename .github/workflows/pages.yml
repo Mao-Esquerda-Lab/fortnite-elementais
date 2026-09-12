@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: pages
+  group: gh-pages-deploy
   cancel-in-progress: false
 
 jobs:
@@ -52,7 +52,28 @@ jobs:
             git push origin HEAD:main
           fi
       # O environment github-pages deste repositório só aceita deploys da
-      # branch gh-pages, então publicamos espelhando a raiz da main para a
-      # gh-pages; o GitHub Pages serve essa branch automaticamente.
-      - name: Publish repository root to gh-pages
-        run: git push --force origin HEAD:gh-pages
+      # branch gh-pages, então publicamos sincronizando a raiz da main para a
+      # gh-pages; o GitHub Pages serve essa branch automaticamente. Sincroniza
+      # em vez de espelhar tudo com --force para preservar a subpasta
+      # /staging, publicada à parte pelo workflow de homologação
+      # (pages-staging.yml) — um push aqui não pode apagá-la.
+      - name: Publish repository root to gh-pages (preserving /staging)
+        run: |
+          set -euo pipefail
+          git fetch origin gh-pages:gh-pages
+          git worktree add ../gh-pages-wt gh-pages
+          # Limpa tudo na gh-pages, exceto .git e a subpasta staging/ (que é
+          # publicada à parte pelo workflow de homologação).
+          find ../gh-pages-wt -mindepth 1 -maxdepth 1 \
+            ! -name '.git' ! -name 'staging' -exec rm -rf {} +
+          # Copia a raiz da main por cima (mesmos arquivos de sempre).
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' \
+            -exec cp -a {} ../gh-pages-wt/ \;
+          cd ../gh-pages-wt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Deploy ${{ github.sha }}"
+            git push origin HEAD:gh-pages
+          fi

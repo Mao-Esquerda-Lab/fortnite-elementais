@@ -31,9 +31,14 @@
     </button>
     <img class="header-icon" src="icon-192.png" alt="Fortnite Sprites Locker"
          width="32" height="32" />
-    <div class="lang-switch" id="lang-switch">
-      <button class="lang-btn" data-lang="pt">PT</button>
-      <button class="lang-btn" data-lang="en">EN</button>
+    <div class="header-right">
+      <button class="refresh-btn account-btn" id="account-btn" type="button" title="Conta">
+        <span aria-hidden="true">☁</span><span id="account-label">Fazer login</span>
+      </button>
+      <div class="lang-switch" id="lang-switch">
+        <button class="lang-btn" data-lang="pt">PT</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
     </div>
   </div>
 
@@ -270,11 +275,70 @@
     </div>
   </div>
 
+  <!-- Conta (opcional): login/senha para sincronizar a coleção entre
+       aparelhos via Firebase. Sem cloud-sync.js configurado, mostra só o
+       painel "não configurado" — o resto do app funciona igual, sem conta. -->
+  <div class="export-overlay" id="account-overlay" hidden>
+    <div class="export-box share-box">
+      <h2 id="account-title"></h2>
+
+      <p class="backup-intro" id="account-unconfigured-text" hidden></p>
+
+      <div class="view-tabs" id="account-mode-tabs" hidden>
+        <button class="view-tab active" type="button" id="account-tab-login"></button>
+        <button class="view-tab" type="button" id="account-tab-signup"></button>
+      </div>
+
+      <form id="account-login-form" class="share-section">
+        <label class="share-field-label" id="account-login-email-label" for="account-login-email-input"></label>
+        <input class="share-input" id="account-login-email-input" type="email" autocomplete="email" required />
+
+        <label class="share-field-label" id="account-login-password-label" for="account-login-password-input"></label>
+        <input class="share-input" id="account-login-password-input" type="password" autocomplete="current-password" required minlength="6" />
+
+        <div class="export-actions">
+          <button class="export-copy" id="account-login-submit" type="submit"></button>
+        </div>
+        <button class="backup-file" id="account-forgot-link" type="button"></button>
+      </form>
+
+      <form id="account-signup-form" class="share-section" hidden>
+        <label class="share-field-label" id="account-signup-email-label" for="account-signup-email-input"></label>
+        <input class="share-input" id="account-signup-email-input" type="email" autocomplete="email" required />
+
+        <label class="share-field-label" id="account-signup-password-label" for="account-signup-password-input"></label>
+        <input class="share-input" id="account-signup-password-input" type="password" autocomplete="new-password" required minlength="6" />
+        <p class="share-field-label" id="account-password-hint" hidden></p>
+
+        <div class="export-actions">
+          <button class="export-copy" id="account-signup-submit" type="submit"></button>
+        </div>
+      </form>
+
+      <p class="share-error" id="account-auth-error" hidden></p>
+
+      <div class="share-section" id="account-signed-in" hidden>
+        <p id="account-signed-in-email"></p>
+        <p class="backup-done" id="account-sync-status"></p>
+        <div class="export-actions">
+          <button class="export-copy" id="account-resync-btn" type="button"></button>
+          <button class="export-copy backup-danger" id="account-logout-btn" type="button"></button>
+        </div>
+      </div>
+
+      <div class="export-actions">
+        <button class="export-close" id="account-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
   <script src="data/cheat-codes.js"></script>
   <script src="data/cheat-codes-auto.js"></script>
   <script src="data/elementals.js"></script>
   <script src="data/elementals-auto.js"></script>
   <script src="icons.js"></script>
   <script src="app.js"></script>
+  <script src="firebase-config.js"></script>
+  <script type="module" src="cloud-sync.js"></script>
 </body>
 </html>
