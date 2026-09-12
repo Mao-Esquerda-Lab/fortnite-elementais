@@ -206,6 +206,31 @@
         </div>
         <p class="share-error" id="share-paste-error" hidden></p>
       </div>
+
+      <!-- Comparação ao vivo com amigos, via conta (cloud-sync.js). Fica
+           escondido até o cloud-sync.js confirmar que há uma sessão ativa. -->
+      <div class="share-section" id="friends-section" hidden>
+        <h3 id="friends-section-title"></h3>
+        <p class="share-field-label" id="friends-intro"></p>
+
+        <label class="share-field-label" id="friend-code-label" for="friend-code-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="friend-code-input" type="text" readonly />
+          <button class="export-copy" id="friend-code-copy-btn" type="button"></button>
+        </div>
+
+        <label class="share-field-label" id="friend-add-label" for="friend-add-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="friend-add-input" type="text" />
+          <button class="export-copy" id="friend-add-btn" type="button"></button>
+        </div>
+        <p class="share-error" id="friend-add-error" hidden></p>
+
+        <ul class="friend-list" id="friend-list"></ul>
+        <p class="compare-list-empty" id="friend-list-empty" hidden></p>
+      </div>
+      <p class="share-field-label" id="friends-signed-out-hint" hidden></p>
+
       <div class="export-actions">
         <button class="export-close" id="share-close" type="button"></button>
       </div>

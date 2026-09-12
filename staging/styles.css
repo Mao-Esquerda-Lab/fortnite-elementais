@@ -966,6 +966,47 @@ textarea {
   color: var(--muted);
 }
 
+#friends-section-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.friend-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.friend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.friend-row-code {
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.friend-row-status {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.friend-row-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
 .sort-label {
   font-size: 0.85rem;
   color: var(--muted);

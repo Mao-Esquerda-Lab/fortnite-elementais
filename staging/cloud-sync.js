@@ -12,6 +12,19 @@ const SDK_VERSION = "12.19.0";
 const SDK_BASE = `https://www.gstatic.com/firebasejs/${SDK_VERSION}`;
 const LAST_SYNCED_UID_KEY = "fortnite-sprites-last-synced-uid";
 
+// Campos do snapshot sincronizado (ver backupSnapshot() em app.js). Usado com
+// setDoc(..., { mergeFields }) em vez de um merge:true genérico: "codes" tem
+// remoção de chave de verdade quando o usuário desmarca um código resgatado,
+// e um merge:true recursivo do Firestore mantém chaves ausentes do payload
+// novo em vez de apagá-las — o código desmarcado "voltaria" sozinho no
+// próximo download. mergeFields troca essas chaves por inteiro (igual a hoje)
+// e deixa `friendCode` (e o que mais vier depois) intocado.
+const SYNC_FIELDS = ["app", "v", "exportedAt", "collection", "codes", "customCodes"];
+
+// Sem 0/O, 1/I/L — evita confusão ao digitar um código à mão.
+const FRIEND_CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const FRIEND_CODE_LENGTH = 7;
+
 function isFirebaseConfigured() {
   const cfg = window.FIREBASE_CONFIG;
   if (!cfg) return false;
@@ -108,6 +121,31 @@ function missingPasswordRequirements(bridge, status) {
   return items;
 }
 
+function randomFriendCode() {
+  let code = "";
+  for (let i = 0; i < FRIEND_CODE_LENGTH; i++) {
+    code += FRIEND_CODE_ALPHABET[Math.floor(Math.random() * FRIEND_CODE_ALPHABET.length)];
+  }
+  return code;
+}
+
+// Nunca lança — devolve null pra qualquer coisa que não seja um código válido
+// (formato errado, vazio, etc.), pra quem chama só precisar checar um `if`.
+function normalizeFriendCode(rawInput) {
+  const trimmed = (rawInput || "").trim().toUpperCase();
+  if (trimmed.length !== FRIEND_CODE_LENGTH) return null;
+  for (const ch of trimmed) {
+    if (!FRIEND_CODE_ALPHABET.includes(ch)) return null;
+  }
+  return trimmed;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 async function main() {
   const bridge = window.SpritesLockerBridge;
 
@@ -134,6 +172,17 @@ async function main() {
     syncStatus: document.getElementById("account-sync-status"),
     resyncBtn: document.getElementById("account-resync-btn"),
     logoutBtn: document.getElementById("account-logout-btn"),
+    shareBtn: document.getElementById("share-btn"),
+    shareOverlay: document.getElementById("share-overlay"),
+    friendsSection: document.getElementById("friends-section"),
+    friendsSignedOutHint: document.getElementById("friends-signed-out-hint"),
+    friendCodeInput: document.getElementById("friend-code-input"),
+    friendCodeCopyBtn: document.getElementById("friend-code-copy-btn"),
+    friendAddInput: document.getElementById("friend-add-input"),
+    friendAddBtn: document.getElementById("friend-add-btn"),
+    friendAddError: document.getElementById("friend-add-error"),
+    friendList: document.getElementById("friend-list"),
+    friendListEmpty: document.getElementById("friend-list-empty"),
   };
 
   function openModal() {
@@ -231,6 +280,8 @@ async function main() {
 
   let signedInUid = null;
   let pushTimer = null;
+  let friendCode = null;
+  let friendsCache = []; // [{ uid, code, mutual }]
 
   function schedulePush() {
     if (!signedInUid) return;
@@ -241,7 +292,9 @@ async function main() {
       // esperava — nesse caso o push é descartado, nunca redirecionado.
       if (signedInUid !== targetUid) return;
       try {
-        await dbApi.setDoc(dbApi.doc(db, "users", targetUid), bridge.getSnapshotJSON());
+        await dbApi.setDoc(dbApi.doc(db, "users", targetUid), bridge.getSnapshotJSON(), {
+          mergeFields: SYNC_FIELDS,
+        });
       } catch (err) {
         console.warn("[cloud-sync] falha ao sincronizar:", err);
       }
@@ -270,11 +323,16 @@ async function main() {
     }
     setAccountLabel(!!signedInUid);
     renderPasswordHint();
+    if (!els.friendsSection.hidden) renderFriendsList();
   });
 
   async function handleAuthChange(user) {
     if (!user) {
       signedInUid = null;
+      friendCode = null;
+      friendsCache = [];
+      els.friendsSection.hidden = true;
+      els.friendsSignedOutHint.hidden = false;
       els.btn.classList.remove("signed-in");
       setAccountLabel(false);
       showPanel("signed-out");
@@ -298,7 +356,7 @@ async function main() {
       // Conta nova (ou primeira vez sincronizando): semeia a nuvem com o que
       // já existe neste aparelho, mesmo que seja nada.
       signedInUid = user.uid;
-      await dbApi.setDoc(docRef, bridge.getSnapshotJSON());
+      await dbApi.setDoc(docRef, bridge.getSnapshotJSON(), { mergeFields: SYNC_FIELDS });
       lastSyncedUid.set(user.uid);
       renderSignedIn(user, "accountSyncedUp");
       return;
@@ -309,7 +367,7 @@ async function main() {
       // e sobe o resultado, sem perguntar nada.
       signedInUid = user.uid;
       bridge.applyRemoteSnapshot(snap.data(), "merge");
-      await dbApi.setDoc(docRef, bridge.getSnapshotJSON());
+      await dbApi.setDoc(docRef, bridge.getSnapshotJSON(), { mergeFields: SYNC_FIELDS });
       renderSignedIn(user, "accountSyncedOk");
       return;
     }
@@ -335,6 +393,212 @@ async function main() {
 
   authApi.onAuthStateChanged(auth, (user) => {
     handleAuthChange(user).catch((err) => console.warn("[cloud-sync]", err));
+  });
+
+  // ---- Amigos: comparação ao vivo via conta, sem trocar link ----
+  // Só fica visível/ativa quando há sessão (signedInUid). O código de amigo é
+  // gerado uma vez por conta (fica salvo em users/{uid}.friendCode) e a
+  // "amizade" só libera a leitura da coleção do outro quando os dois lados
+  // se adicionaram — ver a regra do Firestore que acompanha este PR.
+
+  function setFriendError(message) {
+    els.friendAddError.textContent = message || "";
+    els.friendAddError.hidden = !message;
+  }
+
+  async function ensureFriendCode() {
+    if (friendCode) return friendCode;
+    try {
+      const snap = await dbApi.getDoc(dbApi.doc(db, "users", signedInUid));
+      if (snap.exists() && snap.data().friendCode) {
+        friendCode = snap.data().friendCode;
+        return friendCode;
+      }
+    } catch (err) {
+      console.warn("[cloud-sync] falha ao buscar código de amigo:", err);
+    }
+    // Tenta um código aleatório por vez, sem checar antes se já existe: uma
+    // escrita numa doc que já existe conta como "update" pro Firestore (não
+    // "create"), e só "create" é permitido pela regra — então uma colisão
+    // simplesmente falha, e tenta de novo. Nunca faz getDoc-antes-de-escrever
+    // (isso reintroduziria a mesma corrida que essa técnica evita).
+    for (let i = 0; i < 8; i++) {
+      const candidate = randomFriendCode();
+      try {
+        await dbApi.setDoc(dbApi.doc(db, "friendCodes", candidate), { uid: signedInUid });
+        await dbApi.setDoc(
+          dbApi.doc(db, "users", signedInUid),
+          { friendCode: candidate },
+          { mergeFields: ["friendCode"] }
+        );
+        friendCode = candidate;
+        return friendCode;
+      } catch {
+        // Colisão (permission-denied) — tenta outro código.
+      }
+    }
+    console.warn("[cloud-sync] não foi possível gerar um código de amigo");
+    return null;
+  }
+
+  async function resolveFriendCode(code) {
+    try {
+      const snap = await dbApi.getDoc(dbApi.doc(db, "friendCodes", code));
+      return snap.exists() ? snap.data().uid : null;
+    } catch (err) {
+      console.warn("[cloud-sync] falha ao resolver código de amigo:", err);
+      return null;
+    }
+  }
+
+  async function loadFriends() {
+    try {
+      const snaps = await dbApi.getDocs(dbApi.collection(db, "users", signedInUid, "friends"));
+      const list = [];
+      snaps.forEach((docSnap) => list.push({ uid: docSnap.id, code: docSnap.data().code }));
+      return list;
+    } catch (err) {
+      console.warn("[cloud-sync] falha ao carregar amigos:", err);
+      return [];
+    }
+  }
+
+  // Só existe uma forma de ler isto sem poder listar a lista de amigos
+  // inteira de outra pessoa: pedir o documento exato (o meu uid dentro da
+  // lista dela), nunca a coleção toda — é o que a regra do Firestore permite.
+  async function checkMutual(friendUid) {
+    try {
+      const snap = await dbApi.getDoc(dbApi.doc(db, "users", friendUid, "friends", signedInUid));
+      return snap.exists();
+    } catch {
+      return false;
+    }
+  }
+
+  function renderFriendsList() {
+    const s = bridge.t();
+    els.friendList.hidden = friendsCache.length === 0;
+    els.friendListEmpty.hidden = friendsCache.length !== 0;
+    els.friendList.innerHTML = friendsCache
+      .map((f) => {
+        const status = f.mutual ? "" : escapeHtml(s.friendWaitingMutual);
+        const compareBtn = f.mutual
+          ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
+          : "";
+        return `<li class="friend-row">
+          <span class="friend-row-code">${escapeHtml(f.code)}</span>
+          <span class="friend-row-status">${status}</span>
+          <div class="friend-row-actions">
+            ${compareBtn}
+            <button class="export-copy backup-danger" data-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.friendRemoveButton)}</button>
+          </div>
+        </li>`;
+      })
+      .join("");
+  }
+
+  async function refreshFriendsSection() {
+    if (!signedInUid) {
+      els.friendsSection.hidden = true;
+      els.friendsSignedOutHint.hidden = false;
+      return;
+    }
+    els.friendsSection.hidden = false;
+    els.friendsSignedOutHint.hidden = true;
+    setFriendError("");
+
+    const code = await ensureFriendCode();
+    els.friendCodeInput.value = code || "";
+
+    const list = await loadFriends();
+    const mutuals = await Promise.allSettled(list.map((f) => checkMutual(f.uid)));
+    friendsCache = list.map((f, i) => ({
+      ...f,
+      mutual: mutuals[i].status === "fulfilled" && mutuals[i].value,
+    }));
+    renderFriendsList();
+  }
+
+  async function addFriend(rawInput) {
+    setFriendError("");
+    const normalized = normalizeFriendCode(rawInput);
+    if (!normalized) return setFriendError(bridge.t().friendErrorInvalidCode);
+    if (normalized === friendCode) return setFriendError(bridge.t().friendErrorOwnCode);
+    if (friendsCache.some((f) => f.code === normalized)) {
+      return setFriendError(bridge.t().friendErrorAlreadyAdded);
+    }
+    const uid = await resolveFriendCode(normalized);
+    if (!uid) return setFriendError(bridge.t().friendErrorNotFound);
+    if (uid === signedInUid) return setFriendError(bridge.t().friendErrorOwnCode);
+
+    try {
+      await dbApi.setDoc(dbApi.doc(db, "users", signedInUid, "friends", uid), {
+        code: normalized,
+        addedAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      return setFriendError(authErrorMessage(bridge, err));
+    }
+    els.friendAddInput.value = "";
+    friendsCache.push({ uid, code: normalized, mutual: false });
+    renderFriendsList();
+    // A checagem de mutualidade é assíncrona e não bloqueia a linha aparecer.
+    checkMutual(uid).then((mutual) => {
+      const entry = friendsCache.find((f) => f.uid === uid);
+      if (entry) entry.mutual = mutual;
+      renderFriendsList();
+    });
+  }
+
+  async function removeFriend(friendUid) {
+    try {
+      await dbApi.deleteDoc(dbApi.doc(db, "users", signedInUid, "friends", friendUid));
+    } catch (err) {
+      console.warn("[cloud-sync] falha ao remover amigo:", err);
+      return;
+    }
+    friendsCache = friendsCache.filter((f) => f.uid !== friendUid);
+    renderFriendsList();
+  }
+
+  async function compareWithFriend(friendUid) {
+    setFriendError("");
+    try {
+      const snap = await dbApi.getDoc(dbApi.doc(db, "users", friendUid));
+      if (!snap.exists() || !snap.data().collection) {
+        return setFriendError(bridge.t().friendCompareUnavailable);
+      }
+      bridge.openCompareModal(snap.data().collection);
+    } catch {
+      setFriendError(bridge.t().friendCompareUnavailable);
+    }
+  }
+
+  els.shareBtn.addEventListener("click", refreshFriendsSection);
+  // Se o modal "Comparar" já estava aberto quando este script terminou de
+  // carregar (rede lenta), atualiza a seção de amigos sem esperar outro clique.
+  if (!els.shareOverlay.hidden) refreshFriendsSection();
+
+  els.friendCodeCopyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(els.friendCodeInput.value);
+      const original = els.friendCodeCopyBtn.textContent;
+      els.friendCodeCopyBtn.textContent = bridge.t().exportCopied;
+      setTimeout(() => {
+        els.friendCodeCopyBtn.textContent = original;
+      }, 2000);
+    } catch {
+      els.friendCodeInput.select();
+    }
+  });
+
+  els.friendAddBtn.addEventListener("click", () => addFriend(els.friendAddInput.value));
+
+  els.friendList.addEventListener("click", (e) => {
+    const compareBtn = e.target.closest("[data-compare-uid]");
+    if (compareBtn) return compareWithFriend(compareBtn.dataset.compareUid);
+    const removeBtn = e.target.closest("[data-remove-uid]");
+    if (removeBtn) removeFriend(removeBtn.dataset.removeUid);
   });
 
   function setAuthError(message) {
