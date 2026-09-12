@@ -348,13 +348,10 @@
 
       <div class="share-section" id="account-signed-in" hidden>
         <p id="account-signed-in-email"></p>
+        <!-- Definido só na criação da conta, nunca editável depois (ver
+             cloud-sync.js) — por isso é texto simples, não um campo. -->
+        <p id="account-username-display"></p>
         <p class="backup-done" id="account-sync-status"></p>
-
-        <label class="share-field-label" id="account-username-label" for="account-username-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="account-username-input" type="text" maxlength="24" autocomplete="nickname" />
-          <button class="export-copy" id="account-username-save-btn" type="button"></button>
-        </div>
 
         <label class="share-field-label" id="account-friend-code-label" for="account-friend-code-input"></label>
         <div class="share-field-row">

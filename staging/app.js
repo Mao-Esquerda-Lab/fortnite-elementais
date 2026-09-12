@@ -47,8 +47,7 @@ const TRANSLATIONS = {
     friendsIntro: "Compare em tempo real com amigos que também têm conta.",
     friendsSignedOutHint: "Entre na sua conta para comparar direto com amigos.",
     accountUsernameLabel: "Nome de usuário",
-    accountUsernameSave: "Salvar",
-    accountUsernameSaved: "Salvo! ✓",
+    accountUsernameDisplay: (name) => `Nome de usuário: ${name}`,
     accountErrorUsernameRequired: "Digite um nome de usuário.",
     friendCodeLabel: "Seu código de amigo",
     friendCodeCopy: "Copiar código",
@@ -221,8 +220,7 @@ const TRANSLATIONS = {
     friendsIntro: "Compare live with friends who also have an account.",
     friendsSignedOutHint: "Sign in to compare live with friends.",
     accountUsernameLabel: "Username",
-    accountUsernameSave: "Save",
-    accountUsernameSaved: "Saved! ✓",
+    accountUsernameDisplay: (name) => `Username: ${name}`,
     accountErrorUsernameRequired: "Enter a username.",
     friendCodeLabel: "Your friend code",
     friendCodeCopy: "Copy code",
@@ -802,8 +800,6 @@ function applyLanguage() {
   document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
   document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
   document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;
-  document.getElementById("account-username-label").textContent = s.accountUsernameLabel;
-  document.getElementById("account-username-save-btn").textContent = s.accountUsernameSave;
   document.getElementById("account-friend-code-label").textContent = s.friendCodeLabel;
   document.getElementById("account-friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("compare-title").textContent = s.compareTitle;
