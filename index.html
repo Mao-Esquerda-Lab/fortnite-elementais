@@ -284,21 +284,37 @@
 
       <p class="backup-intro" id="account-unconfigured-text" hidden></p>
 
-      <form id="account-form" class="share-section" hidden>
-        <label class="share-field-label" id="account-email-label" for="account-email-input"></label>
-        <input class="share-input" id="account-email-input" type="email" autocomplete="email" required />
+      <div class="view-tabs" id="account-mode-tabs" hidden>
+        <button class="view-tab active" type="button" id="account-tab-login"></button>
+        <button class="view-tab" type="button" id="account-tab-signup"></button>
+      </div>
 
-        <label class="share-field-label" id="account-password-label" for="account-password-input"></label>
-        <input class="share-input" id="account-password-input" type="password" autocomplete="current-password" required minlength="6" />
+      <form id="account-login-form" class="share-section">
+        <label class="share-field-label" id="account-login-email-label" for="account-login-email-input"></label>
+        <input class="share-input" id="account-login-email-input" type="email" autocomplete="email" required />
 
-        <p class="share-error" id="account-auth-error" hidden></p>
+        <label class="share-field-label" id="account-login-password-label" for="account-login-password-input"></label>
+        <input class="share-input" id="account-login-password-input" type="password" autocomplete="current-password" required minlength="6" />
 
         <div class="export-actions">
-          <button class="export-copy" id="account-login-btn" type="submit"></button>
-          <button class="export-copy" id="account-signup-btn" type="button"></button>
+          <button class="export-copy" id="account-login-submit" type="submit"></button>
         </div>
         <button class="backup-file" id="account-forgot-link" type="button"></button>
       </form>
+
+      <form id="account-signup-form" class="share-section" hidden>
+        <label class="share-field-label" id="account-signup-email-label" for="account-signup-email-input"></label>
+        <input class="share-input" id="account-signup-email-input" type="email" autocomplete="email" required />
+
+        <label class="share-field-label" id="account-signup-password-label" for="account-signup-password-input"></label>
+        <input class="share-input" id="account-signup-password-input" type="password" autocomplete="new-password" required minlength="6" />
+
+        <div class="export-actions">
+          <button class="export-copy" id="account-signup-submit" type="submit"></button>
+        </div>
+      </form>
+
+      <p class="share-error" id="account-auth-error" hidden></p>
 
       <div class="share-section" id="account-signed-in" hidden>
         <p id="account-signed-in-email"></p>
