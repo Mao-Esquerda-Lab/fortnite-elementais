@@ -251,6 +251,18 @@ async function main() {
     const app = initializeApp(window.FIREBASE_CONFIG);
     auth = authApi.getAuth(app);
     db = dbApi.getFirestore(app);
+    // Já é o padrão do SDK num navegador comum, mas fica explícito de
+    // propósito: garante a sessão sobrevivendo a fechar a aba/o navegador
+    // mesmo que algum ambiente específico (extensão, build diferente do
+    // SDK) tivesse um padrão menos persistente. Não resolve limitações do
+    // próprio navegador (Safari apaga o IndexedDB de um site não visitado
+    // há 7+ dias, e o modo anônimo/privado nunca persiste nada) — falha
+    // silenciosa aqui só significa "login não sobrevive a fechar a aba
+    // desta vez", nunca perda de progresso (o merge ao logar de novo cobre
+    // isso).
+    authApi
+      .setPersistence(auth, authApi.browserLocalPersistence)
+      .catch((err) => console.warn("[cloud-sync] não deu pra fixar a persistência do login:", err));
   } catch (err) {
     console.warn("[cloud-sync] Firebase indisponível:", err);
     showPanel("unconfigured");
@@ -325,9 +337,10 @@ async function main() {
     els.btn.classList.add("signed-in");
     setAccountLabel(true);
     showPanel("signed-in");
+    bridge.setCompareAvailable(true);
     // Gera/busca o código de amigo já ao logar, sem esperar o usuário abrir
-    // a aba "Comparar com amigos" — é o que deixa o banner do topo e o campo
-    // no perfil preenchidos assim que possível.
+    // a aba "Comparar" — é o que deixa o banner do topo e o campo no perfil
+    // preenchidos assim que possível.
     ensureFriendCode().then((code) => {
       setFriendCodeDisplays(code);
       if (myUsername) {
@@ -361,6 +374,7 @@ async function main() {
       els.btn.classList.remove("signed-in");
       setAccountLabel(false);
       showPanel("signed-out");
+      bridge.setCompareAvailable(false);
       return;
     }
 
