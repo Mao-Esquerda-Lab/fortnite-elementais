@@ -797,6 +797,10 @@ function applyLanguage() {
   document.getElementById("friend-add-label").textContent = s.friendAddLabel;
   document.getElementById("friend-add-btn").textContent = s.friendAddButton;
   document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
+  document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
+  document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;
+  document.getElementById("account-friend-code-label").textContent = s.friendCodeLabel;
+  document.getElementById("account-friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
 

@@ -45,6 +45,13 @@
   <header class="topbar">
     <h1 id="app-title"></h1>
     <p class="subtitle" id="app-subtitle"></p>
+    <!-- Só aparece logado (cloud-sync.js) — atalho pro código de amigo sem
+         precisar abrir o modal de Comparar. -->
+    <div class="friend-code-banner" id="friend-code-banner" hidden>
+      <span id="friend-code-banner-label"></span>
+      <strong id="friend-code-banner-value"></strong>
+      <button class="export-copy" id="friend-code-banner-copy" type="button"></button>
+    </div>
   </header>
 
   <main class="container">
@@ -347,6 +354,13 @@
       <div class="share-section" id="account-signed-in" hidden>
         <p id="account-signed-in-email"></p>
         <p class="backup-done" id="account-sync-status"></p>
+
+        <label class="share-field-label" id="account-friend-code-label" for="account-friend-code-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="account-friend-code-input" type="text" readonly />
+          <button class="export-copy" id="account-friend-code-copy-btn" type="button"></button>
+        </div>
+
         <div class="export-actions">
           <button class="export-copy" id="account-resync-btn" type="button"></button>
           <button class="export-copy backup-danger" id="account-logout-btn" type="button"></button>

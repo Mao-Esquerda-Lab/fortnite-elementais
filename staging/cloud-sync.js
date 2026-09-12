@@ -183,6 +183,11 @@ async function main() {
     friendAddError: document.getElementById("friend-add-error"),
     friendList: document.getElementById("friend-list"),
     friendListEmpty: document.getElementById("friend-list-empty"),
+    friendCodeBanner: document.getElementById("friend-code-banner"),
+    friendCodeBannerValue: document.getElementById("friend-code-banner-value"),
+    friendCodeBannerCopyBtn: document.getElementById("friend-code-banner-copy"),
+    accountFriendCodeInput: document.getElementById("account-friend-code-input"),
+    accountFriendCodeCopyBtn: document.getElementById("account-friend-code-copy-btn"),
   };
 
   function openModal() {
@@ -314,6 +319,10 @@ async function main() {
     els.btn.classList.add("signed-in");
     setAccountLabel(true);
     showPanel("signed-in");
+    // Gera/busca o código de amigo já ao logar, sem esperar o usuário abrir
+    // o "Comparar" — é o que deixa o banner do topo e o campo no perfil
+    // preenchidos assim que possível.
+    ensureFriendCode().then(setFriendCodeDisplays);
   }
 
   window.addEventListener("spriteslocker:lang-changed", () => {
@@ -333,6 +342,7 @@ async function main() {
       friendsCache = [];
       els.friendsSection.hidden = true;
       els.friendsSignedOutHint.hidden = false;
+      setFriendCodeDisplays(null);
       els.btn.classList.remove("signed-in");
       setAccountLabel(false);
       showPanel("signed-out");
@@ -404,6 +414,15 @@ async function main() {
   function setFriendError(message) {
     els.friendAddError.textContent = message || "";
     els.friendAddError.hidden = !message;
+  }
+
+  // Mesmo código em três lugares: dentro do "Comparar", no banner do topo da
+  // página e no "Meu perfil" — todos refletem o mesmo estado.
+  function setFriendCodeDisplays(code) {
+    els.friendCodeInput.value = code || "";
+    els.accountFriendCodeInput.value = code || "";
+    els.friendCodeBanner.hidden = !code;
+    els.friendCodeBannerValue.textContent = code || "";
   }
 
   async function ensureFriendCode() {
@@ -513,7 +532,7 @@ async function main() {
     setFriendError("");
 
     const code = await ensureFriendCode();
-    els.friendCodeInput.value = code || "";
+    setFriendCodeDisplays(code);
 
     const list = await loadFriends();
     const mutuals = await Promise.allSettled(list.map((f) => checkMutual(f.uid)));
@@ -584,18 +603,34 @@ async function main() {
   // carregar (rede lenta), atualiza a seção de amigos sem esperar outro clique.
   if (!els.shareOverlay.hidden) refreshFriendsSection();
 
-  els.friendCodeCopyBtn.addEventListener("click", async () => {
+  // Usado pelos três botões "copiar código" (Comparar, banner do topo,
+  // perfil) — todos fazem a mesma coisa, só muda qual botão/texto/campo.
+  async function copyFriendCode(button, text, fallbackInput) {
     try {
-      await navigator.clipboard.writeText(els.friendCodeInput.value);
-      const original = els.friendCodeCopyBtn.textContent;
-      els.friendCodeCopyBtn.textContent = bridge.t().exportCopied;
+      await navigator.clipboard.writeText(text);
+      const original = button.textContent;
+      button.textContent = bridge.t().exportCopied;
       setTimeout(() => {
-        els.friendCodeCopyBtn.textContent = original;
+        button.textContent = original;
       }, 2000);
     } catch {
-      els.friendCodeInput.select();
+      if (fallbackInput) fallbackInput.select();
     }
-  });
+  }
+
+  els.friendCodeCopyBtn.addEventListener("click", () =>
+    copyFriendCode(els.friendCodeCopyBtn, els.friendCodeInput.value, els.friendCodeInput)
+  );
+  els.friendCodeBannerCopyBtn.addEventListener("click", () =>
+    copyFriendCode(els.friendCodeBannerCopyBtn, friendCode || "")
+  );
+  els.accountFriendCodeCopyBtn.addEventListener("click", () =>
+    copyFriendCode(
+      els.accountFriendCodeCopyBtn,
+      els.accountFriendCodeInput.value,
+      els.accountFriendCodeInput
+    )
+  );
 
   els.friendAddBtn.addEventListener("click", () => addFriend(els.friendAddInput.value));
 
