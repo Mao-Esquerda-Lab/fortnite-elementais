@@ -66,9 +66,12 @@ jobs:
           # publicada à parte pelo workflow de homologação).
           find ../gh-pages-wt -mindepth 1 -maxdepth 1 \
             ! -name '.git' ! -name 'staging' -exec rm -rf {} +
-          # Copia a raiz da main por cima (mesmos arquivos de sempre).
+          # Copia a raiz da main por cima (mesmos arquivos de sempre). Os
+          # ícones -staging.png (versão "negativa", só pra homologação
+          # parecer visualmente diferente da produção quando instalada como
+          # PWA) ficam de fora — quem os usa é só o pages-staging.yml.
           find . -mindepth 1 -maxdepth 1 ! -name '.git' \
-            -exec cp -a {} ../gh-pages-wt/ \;
+            ! -name 'icon-*-staging.png' -exec cp -a {} ../gh-pages-wt/ \;
           cd ../gh-pages-wt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

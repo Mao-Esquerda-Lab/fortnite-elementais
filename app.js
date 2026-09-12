@@ -32,6 +32,9 @@ const TRANSLATIONS = {
     exportCopied: "Copiado! ✓",
     exportShare: "Compartilhar",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
+    compareLinkToggle: "Comparar por link (sem conta)",
+    compareLinkToggleTitle:
+      "Gera um link, ou cole o de um amigo, para comparar sem precisar de conta",
     shareLinkLabel: "Seu link de comparação",
     shareCopyLink: "Copiar link",
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
@@ -58,8 +61,11 @@ const TRANSLATIONS = {
     friendErrorOwnCode: "Esse é o seu próprio código.",
     friendErrorAlreadyAdded: "Você já adicionou esse amigo.",
     friendWaitingMutual: "Aguardando ele(a) adicionar você de volta",
+    friendListTitle: "Meus amigos",
     friendListEmpty: "Você ainda não adicionou nenhum amigo.",
-    friendRemoveButton: "Remover amigo",
+    friendRemoveButton: "Remover amizade",
+    friendRemoveConfirm: "Remover esse amigo?",
+    friendRemoveConfirmYes: "Remover",
     friendCompareUnavailable: "Não foi possível carregar a coleção desse amigo agora.",
     backupLabel: "Backup",
     backupTitle: "Leva sua coleção inteira para outro aparelho",
@@ -83,6 +89,8 @@ const TRANSLATIONS = {
     accountLabelSignedOut: "Fazer login",
     accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
+    accountModalTitleSignedOut: "Crie seu perfil",
+    accountModalTitleSignedIn: "Meu perfil",
     accountEmailLabel: "E-mail",
     accountPasswordLabel: "Senha",
     accountLoginButton: "Entrar",
@@ -117,7 +125,7 @@ const TRANSLATIONS = {
     accountPolicyNumber: "um número",
     accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
-    viewCompareTab: "Comparar com amigos",
+    viewCompareTab: "Comparar",
     viewCodes: "Códigos",
     codesIntro:
       "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
@@ -205,6 +213,9 @@ const TRANSLATIONS = {
     exportCopied: "Copied! ✓",
     exportShare: "Share",
     exportTotal: (total) => `${total} items (Base + variants)`,
+    compareLinkToggle: "Compare via link (no account)",
+    compareLinkToggleTitle:
+      "Generate a link, or paste a friend's, to compare without an account",
     shareLinkLabel: "Your comparison link",
     shareCopyLink: "Copy link",
     sharePasteLabel: "Paste a friend's code or link here",
@@ -231,8 +242,11 @@ const TRANSLATIONS = {
     friendErrorOwnCode: "That's your own code.",
     friendErrorAlreadyAdded: "You already added that friend.",
     friendWaitingMutual: "Waiting for them to add you back",
+    friendListTitle: "My friends",
     friendListEmpty: "You haven't added any friends yet.",
-    friendRemoveButton: "Remove friend",
+    friendRemoveButton: "Remove friendship",
+    friendRemoveConfirm: "Remove this friend?",
+    friendRemoveConfirmYes: "Remove",
     friendCompareUnavailable: "Couldn't load that friend's collection right now.",
     backupLabel: "Backup",
     backupTitle: "Move your whole collection to another device",
@@ -256,6 +270,8 @@ const TRANSLATIONS = {
     accountLabelSignedOut: "Log in",
     accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
+    accountModalTitleSignedOut: "Create your profile",
+    accountModalTitleSignedIn: "My profile",
     accountEmailLabel: "Email",
     accountPasswordLabel: "Password",
     accountLoginButton: "Log in",
@@ -289,7 +305,7 @@ const TRANSLATIONS = {
     accountPolicyNumber: "a number",
     accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
-    viewCompareTab: "Compare with friends",
+    viewCompareTab: "Compare",
     viewCodes: "Codes",
     codesIntro:
       "Admin Panel codes: on the main menu, click the “… / admin panel” box in the top right, type the code and submit. Tick here the ones you have already redeemed.",
@@ -782,6 +798,9 @@ function applyLanguage() {
   document.getElementById("export-share").textContent = s.exportShare;
   document.getElementById("export-close").textContent = s.close;
 
+  const shareLinkToggle = document.getElementById("share-link-toggle");
+  shareLinkToggle.textContent = s.compareLinkToggle;
+  shareLinkToggle.title = s.compareLinkToggleTitle;
   document.getElementById("share-link-label").textContent = s.shareLinkLabel;
   document.getElementById("share-copy-btn").textContent = s.shareCopyLink;
   document.getElementById("share-paste-label").textContent = s.sharePasteLabel;
@@ -793,10 +812,9 @@ function applyLanguage() {
   document.getElementById("friends-section-title").textContent = s.friendsSectionTitle;
   document.getElementById("friends-intro").textContent = s.friendsIntro;
   document.getElementById("friends-signed-out-hint").textContent = s.friendsSignedOutHint;
-  document.getElementById("friend-code-label").textContent = s.friendCodeLabel;
-  document.getElementById("friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("friend-add-label").textContent = s.friendAddLabel;
   document.getElementById("friend-add-btn").textContent = s.friendAddButton;
+  document.getElementById("friend-list-title").textContent = s.friendListTitle;
   document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
   document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
   document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;
@@ -843,8 +861,10 @@ function applyLanguage() {
   const accountBtn = document.getElementById("account-btn");
   accountBtn.title = s.accountTitle;
   document.getElementById("account-label").textContent = s.accountLabelSignedOut;
-  document.getElementById("account-title").textContent = s.accountTitle;
-  document.getElementById("account-close").textContent = s.close;
+  // Reflete o login (cloud-sync.js, opcional): esse valor aqui é só o
+  // padrão deslogado, pra já nascer certo mesmo sem cloud-sync.js.
+  document.getElementById("account-title").textContent = s.accountModalTitleSignedOut;
+  document.getElementById("account-close").title = s.close;
   document.getElementById("account-unconfigured-text").textContent =
     s.accountUnconfigured;
   document.getElementById("account-tab-login").textContent = s.accountLoginButton;
@@ -1546,6 +1566,7 @@ const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
 const viewFriends = document.getElementById("view-friends");
 const viewCodes = document.getElementById("view-codes");
+const friendsTabBtn = document.querySelector('#view-tabs [data-view="friends"]');
 const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
 const codesProgressLabel = document.getElementById("codes-progress-label");
@@ -1771,6 +1792,24 @@ function fromBase64Url(code) {
   return new TextDecoder().decode(bytes);
 }
 
+// Sprites saem de data/elementals.js quando a temporada muda (ver o
+// cabeçalho do arquivo), mas o `collection` no localStorage nunca é limpo
+// sozinho — o id de um Sprite de temporada anterior que o usuário marcou
+// antes da curadoria remover a entrada fica órfão aí para sempre. Ele já é
+// ignorado na tela (o progresso/grade só iteram ELEMENTALS), mas sem este
+// filtro ainda seria gravado para sempre em todo backup novo e, pela conta,
+// reenviado pra nuvem a cada sincronização — daí pra comparação com amigos.
+// Isso NÃO é o mesmo caso do "id desconhecido" que sanitizeCollection()
+// preserva de propósito ao IMPORTAR (aquele é um Sprite novo demais para
+// esta versão do app, não um antigo demais).
+function currentCollectionOnly(source) {
+  const clean = {};
+  ELEMENTALS.forEach((e) => {
+    if (!e.upcoming && source[e.id]) clean[e.id] = source[e.id];
+  });
+  return clean;
+}
+
 // `codes` e `customCodes` foram acrescentados depois, mantendo a versão 1 de
 // propósito: são campos novos e opcionais, então backups gerados antes deles
 // continuam válidos (importam sem código resgatado / sem código manual) em
@@ -1780,7 +1819,7 @@ function backupSnapshot() {
     app: BACKUP_APP,
     v: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
-    collection,
+    collection: currentCollectionOnly(collection),
     codes: redeemedCodes,
     customCodes,
   };
@@ -1903,6 +1942,17 @@ function mergeCollections(mine, theirs) {
 }
 
 // ---- Compartilhar/comparar coleção com um amigo (sem backend) ----
+// Fica dentro de um accordion fechado por padrão: é o caminho de antes de
+// existir conta, então secundário agora que a seção de Amigos (mais abaixo)
+// cobre o caso comum.
+const shareLinkAccordionToggle = document.getElementById("share-link-toggle");
+const shareLinkAccordionPanel = document.getElementById("share-link-panel");
+shareLinkAccordionToggle.addEventListener("click", () => {
+  const open = shareLinkAccordionPanel.hidden;
+  shareLinkAccordionPanel.hidden = !open;
+  shareLinkAccordionToggle.setAttribute("aria-expanded", String(open));
+});
+
 const shareLinkInput = document.getElementById("share-link-input");
 const shareCopyBtn = document.getElementById("share-copy-btn");
 const sharePasteInput = document.getElementById("share-paste-input");
@@ -1913,7 +1963,7 @@ const compareStats = document.getElementById("compare-stats");
 const compareOnlyYou = document.getElementById("compare-only-you");
 const compareOnlyThem = document.getElementById("compare-only-them");
 
-// Chamado sempre que a aba "Comparar com amigos" fica visível (applyView()).
+// Chamado sempre que a aba "Comparar" fica visível (applyView()).
 function refreshShareLink() {
   const s = t();
   shareLinkInput.value = `${location.origin}${location.pathname}#c=${encodeCollectionCode()}`;
@@ -2260,5 +2310,18 @@ window.SpritesLockerBridge = {
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
   // modal somente-leitura já usado pelo código de compartilhamento.
   openCompareModal: (theirCollection) => openCompareModal(theirCollection),
+  // Mostra/esconde a aba "Comparar" conforme o login (cloud-sync.js, opcional
+  // — sem ele a aba fica sempre visível, igual sempre foi). Se a aba some
+  // enquanto ela era a atual (ex.: usuário saiu da conta com "Comparar"
+  // aberta), volta pra "Elementais" em vez de deixar uma aba escondida
+  // "selecionada" sem nenhum botão apontando pra ela.
+  setCompareAvailable(available) {
+    friendsTabBtn.hidden = !available;
+    if (!available && activeView === "friends") {
+      activeView = "sprites";
+      storage.set(VIEW_KEY, activeView);
+      applyView();
+    }
+  },
   t: () => t(),
 };

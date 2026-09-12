@@ -21,23 +21,25 @@
       <span class="install-offline" id="install-offline"></span>
     </div>
     <button class="install-btn" id="install-btn" type="button" hidden></button>
-    <button class="install-close" id="install-close" type="button" aria-label="×">×</button>
+    <button class="modal-close-x" id="install-close" type="button" aria-label="×">×</button>
   </div>
 
   <div class="app-header">
-    <!-- O rótulo já vem preenchido para não depender do JavaScript. -->
-    <button class="refresh-btn" id="refresh-btn" type="button" title="Atualizar">
-      <span aria-hidden="true">⟳</span><span id="refresh-label">Atualizar</span>
-    </button>
-    <img class="header-icon" src="icon-192.png" alt="Fortnite Sprites Locker"
-         width="32" height="32" />
-    <div class="header-right">
-      <button class="refresh-btn account-btn" id="account-btn" type="button" title="Conta">
-        <span aria-hidden="true">☁</span><span id="account-label">Fazer login</span>
+    <div class="app-header-row">
+      <!-- O rótulo já vem preenchido para não depender do JavaScript. -->
+      <button class="refresh-btn" id="refresh-btn" type="button" title="Atualizar">
+        <span aria-hidden="true">⟳</span><span id="refresh-label">Atualizar</span>
       </button>
-      <div class="lang-switch" id="lang-switch">
-        <button class="lang-btn" data-lang="pt">PT</button>
-        <button class="lang-btn" data-lang="en">EN</button>
+      <img class="header-icon" src="icon-192.png" alt="Fortnite Sprites Locker"
+           width="38" height="38" />
+      <div class="header-right">
+        <button class="refresh-btn account-btn" id="account-btn" type="button" title="Conta">
+          <span aria-hidden="true">👤</span><span id="account-label">Fazer login</span>
+        </button>
+        <div class="lang-switch" id="lang-switch">
+          <button class="lang-btn" data-lang="pt">PT</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
       </div>
     </div>
   </div>
@@ -121,23 +123,32 @@
     <p id="empty-state" class="empty-state" hidden></p>
     </div>
 
-    <!-- Aba "Comparar com amigos": link/código de sempre (sem conta) e a
+    <!-- Aba "Comparar": link/código de sempre (sem conta) e a
          seção de amigos via conta (cloud-sync.js, opcional). -->
     <div id="view-friends" hidden>
-      <div class="share-section">
-        <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="share-link-input" type="text" readonly />
-          <button class="export-copy" id="share-copy-btn" type="button"></button>
+      <!-- Caminho de antes de existir conta: gerar/colar um link continua
+           funcionando, mas fica fechado por padrão — secundário agora que dá
+           pra comparar direto pela conta (seção de Amigos, mais abaixo). -->
+      <div class="accordion">
+        <button class="accordion-toggle" id="share-link-toggle" type="button"
+                aria-expanded="false" aria-controls="share-link-panel"></button>
+        <div class="accordion-panel" id="share-link-panel" hidden>
+          <div class="share-section">
+            <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
+            <div class="share-field-row">
+              <input class="share-input" id="share-link-input" type="text" readonly />
+              <button class="export-copy" id="share-copy-btn" type="button"></button>
+            </div>
+          </div>
+          <div class="share-section">
+            <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
+            <div class="share-field-row">
+              <input class="share-input" id="share-paste-input" type="text" />
+              <button class="export-copy" id="share-paste-btn" type="button"></button>
+            </div>
+            <p class="share-error" id="share-paste-error" hidden></p>
+          </div>
         </div>
-      </div>
-      <div class="share-section">
-        <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="share-paste-input" type="text" />
-          <button class="export-copy" id="share-paste-btn" type="button"></button>
-        </div>
-        <p class="share-error" id="share-paste-error" hidden></p>
       </div>
 
       <!-- Comparação ao vivo com amigos, via conta (cloud-sync.js). Fica
@@ -146,12 +157,6 @@
         <h3 id="friends-section-title"></h3>
         <p class="share-field-label" id="friends-intro"></p>
 
-        <label class="share-field-label" id="friend-code-label" for="friend-code-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="friend-code-input" type="text" readonly />
-          <button class="export-copy" id="friend-code-copy-btn" type="button"></button>
-        </div>
-
         <label class="share-field-label" id="friend-add-label" for="friend-add-input"></label>
         <div class="share-field-row">
           <input class="share-input" id="friend-add-input" type="text" />
@@ -159,6 +164,7 @@
         </div>
         <p class="share-error" id="friend-add-error" hidden></p>
 
+        <h4 id="friend-list-title"></h4>
         <ul class="friend-list" id="friend-list"></ul>
         <p class="compare-list-empty" id="friend-list-empty" hidden></p>
       </div>
@@ -176,10 +182,10 @@
            ação diária só lê o IGN. Este formulário é a ponte: o código entra
            na lista deste aparelho na hora, e a entrada oficial toma o lugar
            dele quando o robô finalmente trouxer o código. -->
-      <div class="codes-add">
-        <button class="codes-add-toggle" id="codes-add-toggle" type="button"
+      <div class="accordion">
+        <button class="accordion-toggle" id="codes-add-toggle" type="button"
                 aria-expanded="false" aria-controls="codes-add-form"></button>
-        <form class="codes-add-form" id="codes-add-form" hidden>
+        <form class="accordion-panel" id="codes-add-form" hidden>
           <div class="codes-add-field">
             <label class="share-field-label" id="codes-add-code-label"
                    for="codes-add-code"></label>
@@ -304,7 +310,10 @@
        painel "não configurado" — o resto do app funciona igual, sem conta. -->
   <div class="export-overlay" id="account-overlay" hidden>
     <div class="export-box share-box">
-      <h2 id="account-title"></h2>
+      <div class="compare-header">
+        <h2 id="account-title"></h2>
+        <button class="modal-close-x" id="account-close" type="button" aria-label="×">×</button>
+      </div>
 
       <p class="backup-intro" id="account-unconfigured-text" hidden></p>
 
@@ -333,7 +342,7 @@
         <input class="share-input" id="account-signup-email-input" type="email" autocomplete="email" required />
 
         <label class="share-field-label" id="account-signup-username-label" for="account-signup-username-input"></label>
-        <input class="share-input" id="account-signup-username-input" type="text" maxlength="24" autocomplete="nickname" required />
+        <input class="share-input" id="account-signup-username-input" type="text" maxlength="15" autocomplete="nickname" required />
 
         <label class="share-field-label" id="account-signup-password-label" for="account-signup-password-input"></label>
         <input class="share-input" id="account-signup-password-input" type="password" autocomplete="new-password" required minlength="6" />
@@ -363,10 +372,6 @@
           <button class="export-copy" id="account-resync-btn" type="button"></button>
           <button class="export-copy backup-danger" id="account-logout-btn" type="button"></button>
         </div>
-      </div>
-
-      <div class="export-actions">
-        <button class="export-close" id="account-close" type="button"></button>
       </div>
     </div>
   </div>
