@@ -568,7 +568,7 @@ async function main() {
           <div class="friend-row-actions">
             ${compareBtn}
             <button class="friend-remove-btn" data-remove-uid="${escapeHtml(f.uid)}" type="button"
-                    title="${escapeHtml(s.friendRemoveButton)}" aria-label="${escapeHtml(s.friendRemoveButton)}">🗑️</button>
+                    title="${escapeHtml(s.friendRemoveButton)}" aria-label="${escapeHtml(s.friendRemoveButton)}">✕</button>
           </div>
         </li>`;
       })
