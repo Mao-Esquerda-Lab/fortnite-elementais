@@ -87,6 +87,10 @@ const TRANSLATIONS = {
     accountErrorWeakPassword: "A senha precisa ter pelo menos 6 caracteres.",
     accountErrorTooMany: "Muitas tentativas — espere um pouco e tente de novo.",
     accountErrorNetwork: "Sem conexão com o servidor de contas. Tente de novo.",
+    accountErrorAuthDisabled:
+      "O login por e-mail/senha ainda não foi habilitado no Firebase (Authentication → Sign-in method).",
+    accountErrorPermission:
+      "Sem permissão para acessar seus dados — confira se as regras do Firestore foram publicadas.",
     accountErrorGeneric: "Não foi possível completar essa ação. Tente de novo.",
     viewSprites: "Elementais",
     viewCodes: "Códigos",
@@ -230,6 +234,10 @@ const TRANSLATIONS = {
     accountErrorWeakPassword: "Password needs at least 6 characters.",
     accountErrorTooMany: "Too many attempts — wait a bit and try again.",
     accountErrorNetwork: "Can't reach the account server. Try again.",
+    accountErrorAuthDisabled:
+      "Email/password sign-in hasn't been enabled in Firebase yet (Authentication → Sign-in method).",
+    accountErrorPermission:
+      "No permission to access your data — check whether the Firestore rules were published.",
     accountErrorGeneric: "Couldn't complete that action. Try again.",
     viewSprites: "Sprites",
     viewCodes: "Codes",
