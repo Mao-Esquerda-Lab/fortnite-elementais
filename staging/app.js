@@ -854,7 +854,7 @@ function applyLanguage() {
   accountBtn.title = s.accountTitle;
   document.getElementById("account-label").textContent = s.accountLabelSignedOut;
   document.getElementById("account-title").textContent = s.accountTitle;
-  document.getElementById("account-close").textContent = s.close;
+  document.getElementById("account-close").title = s.close;
   document.getElementById("account-unconfigured-text").textContent =
     s.accountUnconfigured;
   document.getElementById("account-tab-login").textContent = s.accountLoginButton;

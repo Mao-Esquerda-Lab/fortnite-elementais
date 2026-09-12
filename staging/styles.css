@@ -71,12 +71,26 @@ textarea {
   border-bottom: 1px solid var(--border);
 }
 
+/* Grid de 3 colunas (não flex + posicionamento absoluto, como era): a coluna
+   do meio (auto) tem o tamanho exato do ícone e fica sempre 100% centralizada
+   de verdade, porque as duas colunas 1fr ao redor são sempre iguais entre si
+   — sem depender de calc/z-index, e sem correr o risco de um grupo de botões
+   largo (conta + idioma) invadir e cobrir o ícone numa tela estreita, porque
+   cada coluna tem seu próprio espaço reservado, nunca sobreposto. */
 .app-header-row {
-  position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
   padding: 0.55rem 0.75rem;
+}
+
+.app-header-row > .refresh-btn {
+  justify-self: start;
+}
+
+.app-header-row > .header-right {
+  justify-self: end;
 }
 
 .topbar {
@@ -123,13 +137,10 @@ textarea {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Ícone do app centralizado na linha de conteúdo do cabeçalho (não mais
-   relativo à área segura — .app-header-row já começa abaixo dela). */
+/* Ícone do app: sua própria coluna no grid de .app-header-row (ver acima) —
+   nunca precisa de position/z-index pra ficar centralizado ou por cima dos
+   vizinhos, porque a coluna do meio nunca se sobrepõe às laterais. */
 .header-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   width: 2rem;
   height: 2rem;
   border-radius: 0.45rem;
@@ -1511,7 +1522,10 @@ textarea {
   filter: brightness(1.08);
 }
 
-.install-close {
+/* Botão "×" redondo e discreto, reaproveitado por qualquer modal (toast de
+   instalação, conta/login) que precise de um fechar no canto — em vez do
+   botão "Fechar" de texto, que fica melhor só quando é a única ação. */
+.modal-close-x {
   flex-shrink: 0;
   align-self: flex-start;
   width: 1.8rem;
@@ -1525,7 +1539,7 @@ textarea {
   cursor: pointer;
 }
 
-.install-close:hover {
+.modal-close-x:hover {
   color: var(--text);
 }
 
@@ -1650,10 +1664,12 @@ textarea {
   .compare-lists {
     flex-direction: column;
   }
-}
 
-/* Telas muito estreitas: o botão de atualizar vira só o ícone. */
-@media (max-width: 340px) {
+  /* "Atualizar"/"Fazer login" viram só o ícone: com o texto, o botão de
+     conta precisa de mais largura do que sobra na coluna lateral do grid
+     do cabeçalho (a coluna do meio, reservada pro logo, nunca cede espaço),
+     e o texto quebra em duas linhas — button vira mais alto que a linha do
+     cabeçalho e passa a cobrir o logo. */
   .refresh-btn span:not([aria-hidden]) {
     display: none;
   }

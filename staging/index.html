@@ -21,7 +21,7 @@
       <span class="install-offline" id="install-offline"></span>
     </div>
     <button class="install-btn" id="install-btn" type="button" hidden></button>
-    <button class="install-close" id="install-close" type="button" aria-label="×">×</button>
+    <button class="modal-close-x" id="install-close" type="button" aria-label="×">×</button>
   </div>
 
   <div class="app-header">
@@ -310,7 +310,10 @@
        painel "não configurado" — o resto do app funciona igual, sem conta. -->
   <div class="export-overlay" id="account-overlay" hidden>
     <div class="export-box share-box">
-      <h2 id="account-title"></h2>
+      <div class="compare-header">
+        <h2 id="account-title"></h2>
+        <button class="modal-close-x" id="account-close" type="button" aria-label="×">×</button>
+      </div>
 
       <p class="backup-intro" id="account-unconfigured-text" hidden></p>
 
@@ -369,10 +372,6 @@
           <button class="export-copy" id="account-resync-btn" type="button"></button>
           <button class="export-copy backup-danger" id="account-logout-btn" type="button"></button>
         </div>
-      </div>
-
-      <div class="export-actions">
-        <button class="export-close" id="account-close" type="button"></button>
       </div>
     </div>
   </div>
