@@ -45,6 +45,21 @@ const TRANSLATIONS = {
     compareOnlyThem: "Só ele(a) tem",
     compareNone: "Nada exclusivo aqui",
     compareInvalidCode: "Este link de comparação é inválido ou está corrompido.",
+    friendsSectionTitle: "Amigos",
+    friendsIntro: "Compare em tempo real com amigos que também têm conta.",
+    friendsSignedOutHint: "Entre na sua conta para comparar direto com amigos.",
+    friendCodeLabel: "Seu código de amigo",
+    friendCodeCopy: "Copiar código",
+    friendAddLabel: "Adicionar amigo pelo código",
+    friendAddButton: "Adicionar",
+    friendErrorInvalidCode: "Código inválido.",
+    friendErrorNotFound: "Nenhuma conta encontrada com esse código.",
+    friendErrorOwnCode: "Esse é o seu próprio código.",
+    friendErrorAlreadyAdded: "Você já adicionou esse amigo.",
+    friendWaitingMutual: "Aguardando ele(a) adicionar você de volta",
+    friendListEmpty: "Você ainda não adicionou nenhum amigo.",
+    friendRemoveButton: "Remover amigo",
+    friendCompareUnavailable: "Não foi possível carregar a coleção desse amigo agora.",
     backupLabel: "Backup",
     backupTitle: "Leva sua coleção inteira para outro aparelho",
     backupIntro:
@@ -201,6 +216,21 @@ const TRANSLATIONS = {
     compareOnlyThem: "Only they have",
     compareNone: "Nothing exclusive here",
     compareInvalidCode: "This comparison link is invalid or corrupted.",
+    friendsSectionTitle: "Friends",
+    friendsIntro: "Compare live with friends who also have an account.",
+    friendsSignedOutHint: "Sign in to compare live with friends.",
+    friendCodeLabel: "Your friend code",
+    friendCodeCopy: "Copy code",
+    friendAddLabel: "Add a friend by code",
+    friendAddButton: "Add",
+    friendErrorInvalidCode: "Invalid code.",
+    friendErrorNotFound: "No account found with that code.",
+    friendErrorOwnCode: "That's your own code.",
+    friendErrorAlreadyAdded: "You already added that friend.",
+    friendWaitingMutual: "Waiting for them to add you back",
+    friendListEmpty: "You haven't added any friends yet.",
+    friendRemoveButton: "Remove friend",
+    friendCompareUnavailable: "Couldn't load that friend's collection right now.",
     backupLabel: "Backup",
     backupTitle: "Move your whole collection to another device",
     backupIntro:
@@ -755,6 +785,18 @@ function applyLanguage() {
   document.getElementById("share-paste-label").textContent = s.sharePasteLabel;
   document.getElementById("share-paste-btn").textContent = s.sharePasteButton;
   document.getElementById("share-close").textContent = s.close;
+
+  // Seção de amigos (cloud-sync.js, opcional): este arquivo só entrega o
+  // texto estático, igual faz para o modal de conta — a lógica de quando
+  // mostrar/preencher cada coisa é toda do cloud-sync.js.
+  document.getElementById("friends-section-title").textContent = s.friendsSectionTitle;
+  document.getElementById("friends-intro").textContent = s.friendsIntro;
+  document.getElementById("friends-signed-out-hint").textContent = s.friendsSignedOutHint;
+  document.getElementById("friend-code-label").textContent = s.friendCodeLabel;
+  document.getElementById("friend-code-copy-btn").textContent = s.friendCodeCopy;
+  document.getElementById("friend-add-label").textContent = s.friendAddLabel;
+  document.getElementById("friend-add-btn").textContent = s.friendAddButton;
+  document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
 
@@ -2216,5 +2258,8 @@ window.SpritesLockerBridge = {
     openBackupModal();
     proposeBackup(JSON.stringify(remoteSnapshot));
   },
+  // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
+  // modal somente-leitura já usado pelo código de compartilhamento.
+  openCompareModal: (theirCollection) => openCompareModal(theirCollection),
   t: () => t(),
 };
