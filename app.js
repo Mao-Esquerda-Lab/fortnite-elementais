@@ -101,6 +101,8 @@ const TRANSLATIONS = {
     accountLogout: "Sair",
     accountResync: "Sincronizar de novo",
     accountSignedInAs: (email) => `Conectado como ${email}`,
+    accountWelcomeToast: (name) => `Olá, ${name}!`,
+    accountWelcomeToastGeneric: "Login realizado!",
     accountUnconfigured:
       "A sincronização por conta ainda não foi configurada neste app.",
     accountSyncedUp: "Sua coleção deste aparelho foi salva na sua conta.",
@@ -282,6 +284,8 @@ const TRANSLATIONS = {
     accountLogout: "Log out",
     accountResync: "Sync again",
     accountSignedInAs: (email) => `Signed in as ${email}`,
+    accountWelcomeToast: (name) => `Hi, ${name}!`,
+    accountWelcomeToastGeneric: "Logged in!",
     accountUnconfigured: "Account sync hasn't been set up on this app yet.",
     accountSyncedUp: "Your collection on this device was saved to your account.",
     accountSyncedOk: "Synced with your account.",
