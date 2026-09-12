@@ -1771,6 +1771,24 @@ function fromBase64Url(code) {
   return new TextDecoder().decode(bytes);
 }
 
+// Sprites saem de data/elementals.js quando a temporada muda (ver o
+// cabeçalho do arquivo), mas o `collection` no localStorage nunca é limpo
+// sozinho — o id de um Sprite de temporada anterior que o usuário marcou
+// antes da curadoria remover a entrada fica órfão aí para sempre. Ele já é
+// ignorado na tela (o progresso/grade só iteram ELEMENTALS), mas sem este
+// filtro ainda seria gravado para sempre em todo backup novo e, pela conta,
+// reenviado pra nuvem a cada sincronização — daí pra comparação com amigos.
+// Isso NÃO é o mesmo caso do "id desconhecido" que sanitizeCollection()
+// preserva de propósito ao IMPORTAR (aquele é um Sprite novo demais para
+// esta versão do app, não um antigo demais).
+function currentCollectionOnly(source) {
+  const clean = {};
+  ELEMENTALS.forEach((e) => {
+    if (!e.upcoming && source[e.id]) clean[e.id] = source[e.id];
+  });
+  return clean;
+}
+
 // `codes` e `customCodes` foram acrescentados depois, mantendo a versão 1 de
 // propósito: são campos novos e opcionais, então backups gerados antes deles
 // continuam válidos (importam sem código resgatado / sem código manual) em
@@ -1780,7 +1798,7 @@ function backupSnapshot() {
     app: BACKUP_APP,
     v: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
-    collection,
+    collection: currentCollectionOnly(collection),
     codes: redeemedCodes,
     customCodes,
   };
