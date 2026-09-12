@@ -58,6 +58,7 @@
     <!-- Alterna entre a coleção de Sprites e a lista de códigos do lobby. -->
     <div class="view-tabs" id="view-tabs" role="tablist">
       <button class="view-tab active" type="button" data-view="sprites" role="tab"></button>
+      <button class="view-tab" type="button" data-view="friends" role="tab"></button>
       <button class="view-tab" type="button" data-view="codes" role="tab"></button>
     </div>
 
@@ -108,10 +109,6 @@
         <button class="export-btn" id="export-btn" type="button">
           <span aria-hidden="true">📸</span><span id="export-label"></span>
         </button>
-        <!-- Gera um link para comparar a coleção com a de um amigo (sem backend). -->
-        <button class="export-btn" id="share-btn" type="button">
-          <span aria-hidden="true">🔗</span><span id="share-label"></span>
-        </button>
         <!-- Backup completo da coleção, para levar de um aparelho a outro. -->
         <button class="export-btn" id="backup-btn" type="button">
           <span aria-hidden="true">📦</span><span id="backup-label"></span>
@@ -122,6 +119,50 @@
     <section id="elemental-grid" class="elemental-grid"></section>
 
     <p id="empty-state" class="empty-state" hidden></p>
+    </div>
+
+    <!-- Aba "Comparar com amigos": link/código de sempre (sem conta) e a
+         seção de amigos via conta (cloud-sync.js, opcional). -->
+    <div id="view-friends" hidden>
+      <div class="share-section">
+        <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="share-link-input" type="text" readonly />
+          <button class="export-copy" id="share-copy-btn" type="button"></button>
+        </div>
+      </div>
+      <div class="share-section">
+        <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="share-paste-input" type="text" />
+          <button class="export-copy" id="share-paste-btn" type="button"></button>
+        </div>
+        <p class="share-error" id="share-paste-error" hidden></p>
+      </div>
+
+      <!-- Comparação ao vivo com amigos, via conta (cloud-sync.js). Fica
+           escondido até o cloud-sync.js confirmar que há uma sessão ativa. -->
+      <div class="share-section" id="friends-section" hidden>
+        <h3 id="friends-section-title"></h3>
+        <p class="share-field-label" id="friends-intro"></p>
+
+        <label class="share-field-label" id="friend-code-label" for="friend-code-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="friend-code-input" type="text" readonly />
+          <button class="export-copy" id="friend-code-copy-btn" type="button"></button>
+        </div>
+
+        <label class="share-field-label" id="friend-add-label" for="friend-add-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="friend-add-input" type="text" />
+          <button class="export-copy" id="friend-add-btn" type="button"></button>
+        </div>
+        <p class="share-error" id="friend-add-error" hidden></p>
+
+        <ul class="friend-list" id="friend-list"></ul>
+        <p class="compare-list-empty" id="friend-list-empty" hidden></p>
+      </div>
+      <p class="share-field-label" id="friends-signed-out-hint" hidden></p>
     </div>
 
     <!-- Aba dos códigos do Painel de Admin: marcar os já resgatados. -->
@@ -191,55 +232,6 @@
         <button class="export-copy" id="export-share" type="button"></button>
         <a class="export-download" id="export-download"></a>
         <button class="export-close" id="export-close" type="button"></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Gera/copia um link de comparação, ou aceita colar o de um amigo. -->
-  <div class="export-overlay" id="share-overlay" hidden>
-    <div class="export-box share-box">
-      <div class="share-section">
-        <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="share-link-input" type="text" readonly />
-          <button class="export-copy" id="share-copy-btn" type="button"></button>
-        </div>
-      </div>
-      <div class="share-section">
-        <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="share-paste-input" type="text" />
-          <button class="export-copy" id="share-paste-btn" type="button"></button>
-        </div>
-        <p class="share-error" id="share-paste-error" hidden></p>
-      </div>
-
-      <!-- Comparação ao vivo com amigos, via conta (cloud-sync.js). Fica
-           escondido até o cloud-sync.js confirmar que há uma sessão ativa. -->
-      <div class="share-section" id="friends-section" hidden>
-        <h3 id="friends-section-title"></h3>
-        <p class="share-field-label" id="friends-intro"></p>
-
-        <label class="share-field-label" id="friend-code-label" for="friend-code-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="friend-code-input" type="text" readonly />
-          <button class="export-copy" id="friend-code-copy-btn" type="button"></button>
-        </div>
-
-        <label class="share-field-label" id="friend-add-label" for="friend-add-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="friend-add-input" type="text" />
-          <button class="export-copy" id="friend-add-btn" type="button"></button>
-        </div>
-        <p class="share-error" id="friend-add-error" hidden></p>
-
-        <ul class="friend-list" id="friend-list"></ul>
-        <p class="compare-list-empty" id="friend-list-empty" hidden></p>
-      </div>
-      <p class="share-field-label" id="friends-signed-out-hint" hidden></p>
-
-      <div class="export-actions">
-        <button class="export-close" id="share-close" type="button"></button>
       </div>
     </div>
   </div>
@@ -340,6 +332,9 @@
         <label class="share-field-label" id="account-signup-email-label" for="account-signup-email-input"></label>
         <input class="share-input" id="account-signup-email-input" type="email" autocomplete="email" required />
 
+        <label class="share-field-label" id="account-signup-username-label" for="account-signup-username-input"></label>
+        <input class="share-input" id="account-signup-username-input" type="text" maxlength="24" autocomplete="nickname" required />
+
         <label class="share-field-label" id="account-signup-password-label" for="account-signup-password-input"></label>
         <input class="share-input" id="account-signup-password-input" type="password" autocomplete="new-password" required minlength="6" />
         <p class="share-field-label" id="account-password-hint" hidden></p>
@@ -354,6 +349,12 @@
       <div class="share-section" id="account-signed-in" hidden>
         <p id="account-signed-in-email"></p>
         <p class="backup-done" id="account-sync-status"></p>
+
+        <label class="share-field-label" id="account-username-label" for="account-username-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="account-username-input" type="text" maxlength="24" autocomplete="nickname" />
+          <button class="export-copy" id="account-username-save-btn" type="button"></button>
+        </div>
 
         <label class="share-field-label" id="account-friend-code-label" for="account-friend-code-input"></label>
         <div class="share-field-row">

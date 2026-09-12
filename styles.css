@@ -586,6 +586,17 @@ textarea {
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
+/* Aba "Comparar com amigos": mesmo conteúdo que antes vivia dentro de um
+   modal (.export-box) — aqui sem casca de card, só o espaçamento vertical.
+   O seletor :not([hidden]) evita repetir o problema já visto no
+   account-overlay: um display explícito aqui bateria de frente com o
+   atributo hidden (que também vira só CSS, e perde de especificidade). */
+#view-friends:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 /* ---- Tabela dos códigos do Painel de Admin ---- */
 
 .codes-intro {
@@ -1010,9 +1021,20 @@ textarea {
   background: var(--surface-hover);
 }
 
+.friend-row-name {
+  font-weight: 700;
+}
+
 .friend-row-code {
   font-weight: 700;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Com nome do lado, o código vira só uma referência secundária. */
+.friend-row-name + .friend-row-code {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .friend-row-status {
@@ -1513,6 +1535,13 @@ textarea {
   .filter-tab {
     padding: 0.4rem 0.75rem;
     font-size: 0.85rem;
+  }
+
+  /* Três abas agora (era duas) e "Comparar com amigos" é bem mais longo que
+     os outros dois rótulos — aperta fonte/padding para não quebrar feio. */
+  .view-tab {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.78rem;
   }
 
   .progress-row {
