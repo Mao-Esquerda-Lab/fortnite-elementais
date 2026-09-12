@@ -124,20 +124,29 @@
     <!-- Aba "Comparar com amigos": link/código de sempre (sem conta) e a
          seção de amigos via conta (cloud-sync.js, opcional). -->
     <div id="view-friends" hidden>
-      <div class="share-section">
-        <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="share-link-input" type="text" readonly />
-          <button class="export-copy" id="share-copy-btn" type="button"></button>
+      <!-- Caminho de antes de existir conta: gerar/colar um link continua
+           funcionando, mas fica fechado por padrão — secundário agora que dá
+           pra comparar direto pela conta (seção de Amigos, mais abaixo). -->
+      <div class="accordion">
+        <button class="accordion-toggle" id="share-link-toggle" type="button"
+                aria-expanded="false" aria-controls="share-link-panel"></button>
+        <div class="accordion-panel" id="share-link-panel" hidden>
+          <div class="share-section">
+            <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
+            <div class="share-field-row">
+              <input class="share-input" id="share-link-input" type="text" readonly />
+              <button class="export-copy" id="share-copy-btn" type="button"></button>
+            </div>
+          </div>
+          <div class="share-section">
+            <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
+            <div class="share-field-row">
+              <input class="share-input" id="share-paste-input" type="text" />
+              <button class="export-copy" id="share-paste-btn" type="button"></button>
+            </div>
+            <p class="share-error" id="share-paste-error" hidden></p>
+          </div>
         </div>
-      </div>
-      <div class="share-section">
-        <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
-        <div class="share-field-row">
-          <input class="share-input" id="share-paste-input" type="text" />
-          <button class="export-copy" id="share-paste-btn" type="button"></button>
-        </div>
-        <p class="share-error" id="share-paste-error" hidden></p>
       </div>
 
       <!-- Comparação ao vivo com amigos, via conta (cloud-sync.js). Fica
@@ -176,10 +185,10 @@
            ação diária só lê o IGN. Este formulário é a ponte: o código entra
            na lista deste aparelho na hora, e a entrada oficial toma o lugar
            dele quando o robô finalmente trouxer o código. -->
-      <div class="codes-add">
-        <button class="codes-add-toggle" id="codes-add-toggle" type="button"
+      <div class="accordion">
+        <button class="accordion-toggle" id="codes-add-toggle" type="button"
                 aria-expanded="false" aria-controls="codes-add-form"></button>
-        <form class="codes-add-form" id="codes-add-form" hidden>
+        <form class="accordion-panel" id="codes-add-form" hidden>
           <div class="codes-add-field">
             <label class="share-field-label" id="codes-add-code-label"
                    for="codes-add-code"></label>
