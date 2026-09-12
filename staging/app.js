@@ -783,11 +783,16 @@ function applyLanguage() {
   document.getElementById("account-close").textContent = s.close;
   document.getElementById("account-unconfigured-text").textContent =
     s.accountUnconfigured;
-  document.getElementById("account-email-label").textContent = s.accountEmailLabel;
-  document.getElementById("account-password-label").textContent =
+  document.getElementById("account-tab-login").textContent = s.accountLoginButton;
+  document.getElementById("account-tab-signup").textContent = s.accountSignupButton;
+  document.getElementById("account-login-email-label").textContent = s.accountEmailLabel;
+  document.getElementById("account-login-password-label").textContent =
     s.accountPasswordLabel;
-  document.getElementById("account-login-btn").textContent = s.accountLoginButton;
-  document.getElementById("account-signup-btn").textContent = s.accountSignupButton;
+  document.getElementById("account-login-submit").textContent = s.accountLoginButton;
+  document.getElementById("account-signup-email-label").textContent = s.accountEmailLabel;
+  document.getElementById("account-signup-password-label").textContent =
+    s.accountPasswordLabel;
+  document.getElementById("account-signup-submit").textContent = s.accountSignupButton;
   document.getElementById("account-forgot-link").textContent =
     s.accountForgotPassword;
   document.getElementById("account-resync-btn").textContent = s.accountResync;

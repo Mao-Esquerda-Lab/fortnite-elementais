@@ -77,12 +77,16 @@ async function main() {
     btn: document.getElementById("account-btn"),
     close: document.getElementById("account-close"),
     unconfiguredText: document.getElementById("account-unconfigured-text"),
-    form: document.getElementById("account-form"),
-    emailInput: document.getElementById("account-email-input"),
-    passwordInput: document.getElementById("account-password-input"),
+    modeTabs: document.getElementById("account-mode-tabs"),
+    tabLogin: document.getElementById("account-tab-login"),
+    tabSignup: document.getElementById("account-tab-signup"),
+    loginForm: document.getElementById("account-login-form"),
+    loginEmailInput: document.getElementById("account-login-email-input"),
+    loginPasswordInput: document.getElementById("account-login-password-input"),
+    signupForm: document.getElementById("account-signup-form"),
+    signupEmailInput: document.getElementById("account-signup-email-input"),
+    signupPasswordInput: document.getElementById("account-signup-password-input"),
     authError: document.getElementById("account-auth-error"),
-    loginBtn: document.getElementById("account-login-btn"),
-    signupBtn: document.getElementById("account-signup-btn"),
     forgotLink: document.getElementById("account-forgot-link"),
     signedIn: document.getElementById("account-signed-in"),
     signedInEmail: document.getElementById("account-signed-in-email"),
@@ -103,11 +107,32 @@ async function main() {
     if (e.target === els.overlay) closeModal();
   });
 
-  function showPanel(name) {
-    els.unconfiguredText.hidden = name !== "unconfigured";
-    els.form.hidden = name !== "signed-out";
-    els.signedIn.hidden = name !== "signed-in";
+  let currentPanel = "unconfigured";
+  let authMode = "login";
+
+  function render() {
+    els.unconfiguredText.hidden = currentPanel !== "unconfigured";
+    els.modeTabs.hidden = currentPanel !== "signed-out";
+    els.loginForm.hidden = !(currentPanel === "signed-out" && authMode === "login");
+    els.signupForm.hidden = !(currentPanel === "signed-out" && authMode === "signup");
+    els.signedIn.hidden = currentPanel !== "signed-in";
+    els.tabLogin.classList.toggle("active", authMode === "login");
+    els.tabSignup.classList.toggle("active", authMode === "signup");
   }
+
+  function showPanel(name) {
+    currentPanel = name;
+    if (name === "signed-out") setAuthError("");
+    render();
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    setAuthError("");
+    render();
+  }
+  els.tabLogin.addEventListener("click", () => setAuthMode("login"));
+  els.tabSignup.addEventListener("click", () => setAuthMode("signup"));
 
   if (!isFirebaseConfigured()) {
     showPanel("unconfigured");
@@ -241,28 +266,28 @@ async function main() {
     els.authError.hidden = !message;
   }
 
-  els.form.addEventListener("submit", async (e) => {
+  els.loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     setAuthError("");
     try {
       await authApi.signInWithEmailAndPassword(
         auth,
-        els.emailInput.value,
-        els.passwordInput.value
+        els.loginEmailInput.value,
+        els.loginPasswordInput.value
       );
     } catch (err) {
       setAuthError(authErrorMessage(bridge, err));
     }
   });
 
-  els.signupBtn.addEventListener("click", async () => {
-    if (!els.form.reportValidity()) return;
+  els.signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
     setAuthError("");
     try {
       await authApi.createUserWithEmailAndPassword(
         auth,
-        els.emailInput.value,
-        els.passwordInput.value
+        els.signupEmailInput.value,
+        els.signupPasswordInput.value
       );
     } catch (err) {
       setAuthError(authErrorMessage(bridge, err));
@@ -271,12 +296,12 @@ async function main() {
 
   els.forgotLink.addEventListener("click", async () => {
     setAuthError("");
-    if (!els.emailInput.value) {
+    if (!els.loginEmailInput.value) {
       setAuthError(bridge.t().accountErrorInvalidEmail);
       return;
     }
     try {
-      await authApi.sendPasswordResetEmail(auth, els.emailInput.value);
+      await authApi.sendPasswordResetEmail(auth, els.loginEmailInput.value);
       setAuthError(bridge.t().accountResetSent);
     } catch (err) {
       setAuthError(authErrorMessage(bridge, err));
