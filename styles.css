@@ -36,6 +36,16 @@ body {
   color: var(--text);
 }
 
+/* Botões e campos de formulário não herdam a fonte da página por padrão —
+   cada navegador usa a fonte nativa do sistema pra eles, então sem isso
+   cada um mostra diferente. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 /* Cabeçalho fixo e opaco, igual na web e no app instalado.
    O padding com env(safe-area-inset-top) cobre a barra de status/notch. */
 .app-header {
@@ -69,6 +79,26 @@ body {
   color: var(--muted);
 }
 
+.friend-code-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  margin: 0.75rem auto 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.friend-code-banner strong {
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 /* Ícone do app centralizado na barra do cabeçalho. */
 .header-icon {
   position: absolute;
@@ -79,6 +109,19 @@ body {
   height: 2rem;
   border-radius: 0.45rem;
   object-fit: cover;
+}
+
+/* .share-section define display:flex, o que por si só venceria o atributo
+   "hidden" (regra padrão do navegador) nos três painéis do modal de conta,
+   que alternam entre si trocando esse atributo. */
+#account-overlay [hidden] {
+  display: none !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .lang-switch {
@@ -108,6 +151,23 @@ body {
 
 .refresh-btn:hover {
   background: var(--surface-hover);
+}
+
+.account-btn {
+  position: relative;
+}
+
+/* Bolinha indicando que há uma conta conectada neste aparelho. */
+.account-btn.signed-in::after {
+  content: "";
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--rare);
+  border: 1px solid var(--bg);
 }
 
 .lang-btn {
@@ -411,6 +471,10 @@ body {
   gap: 0.5rem;
 }
 
+.export-actions.actions-start {
+  justify-content: flex-start;
+}
+
 .export-download {
   padding: 0.5rem 1rem;
   border-radius: 0.6rem;
@@ -520,6 +584,17 @@ body {
   border-color: var(--accent);
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* Aba "Comparar com amigos": mesmo conteúdo que antes vivia dentro de um
+   modal (.export-box) — aqui sem casca de card, só o espaçamento vertical.
+   O seletor :not([hidden]) evita repetir o problema já visto no
+   account-overlay: um display explícito aqui bateria de frente com o
+   atributo hidden (que também vira só CSS, e perde de especificidade). */
+#view-friends:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 /* ---- Tabela dos códigos do Painel de Admin ---- */
@@ -920,6 +995,58 @@ body {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+#friends-section-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.friend-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.friend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.friend-row-name {
+  font-weight: 700;
+}
+
+.friend-row-code {
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Com nome do lado, o código vira só uma referência secundária. */
+.friend-row-name + .friend-row-code {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.friend-row-status {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.friend-row-actions {
+  display: flex;
+  gap: 0.4rem;
 }
 
 .sort-label {
@@ -1408,6 +1535,13 @@ body {
   .filter-tab {
     padding: 0.4rem 0.75rem;
     font-size: 0.85rem;
+  }
+
+  /* Três abas agora (era duas) e "Comparar com amigos" é bem mais longo que
+     os outros dois rótulos — aperta fonte/padding para não quebrar feio. */
+  .view-tab {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.78rem;
   }
 
   .progress-row {

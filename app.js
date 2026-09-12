@@ -32,8 +32,6 @@ const TRANSLATIONS = {
     exportCopied: "Copiado! ✓",
     exportShare: "Compartilhar",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
-    shareLabel: "Comparar",
-    shareTitle: "Gera um link para comparar sua coleção com a de um amigo",
     shareLinkLabel: "Seu link de comparação",
     shareCopyLink: "Copiar link",
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
@@ -45,6 +43,24 @@ const TRANSLATIONS = {
     compareOnlyThem: "Só ele(a) tem",
     compareNone: "Nada exclusivo aqui",
     compareInvalidCode: "Este link de comparação é inválido ou está corrompido.",
+    friendsSectionTitle: "Amigos",
+    friendsIntro: "Compare em tempo real com amigos que também têm conta.",
+    friendsSignedOutHint: "Entre na sua conta para comparar direto com amigos.",
+    accountUsernameLabel: "Nome de usuário",
+    accountUsernameDisplay: (name) => `Nome de usuário: ${name}`,
+    accountErrorUsernameRequired: "Digite um nome de usuário.",
+    friendCodeLabel: "Seu código de amigo",
+    friendCodeCopy: "Copiar código",
+    friendAddLabel: "Adicionar amigo pelo código",
+    friendAddButton: "Adicionar",
+    friendErrorInvalidCode: "Código inválido.",
+    friendErrorNotFound: "Nenhuma conta encontrada com esse código.",
+    friendErrorOwnCode: "Esse é o seu próprio código.",
+    friendErrorAlreadyAdded: "Você já adicionou esse amigo.",
+    friendWaitingMutual: "Aguardando ele(a) adicionar você de volta",
+    friendListEmpty: "Você ainda não adicionou nenhum amigo.",
+    friendRemoveButton: "Remover amigo",
+    friendCompareUnavailable: "Não foi possível carregar a coleção desse amigo agora.",
     backupLabel: "Backup",
     backupTitle: "Leva sua coleção inteira para outro aparelho",
     backupIntro:
@@ -64,7 +80,44 @@ const TRANSLATIONS = {
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
+    accountLabelSignedOut: "Fazer login",
+    accountLabelSignedIn: "Meu perfil",
+    accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
+    accountEmailLabel: "E-mail",
+    accountPasswordLabel: "Senha",
+    accountLoginButton: "Entrar",
+    accountSignupButton: "Criar conta",
+    accountForgotPassword: "Esqueci minha senha",
+    accountResetSent:
+      "Se houver uma conta com esse e-mail, enviamos um link para redefinir a senha.",
+    accountLogout: "Sair",
+    accountResync: "Sincronizar de novo",
+    accountSignedInAs: (email) => `Conectado como ${email}`,
+    accountUnconfigured:
+      "A sincronização por conta ainda não foi configurada neste app.",
+    accountSyncedUp: "Sua coleção deste aparelho foi salva na sua conta.",
+    accountSyncedOk: "Sincronizado com sua conta.",
+    accountSyncedDown: "A coleção da sua conta foi baixada para este aparelho.",
+    accountSyncNotDone: "Ainda não sincronizado — revise abaixo quando quiser.",
+    accountErrorWrongPassword: "E-mail ou senha incorretos.",
+    accountErrorEmailInUse: "Este e-mail já tem uma conta.",
+    accountErrorInvalidEmail: "Este e-mail não parece válido.",
+    accountErrorWeakPassword: "A senha precisa ter pelo menos 6 caracteres.",
+    accountErrorTooMany: "Muitas tentativas — espere um pouco e tente de novo.",
+    accountErrorNetwork: "Sem conexão com o servidor de contas. Tente de novo.",
+    accountErrorAuthDisabled:
+      "O login por e-mail/senha ainda não foi habilitado no Firebase (Authentication → Sign-in method).",
+    accountErrorPermission:
+      "Sem permissão para acessar seus dados — confira se as regras do Firestore foram publicadas.",
+    accountErrorGeneric: "Não foi possível completar essa ação. Tente de novo.",
+    accountPasswordRequirements: (items) => `A senha precisa ter: ${items.join(", ")}.`,
+    accountPolicyMinLength: (n) => `pelo menos ${n} caracteres`,
+    accountPolicyUppercase: "uma letra maiúscula",
+    accountPolicyLowercase: "uma letra minúscula",
+    accountPolicyNumber: "um número",
+    accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
+    viewCompareTab: "Comparar com amigos",
     viewCodes: "Códigos",
     codesIntro:
       "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
@@ -152,8 +205,6 @@ const TRANSLATIONS = {
     exportCopied: "Copied! ✓",
     exportShare: "Share",
     exportTotal: (total) => `${total} items (Base + variants)`,
-    shareLabel: "Compare",
-    shareTitle: "Generates a link to compare your collection with a friend's",
     shareLinkLabel: "Your comparison link",
     shareCopyLink: "Copy link",
     sharePasteLabel: "Paste a friend's code or link here",
@@ -165,6 +216,24 @@ const TRANSLATIONS = {
     compareOnlyThem: "Only they have",
     compareNone: "Nothing exclusive here",
     compareInvalidCode: "This comparison link is invalid or corrupted.",
+    friendsSectionTitle: "Friends",
+    friendsIntro: "Compare live with friends who also have an account.",
+    friendsSignedOutHint: "Sign in to compare live with friends.",
+    accountUsernameLabel: "Username",
+    accountUsernameDisplay: (name) => `Username: ${name}`,
+    accountErrorUsernameRequired: "Enter a username.",
+    friendCodeLabel: "Your friend code",
+    friendCodeCopy: "Copy code",
+    friendAddLabel: "Add a friend by code",
+    friendAddButton: "Add",
+    friendErrorInvalidCode: "Invalid code.",
+    friendErrorNotFound: "No account found with that code.",
+    friendErrorOwnCode: "That's your own code.",
+    friendErrorAlreadyAdded: "You already added that friend.",
+    friendWaitingMutual: "Waiting for them to add you back",
+    friendListEmpty: "You haven't added any friends yet.",
+    friendRemoveButton: "Remove friend",
+    friendCompareUnavailable: "Couldn't load that friend's collection right now.",
     backupLabel: "Backup",
     backupTitle: "Move your whole collection to another device",
     backupIntro:
@@ -184,7 +253,43 @@ const TRANSLATIONS = {
     backupMerge: "Merge both",
     backupCancel: "Cancel",
     backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
+    accountLabelSignedOut: "Log in",
+    accountLabelSignedIn: "My profile",
+    accountTitle: "Sync your collection across devices with an account",
+    accountEmailLabel: "Email",
+    accountPasswordLabel: "Password",
+    accountLoginButton: "Log in",
+    accountSignupButton: "Create account",
+    accountForgotPassword: "Forgot password",
+    accountResetSent:
+      "If there's an account with that email, we sent a link to reset the password.",
+    accountLogout: "Log out",
+    accountResync: "Sync again",
+    accountSignedInAs: (email) => `Signed in as ${email}`,
+    accountUnconfigured: "Account sync hasn't been set up on this app yet.",
+    accountSyncedUp: "Your collection on this device was saved to your account.",
+    accountSyncedOk: "Synced with your account.",
+    accountSyncedDown: "Your account's collection was downloaded to this device.",
+    accountSyncNotDone: "Not synced yet — review it below whenever you're ready.",
+    accountErrorWrongPassword: "Wrong email or password.",
+    accountErrorEmailInUse: "This email already has an account.",
+    accountErrorInvalidEmail: "This email doesn't look valid.",
+    accountErrorWeakPassword: "Password needs at least 6 characters.",
+    accountErrorTooMany: "Too many attempts — wait a bit and try again.",
+    accountErrorNetwork: "Can't reach the account server. Try again.",
+    accountErrorAuthDisabled:
+      "Email/password sign-in hasn't been enabled in Firebase yet (Authentication → Sign-in method).",
+    accountErrorPermission:
+      "No permission to access your data — check whether the Firestore rules were published.",
+    accountErrorGeneric: "Couldn't complete that action. Try again.",
+    accountPasswordRequirements: (items) => `Password needs: ${items.join(", ")}.`,
+    accountPolicyMinLength: (n) => `at least ${n} characters`,
+    accountPolicyUppercase: "an uppercase letter",
+    accountPolicyLowercase: "a lowercase letter",
+    accountPolicyNumber: "a number",
+    accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
+    viewCompareTab: "Compare with friends",
     viewCodes: "Codes",
     codesIntro:
       "Admin Panel codes: on the main menu, click the “… / admin panel” box in the top right, type the code and submit. Tick here the ones you have already redeemed.",
@@ -283,8 +388,17 @@ function loadCollection() {
   }
 }
 
+// Avisa o cloud-sync.js (opcional, carregado à parte) que algo mudou, sem
+// este arquivo precisar saber se ele existe ou está configurado.
+function notifyDataChanged(source) {
+  window.dispatchEvent(
+    new CustomEvent("spriteslocker:data-changed", { detail: { source } })
+  );
+}
+
 function saveCollection(collection) {
   storage.set(STORAGE_KEY, JSON.stringify(collection));
+  notifyDataChanged("collection");
 }
 
 // Códigos do lobby já resgatados: { [id do código]: true }. Guardado à parte
@@ -310,6 +424,7 @@ function sanitizeCodes(raw) {
 
 function saveCodes() {
   storage.set(CODES_KEY, JSON.stringify(redeemedCodes));
+  notifyDataChanged("codes");
 }
 
 // Códigos que o usuário acrescentou à mão: [{ id, code, reward }]. A ação
@@ -356,6 +471,7 @@ function loadCustomCodes() {
 
 function saveCustomCodes() {
   storage.set(CUSTOM_CODES_KEY, JSON.stringify(customCodes));
+  notifyDataChanged("customCodes");
 }
 
 function loadLang() {
@@ -373,7 +489,8 @@ let customCodes = loadCustomCodes();
 if (JSON.stringify(customCodes) !== storage.get(CUSTOM_CODES_KEY)) {
   saveCustomCodes();
 }
-let activeView = storage.get(VIEW_KEY) === "codes" ? "codes" : "sprites";
+const VALID_VIEWS = ["sprites", "friends", "codes"];
+let activeView = VALID_VIEWS.includes(storage.get(VIEW_KEY)) ? storage.get(VIEW_KEY) : "sprites";
 let lang = loadLang();
 let activeFilter = "all";
 let sortMode = ["default", "rarity", "alpha"].includes(storage.get(SORT_KEY))
@@ -665,19 +782,32 @@ function applyLanguage() {
   document.getElementById("export-share").textContent = s.exportShare;
   document.getElementById("export-close").textContent = s.close;
 
-  const shareBtn = document.getElementById("share-btn");
-  shareBtn.title = s.shareTitle;
-  document.getElementById("share-label").textContent = s.shareLabel;
   document.getElementById("share-link-label").textContent = s.shareLinkLabel;
   document.getElementById("share-copy-btn").textContent = s.shareCopyLink;
   document.getElementById("share-paste-label").textContent = s.sharePasteLabel;
   document.getElementById("share-paste-btn").textContent = s.sharePasteButton;
-  document.getElementById("share-close").textContent = s.close;
+
+  // Seção de amigos (cloud-sync.js, opcional): este arquivo só entrega o
+  // texto estático, igual faz para o modal de conta — a lógica de quando
+  // mostrar/preencher cada coisa é toda do cloud-sync.js.
+  document.getElementById("friends-section-title").textContent = s.friendsSectionTitle;
+  document.getElementById("friends-intro").textContent = s.friendsIntro;
+  document.getElementById("friends-signed-out-hint").textContent = s.friendsSignedOutHint;
+  document.getElementById("friend-code-label").textContent = s.friendCodeLabel;
+  document.getElementById("friend-code-copy-btn").textContent = s.friendCodeCopy;
+  document.getElementById("friend-add-label").textContent = s.friendAddLabel;
+  document.getElementById("friend-add-btn").textContent = s.friendAddButton;
+  document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
+  document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
+  document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;
+  document.getElementById("account-friend-code-label").textContent = s.friendCodeLabel;
+  document.getElementById("account-friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
 
+  const viewTabLabels = { sprites: s.viewSprites, friends: s.viewCompareTab, codes: s.viewCodes };
   [...viewTabs.children].forEach((tab) => {
-    tab.textContent = tab.dataset.view === "codes" ? s.viewCodes : s.viewSprites;
+    tab.textContent = viewTabLabels[tab.dataset.view];
   });
   document.getElementById("codes-intro").textContent = s.codesIntro;
   document.getElementById("codes-th-done").textContent = s.codesThDone;
@@ -709,6 +839,33 @@ function applyLanguage() {
   document.getElementById("backup-replace-btn").textContent = s.backupReplace;
   document.getElementById("backup-cancel-btn").textContent = s.backupCancel;
   document.getElementById("backup-close").textContent = s.close;
+
+  const accountBtn = document.getElementById("account-btn");
+  accountBtn.title = s.accountTitle;
+  document.getElementById("account-label").textContent = s.accountLabelSignedOut;
+  document.getElementById("account-title").textContent = s.accountTitle;
+  document.getElementById("account-close").textContent = s.close;
+  document.getElementById("account-unconfigured-text").textContent =
+    s.accountUnconfigured;
+  document.getElementById("account-tab-login").textContent = s.accountLoginButton;
+  document.getElementById("account-tab-signup").textContent = s.accountSignupButton;
+  document.getElementById("account-login-email-label").textContent = s.accountEmailLabel;
+  document.getElementById("account-login-password-label").textContent =
+    s.accountPasswordLabel;
+  document.getElementById("account-login-submit").textContent = s.accountLoginButton;
+  document.getElementById("account-signup-email-label").textContent = s.accountEmailLabel;
+  document.getElementById("account-signup-username-label").textContent =
+    s.accountUsernameLabel;
+  document.getElementById("account-signup-password-label").textContent =
+    s.accountPasswordLabel;
+  document.getElementById("account-signup-submit").textContent = s.accountSignupButton;
+  document.getElementById("account-forgot-link").textContent =
+    s.accountForgotPassword;
+  document.getElementById("account-resync-btn").textContent = s.accountResync;
+  document.getElementById("account-logout-btn").textContent = s.accountLogout;
+  // O cloud-sync.js (opcional) refaz seus próprios textos dinâmicos (e-mail
+  // conectado, status de sincronização) neste idioma.
+  window.dispatchEvent(new CustomEvent("spriteslocker:lang-changed"));
 
   document.getElementById("sort-label").textContent = s.sortLabel;
   const sortSelect = document.getElementById("sort-select");
@@ -1387,6 +1544,7 @@ document.getElementById("export-btn").addEventListener("click", () => {
 // ---- Aba dos códigos do Painel de Admin ----
 const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
+const viewFriends = document.getElementById("view-friends");
 const viewCodes = document.getElementById("view-codes");
 const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
@@ -1479,6 +1637,7 @@ function renderCodes() {
 
 function applyView() {
   viewSprites.hidden = activeView !== "sprites";
+  viewFriends.hidden = activeView !== "friends";
   viewCodes.hidden = activeView !== "codes";
   [...viewTabs.children].forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.view === activeView)
@@ -1486,6 +1645,7 @@ function applyView() {
   // O menu de navegação rápida é grudento e só faz sentido com a grade.
   spriteNav.hidden = activeView !== "sprites";
   if (activeView === "codes") renderCodes();
+  if (activeView === "friends") refreshShareLink();
 }
 
 viewTabs.addEventListener("click", (e) => {
@@ -1615,17 +1775,19 @@ function fromBase64Url(code) {
 // propósito: são campos novos e opcionais, então backups gerados antes deles
 // continuam válidos (importam sem código resgatado / sem código manual) em
 // vez de virarem "inválidos".
+function backupSnapshot() {
+  return {
+    app: BACKUP_APP,
+    v: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    collection,
+    codes: redeemedCodes,
+    customCodes,
+  };
+}
+
 function encodeBackup() {
-  return toBase64Url(
-    JSON.stringify({
-      app: BACKUP_APP,
-      v: BACKUP_VERSION,
-      exportedAt: new Date().toISOString(),
-      collection,
-      codes: redeemedCodes,
-      customCodes,
-    })
-  );
+  return toBase64Url(JSON.stringify(backupSnapshot()));
 }
 
 const bool = (value) => value === true;
@@ -1741,7 +1903,6 @@ function mergeCollections(mine, theirs) {
 }
 
 // ---- Compartilhar/comparar coleção com um amigo (sem backend) ----
-const shareOverlay = document.getElementById("share-overlay");
 const shareLinkInput = document.getElementById("share-link-input");
 const shareCopyBtn = document.getElementById("share-copy-btn");
 const sharePasteInput = document.getElementById("share-paste-input");
@@ -1752,17 +1913,13 @@ const compareStats = document.getElementById("compare-stats");
 const compareOnlyYou = document.getElementById("compare-only-you");
 const compareOnlyThem = document.getElementById("compare-only-them");
 
-function openShareModal() {
+// Chamado sempre que a aba "Comparar com amigos" fica visível (applyView()).
+function refreshShareLink() {
   const s = t();
   shareLinkInput.value = `${location.origin}${location.pathname}#c=${encodeCollectionCode()}`;
   shareCopyBtn.textContent = s.shareCopyLink;
   sharePasteInput.value = "";
   sharePasteError.hidden = true;
-  shareOverlay.hidden = false;
-}
-
-function closeShareModal() {
-  shareOverlay.hidden = true;
 }
 
 // Aceita tanto o link inteiro colado quanto só o código puro.
@@ -1813,7 +1970,6 @@ function openCompareModal(theirCollection) {
   compareOnlyYou.innerHTML = compareListColumn(s.compareOnlyYou, onlyMine);
   compareOnlyThem.innerHTML = compareListColumn(s.compareOnlyThem, onlyTheirs);
 
-  closeShareModal();
   compareOverlay.hidden = false;
 }
 
@@ -1838,12 +1994,6 @@ function readShareHashOnLoad() {
   openCompareModal(theirCollection);
 }
 window.addEventListener("hashchange", readShareHashOnLoad);
-
-document.getElementById("share-btn").addEventListener("click", openShareModal);
-document.getElementById("share-close").addEventListener("click", closeShareModal);
-shareOverlay.addEventListener("click", (e) => {
-  if (e.target === shareOverlay) closeShareModal();
-});
 
 shareCopyBtn.addEventListener("click", async () => {
   try {
@@ -2084,3 +2234,31 @@ applyLanguage();
 render();
 applyView();
 readShareHashOnLoad();
+
+// ---- Ponte para o cloud-sync.js (opcional, login/sincronização por conta) ----
+// Este arquivo não sabe se cloud-sync.js existe ou está configurado; toda a
+// validação/merge de dados vindos de fora continua só aqui, reaproveitando o
+// fluxo de backup/importação já existente.
+window.SpritesLockerBridge = {
+  getSnapshotJSON: () => backupSnapshot(),
+  hasLocalMarks: () =>
+    countBackupMarks({ collection, codes: redeemedCodes }) > 0 ||
+    customCodes.length > 0,
+  // Aplica um snapshot da nuvem sem abrir o modal — usado nos casos em que a
+  // sincronização é automática (conta nova, aparelho já pareado, ou aparelho
+  // novo sem nada local para perder).
+  applyRemoteSnapshot(remoteSnapshot, mode) {
+    proposeBackup(JSON.stringify(remoteSnapshot));
+    applyBackup(mode === "merge");
+  },
+  // Conflito de verdade (aparelho novo para a conta, com dados locais): abre
+  // o mesmo modal de importar backup, já com a comparação nuvem x local.
+  openReviewModal(remoteSnapshot) {
+    openBackupModal();
+    proposeBackup(JSON.stringify(remoteSnapshot));
+  },
+  // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
+  // modal somente-leitura já usado pelo código de compartilhamento.
+  openCompareModal: (theirCollection) => openCompareModal(theirCollection),
+  t: () => t(),
+};

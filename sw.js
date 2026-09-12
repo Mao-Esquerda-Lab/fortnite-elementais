@@ -7,7 +7,7 @@
 //   visualização, para o app abrir offline com a arte.
 //
 // Aumente VERSION ao mudar a lista de arquivos do shell.
-const VERSION = "v22";
+const VERSION = "v23";
 const SHELL_CACHE = `elementais-shell-${VERSION}`;
 const IMAGE_CACHE = "elementais-images-v1";
 
@@ -17,6 +17,8 @@ const SHELL_FILES = [
   "./styles.css",
   "./app.js",
   "./icons.js",
+  "./firebase-config.js",
+  "./cloud-sync.js",
   "./data/cheat-codes.js",
   "./data/cheat-codes-auto.js",
   "./data/elementals.js",
