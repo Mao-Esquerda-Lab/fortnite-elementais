@@ -72,7 +72,8 @@ const TRANSLATIONS = {
     accountLoginButton: "Entrar",
     accountSignupButton: "Criar conta",
     accountForgotPassword: "Esqueci minha senha",
-    accountResetSent: "Enviamos um link para redefinir sua senha.",
+    accountResetSent:
+      "Se houver uma conta com esse e-mail, enviamos um link para redefinir a senha.",
     accountLogout: "Sair",
     accountResync: "Sincronizar de novo",
     accountSignedInAs: (email) => `Conectado como ${email}`,
@@ -227,7 +228,8 @@ const TRANSLATIONS = {
     accountLoginButton: "Log in",
     accountSignupButton: "Create account",
     accountForgotPassword: "Forgot password",
-    accountResetSent: "We sent you a link to reset your password.",
+    accountResetSent:
+      "If there's an account with that email, we sent a link to reset the password.",
     accountLogout: "Log out",
     accountResync: "Sync again",
     accountSignedInAs: (email) => `Signed in as ${email}`,
