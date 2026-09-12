@@ -178,8 +178,6 @@ async function main() {
     viewFriends: document.getElementById("view-friends"),
     friendsSection: document.getElementById("friends-section"),
     friendsSignedOutHint: document.getElementById("friends-signed-out-hint"),
-    friendCodeInput: document.getElementById("friend-code-input"),
-    friendCodeCopyBtn: document.getElementById("friend-code-copy-btn"),
     friendAddInput: document.getElementById("friend-add-input"),
     friendAddBtn: document.getElementById("friend-add-btn"),
     friendAddError: document.getElementById("friend-add-error"),
@@ -338,11 +336,12 @@ async function main() {
     setAccountLabel(true);
     showPanel("signed-in");
     bridge.setCompareAvailable(true);
-    // Gera/busca o código de amigo já ao logar, sem esperar o usuário abrir
-    // a aba "Comparar" — é o que deixa o banner do topo e o campo no perfil
-    // preenchidos assim que possível.
-    ensureFriendCode().then((code) => {
-      setFriendCodeDisplays(code);
+    // Gera/busca o código de amigo e recarrega a lista de amigos já ao
+    // logar, sem esperar um clique na aba "Comparar" — é o que deixa o
+    // banner do topo, o perfil e a própria aba (se já for a que está aberta,
+    // ex.: depois do botão Atualizar com a sessão sendo restaurada) com a
+    // informação certa em vez de vazia.
+    refreshFriendsSection().then(() => {
       if (myUsername) {
         els.accountUsernameDisplay.textContent = bridge.t().accountUsernameDisplay(myUsername);
       }
@@ -449,10 +448,10 @@ async function main() {
     els.friendAddError.hidden = !message;
   }
 
-  // Mesmo código em três lugares: dentro do "Comparar", no banner do topo da
-  // página e no "Meu perfil" — todos refletem o mesmo estado.
+  // Mesmo código em dois lugares: no banner do topo da página e no "Meu
+  // perfil" — a aba Comparar não repete mais (fica só no banner, ali em
+  // cima). Os dois refletem o mesmo estado.
   function setFriendCodeDisplays(code) {
-    els.friendCodeInput.value = code || "";
     els.accountFriendCodeInput.value = code || "";
     els.friendCodeBanner.hidden = !code;
     els.friendCodeBannerValue.textContent = code || "";
@@ -653,14 +652,17 @@ async function main() {
     }
   }
 
+  // Também recarrega ao clicar na aba (não só ao logar) — pega amigos que
+  // viraram mútuos etc. sem precisar de um F5. O caso "aba Comparar já
+  // estava aberta quando a sessão foi restaurada" (ex.: botão Atualizar)
+  // é coberto por renderSignedIn() chamar refreshFriendsSection() direto,
+  // não por uma checagem aqui: essa checagem rodaria antes do
+  // onAuthStateChanged assíncrono resolver e sempre perderia a corrida,
+  // achando "deslogado" e nunca mais tentando de novo.
   els.friendsTab.addEventListener("click", refreshFriendsSection);
-  // Se a aba "Comparar com amigos" já estava ativa quando este script
-  // terminou de carregar (rede lenta, ou é a aba lembrada de uma visita
-  // anterior), atualiza a seção de amigos sem esperar outro clique.
-  if (!els.viewFriends.hidden) refreshFriendsSection();
 
-  // Usado pelos três botões "copiar código" (Comparar, banner do topo,
-  // perfil) — todos fazem a mesma coisa, só muda qual botão/texto/campo.
+  // Usado pelos dois botões "copiar código" (banner do topo, perfil) —
+  // fazem a mesma coisa, só muda qual botão/texto/campo.
   async function copyFriendCode(button, text, fallbackInput) {
     try {
       await navigator.clipboard.writeText(text);
@@ -674,9 +676,6 @@ async function main() {
     }
   }
 
-  els.friendCodeCopyBtn.addEventListener("click", () =>
-    copyFriendCode(els.friendCodeCopyBtn, els.friendCodeInput.value, els.friendCodeInput)
-  );
   els.friendCodeBannerCopyBtn.addEventListener("click", () =>
     copyFriendCode(els.friendCodeBannerCopyBtn, friendCode || "")
   );
