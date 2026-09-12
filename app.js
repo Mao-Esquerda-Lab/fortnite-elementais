@@ -449,6 +449,7 @@ const VARIANT_CODES = {
   cube: "c",
   quack: "q",
   "cheat-master": "m",
+  "loot-hacker": "l",
 };
 const VARIANT_CODES_REV = Object.fromEntries(
   Object.entries(VARIANT_CODES).map(([id, code]) => [code, id])
