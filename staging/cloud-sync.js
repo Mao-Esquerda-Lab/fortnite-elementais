@@ -53,10 +53,19 @@ const AUTH_ERROR_KEYS = {
   "auth/weak-password": "accountErrorWeakPassword",
   "auth/too-many-requests": "accountErrorTooMany",
   "auth/network-request-failed": "accountErrorNetwork",
+  // Provedor Email/Password ainda não habilitado em Authentication → Sign-in
+  // method no console do Firebase.
+  "auth/operation-not-allowed": "accountErrorAuthDisabled",
+  "permission-denied": "accountErrorPermission",
 };
 
 function authErrorMessage(bridge, error) {
-  const key = AUTH_ERROR_KEYS[error && error.code] || "accountErrorGeneric";
+  const code = error && error.code;
+  // Sem isso, um código que ainda não mapeamos vira só "não deu certo",
+  // sem pista nenhuma de por quê — o console é o único lugar que mostra o
+  // código de verdade que o Firebase devolveu.
+  console.error("[cloud-sync]", code || error);
+  const key = AUTH_ERROR_KEYS[code] || "accountErrorGeneric";
   return bridge.t()[key];
 }
 
