@@ -171,8 +171,7 @@ async function main() {
     signedIn: document.getElementById("account-signed-in"),
     signedInEmail: document.getElementById("account-signed-in-email"),
     syncStatus: document.getElementById("account-sync-status"),
-    accountUsernameInput: document.getElementById("account-username-input"),
-    accountUsernameSaveBtn: document.getElementById("account-username-save-btn"),
+    accountUsernameDisplay: document.getElementById("account-username-display"),
     resyncBtn: document.getElementById("account-resync-btn"),
     logoutBtn: document.getElementById("account-logout-btn"),
     friendsTab: document.querySelector('#view-tabs [data-view="friends"]'),
@@ -331,7 +330,9 @@ async function main() {
     // no perfil preenchidos assim que possível.
     ensureFriendCode().then((code) => {
       setFriendCodeDisplays(code);
-      els.accountUsernameInput.value = myUsername || "";
+      if (myUsername) {
+        els.accountUsernameDisplay.textContent = bridge.t().accountUsernameDisplay(myUsername);
+      }
     });
   }
 
@@ -339,6 +340,9 @@ async function main() {
     const user = auth.currentUser;
     if (user && signedInUid) {
       els.signedInEmail.textContent = bridge.t().accountSignedInAs(user.email);
+      if (myUsername) {
+        els.accountUsernameDisplay.textContent = bridge.t().accountUsernameDisplay(myUsername);
+      }
     }
     setAccountLabel(!!signedInUid);
     renderPasswordHint();
@@ -633,42 +637,6 @@ async function main() {
       setFriendError(bridge.t().friendCompareUnavailable);
     }
   }
-
-  // Editável no perfil (cobre também quem já tinha conta antes de o app
-  // pedir um nome no cadastro). Atualiza os dois lugares onde o nome mora:
-  // users/{uid} (fonte de verdade) e friendCodes/{código} (o que quem for
-  // adicionar esta pessoa enxerga).
-  async function saveUsername(rawValue) {
-    setAuthError("");
-    const trimmed = (rawValue || "").trim();
-    if (!trimmed) return setAuthError(bridge.t().accountErrorUsernameRequired);
-    try {
-      await dbApi.setDoc(
-        dbApi.doc(db, "users", signedInUid),
-        { username: trimmed },
-        { mergeFields: ["username"] }
-      );
-      if (friendCode) {
-        await dbApi.setDoc(
-          dbApi.doc(db, "friendCodes", friendCode),
-          { username: trimmed },
-          { mergeFields: ["username"] }
-        );
-      }
-    } catch (err) {
-      return setAuthError(authErrorMessage(bridge, err));
-    }
-    myUsername = trimmed;
-    els.accountUsernameInput.value = trimmed;
-    const original = els.accountUsernameSaveBtn.textContent;
-    els.accountUsernameSaveBtn.textContent = bridge.t().accountUsernameSaved;
-    setTimeout(() => {
-      els.accountUsernameSaveBtn.textContent = original;
-    }, 2000);
-  }
-  els.accountUsernameSaveBtn.addEventListener("click", () =>
-    saveUsername(els.accountUsernameInput.value)
-  );
 
   els.friendsTab.addEventListener("click", refreshFriendsSection);
   // Se a aba "Comparar com amigos" já estava ativa quando este script
