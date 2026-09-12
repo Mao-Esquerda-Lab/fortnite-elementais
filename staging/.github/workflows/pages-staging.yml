@@ -40,6 +40,14 @@ jobs:
           mkdir -p gh-pages-wt/staging
           find staging-src -mindepth 1 -maxdepth 1 ! -name '.git' \
             -exec cp -a {} gh-pages-wt/staging/ \;
+          # Ícone diferente (negativo do oficial) só na homologação, pra dar
+          # pra distinguir os dois PWAs instalados lado a lado no aparelho.
+          # index.html/manifest.webmanifest continuam idênticos aos de
+          # produção — o arquivo é trocado aqui, depois da cópia, não no
+          # código-fonte.
+          for name in icon-192 icon-512 icon-apple; do
+            mv "gh-pages-wt/staging/${name}-staging.png" "gh-pages-wt/staging/${name}.png"
+          done
           cd gh-pages-wt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
