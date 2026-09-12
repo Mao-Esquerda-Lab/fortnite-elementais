@@ -1,0 +1,1472 @@
+:root {
+  color-scheme: light dark;
+  --bg: #0f1115;
+  --surface: #1a1d24;
+  --surface-hover: #22262f;
+  --text: #f2f3f5;
+  --muted: #9aa1ac;
+  --accent: #7dd3fc;
+  --border: #2b2f38;
+
+  --rare: #5b9bd5;
+  --epic: #b16fe0;
+  --legendary: #f2a33d;
+  --mythic: #ef5b7c;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-hover: #eef0f3;
+    --text: #1a1d24;
+    --muted: #5b6270;
+    --border: #e1e4e9;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Cabeçalho fixo e opaco, igual na web e no app instalado.
+   O padding com env(safe-area-inset-top) cobre a barra de status/notch. */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(0.55rem + env(safe-area-inset-top, 0px)) 0.75rem 0.55rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar {
+  position: relative;
+  text-align: center;
+  /* Espaço para o conteúdo começar abaixo do cabeçalho fixo. */
+  padding: calc(4.5rem + env(safe-area-inset-top, 0px)) 1rem 1.5rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+/* Ícone do app centralizado na barra do cabeçalho. */
+.header-icon {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + env(safe-area-inset-top, 0px) / 2);
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.45rem;
+  object-fit: cover;
+}
+
+/* .share-section define display:flex, o que por si só venceria o atributo
+   "hidden" (regra padrão do navegador) nos três painéis do modal de conta,
+   que alternam entre si trocando esse atributo. */
+#account-overlay [hidden] {
+  display: none !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lang-switch {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.refresh-btn span[aria-hidden] {
+  font-size: 1.15rem;
+}
+
+.refresh-btn:hover {
+  background: var(--surface-hover);
+}
+
+.account-btn {
+  position: relative;
+}
+
+/* Bolinha indicando que há uma conta conectada neste aparelho. */
+.account-btn.signed-in::after {
+  content: "";
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--rare);
+  border: 1px solid var(--bg);
+}
+
+.lang-btn {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.lang-btn:hover {
+  background: var(--surface-hover);
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0f1115;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Menu de navegação rápida: ícones dos Elementais base; clicar rola até o
+   card. Gruda logo abaixo do cabeçalho fixo e fica acessível durante a
+   rolagem. Recolhido, os ícones formam uma linha única rolável na
+   horizontal; o botão ▾ expande em várias linhas com todos visíveis. */
+.sprite-nav {
+  position: sticky;
+  top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.55rem 0;
+  background: var(--bg);
+}
+
+.sprite-nav-icons {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0.4rem;
+  scrollbar-width: thin;
+}
+
+.sprite-nav.expanded .sprite-nav-icons {
+  flex-wrap: wrap;
+  overflow-x: visible;
+}
+
+.sprite-nav-toggle {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sprite-nav-toggle:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 5px;
+  border-radius: 0.6rem;
+  border: 1px solid var(--rarity-color, var(--border));
+  background: var(--surface);
+  cursor: pointer;
+  transition: transform 0.12s, background 0.15s, box-shadow 0.15s;
+}
+
+.nav-icon img,
+.nav-icon svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.nav-icon:hover {
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-icon.upcoming {
+  opacity: 0.45;
+}
+
+/* Sprites "Em breve" não têm ícone SVG local: o fallback mostra a inicial
+   do nome, tanto no menu de navegação quanto no ícone do card. */
+.elemental-icon .nav-letter,
+.nav-icon .nav-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.elemental-icon .nav-letter {
+  font-size: 1.7rem;
+  border: 1px dashed var(--muted);
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-tab {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filter-tab:hover {
+  background: var(--surface-hover);
+}
+
+.filter-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0f1115;
+  font-weight: 600;
+}
+
+/* Filtros de raridade na cor da raridade — servem também de legenda. */
+.filter-tab[data-rarity="Rare"] {
+  color: var(--rare);
+  border-color: var(--rare);
+}
+
+.filter-tab[data-rarity="Epic"] {
+  color: var(--epic);
+  border-color: var(--epic);
+}
+
+.filter-tab[data-rarity="Legendary"] {
+  color: var(--legendary);
+  border-color: var(--legendary);
+}
+
+.filter-tab[data-rarity="Mythic"] {
+  color: var(--mythic);
+  border-color: var(--mythic);
+}
+
+.filter-tab.active[data-rarity="Rare"] {
+  background: var(--rare);
+  color: #0f1115;
+}
+
+.filter-tab.active[data-rarity="Epic"] {
+  background: var(--epic);
+  color: #0f1115;
+}
+
+.filter-tab.active[data-rarity="Legendary"] {
+  background: var(--legendary);
+  color: #0f1115;
+}
+
+.filter-tab.active[data-rarity="Mythic"] {
+  background: var(--mythic);
+  color: #0f1115;
+}
+
+.sort-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Botão de exportar o resumo da coleção como imagem,
+   logo abaixo das barras de progresso, alinhado à direita. */
+/* Exportar, Comparar e Backup ficam lado a lado abaixo das barras. Em telas
+   estreitas quebram para a linha de baixo em vez de transbordar. */
+.progress-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.export-btn:hover {
+  background: var(--surface-hover);
+}
+
+/* No celular os três rótulos não cabem numa linha com o espaçamento padrão:
+   aperta o botão em vez de deixar o Backup cair sozinho para a linha de
+   baixo. Abaixo disto o wrap ainda vale como rede de segurança. */
+@media (max-width: 480px) {
+  .progress-actions .export-btn {
+    gap: 0.3rem;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Visualizador da imagem exportada. */
+.export-overlay[hidden] {
+  display: none !important;
+}
+
+.export-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Tamanho FIXO: a caixa não muda quando o rótulo dos botões muda
+   (ex.: "Copiar" -> "Copiado! ✓"); a imagem se acomoda dentro dela. */
+.export-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+  width: min(680px, 94vw);
+  height: min(88vh, 900px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.export-box img {
+  display: block;
+  max-width: 100%;
+  min-height: 0;
+  overflow: auto;
+  border-radius: 0.5rem;
+  /* A imagem é bem alta: rola dentro da caixa. */
+  object-fit: contain;
+  flex: 1;
+}
+
+.export-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.export-download {
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  background: var(--accent);
+  color: #0f1115;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.export-copy {
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  /* Largura estável entre "Copiar" e "Copiado! ✓". */
+  min-width: 7rem;
+  text-align: center;
+}
+
+.export-copy:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.export-close {
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Modal de compartilhar/comparar: reaproveita .export-overlay/.export-box
+   (mesmo visual do visualizador de PNG), só ajustando altura/rolagem. */
+.share-box {
+  height: auto;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.share-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.share-field-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.share-field-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.share-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.share-error {
+  margin: 0;
+  color: var(--mythic);
+  font-size: 0.85rem;
+}
+
+/* ---- Abas de visualização (Sprites / Códigos) ---- */
+
+.view-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.view-tab {
+  flex: 1;
+  padding: 0.55rem 1rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.view-tab:hover {
+  background: var(--surface-hover);
+}
+
+.view-tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ---- Tabela dos códigos do Painel de Admin ---- */
+
+.codes-intro {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.codes-table {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.codes-table th {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+.codes-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.code-check-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.code-check {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Resgatado fica discreto para o que falta saltar aos olhos. */
+.code-row.done .code-text,
+.code-row.done .code-reward {
+  opacity: 0.5;
+}
+
+.code-cell {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.code-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  /* Código é para digitar no jogo: dá para selecionar com um toque. */
+  user-select: all;
+}
+
+.code-new {
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #0f1115;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Expirado: o IGN tirou da lista, então não adianta mais digitar. Fica
+   visível (riscado) em vez de sumir, para não parecer que o app perdeu o
+   código — e vai para o fim da tabela. */
+.code-expired {
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--mythic);
+  color: var(--mythic);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.code-row.expired .code-text {
+  text-decoration: line-through;
+}
+
+.code-row.expired .code-text,
+.code-row.expired .code-reward {
+  opacity: 0.45;
+}
+
+.code-copy {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.code-copy:hover {
+  color: var(--accent);
+}
+
+.code-reward {
+  display: block;
+}
+
+.code-note {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+/* No celular a coluna da recompensa é a que sofre: aperta o resto para ela
+   caber sem empurrar a tabela para fora da tela. */
+@media (max-width: 480px) {
+  .codes-table {
+    font-size: 0.82rem;
+  }
+
+  .codes-table th,
+  .codes-table td {
+    padding: 0.5rem 0.3rem;
+  }
+
+  .codes-table th {
+    font-size: 0.68rem;
+    letter-spacing: 0;
+  }
+
+  .code-text {
+    font-size: 0.78rem;
+  }
+
+  /* O cabeçalho "Resgatei" é mais largo que a caixinha e roubava espaço da
+     recompensa. Some visualmente, mas continua no DOM para leitores de tela
+     (e cada caixinha tem aria-label). Um código NUNCA é quebrado no meio:
+     ele é digitado no jogo, e quebrar convida a erro de digitação. */
+  #codes-th-done {
+    font-size: 0;
+  }
+
+  .code-check {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+/* ---- Adicionar código à mão ---- */
+
+/* Fica entre a barra de progresso e a tabela: é sobre a tabela, mas é ação
+   ocasional — por isso o formulário nasce fechado, só o botão aparece. */
+.codes-add {
+  margin: 0.9rem 0 0.25rem;
+}
+
+.codes-add-toggle {
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.codes-add-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.codes-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  background: var(--surface);
+}
+
+/* `display: flex` na classe vence o `display: none` que o navegador dá ao
+   [hidden]; sem isto o formulário nasceria aberto. */
+.codes-add-form[hidden] {
+  display: none;
+}
+
+.codes-add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* O código é para ser digitado no jogo depois: mesma cara da tabela. */
+#codes-add-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+}
+
+.codes-add-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Selo do que o usuário mesmo acrescentou — some quando o IGN publicar o
+   código, então é discreto de propósito: não é novidade da fonte, é dele. */
+.code-custom {
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.code-remove {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.code-remove:hover {
+  color: var(--mythic);
+}
+
+.codes-source {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* ---- Modal de backup ---- */
+
+/* No modal de resumo o botão de baixar fica numa linha de ações; aqui ele
+   é uma ação secundária dentro de uma coluna, então não estica. */
+.share-section .export-download {
+  align-self: flex-start;
+  text-align: center;
+}
+
+.backup-intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* O <input type="file"> nativo não dá para estilizar: fica escondido e o
+   <label> ao redor é o que o usuário vê e clica. */
+.backup-file {
+  align-self: flex-start;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.backup-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.backup-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.backup-confirm p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.backup-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Substituir apaga o que está no aparelho — cor de alerta para não ser
+   confundido com o botão de juntar, que é sempre seguro. */
+.backup-danger {
+  border-color: var(--mythic);
+  color: var(--mythic);
+}
+
+.backup-done {
+  margin: 0;
+  color: var(--rare);
+  font-size: 0.85rem;
+}
+
+.compare-box {
+  height: auto;
+  max-height: min(88vh, 900px);
+  overflow-y: auto;
+}
+
+.compare-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.compare-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.compare-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.compare-stat {
+  flex: 1;
+  min-width: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+}
+
+.compare-stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.compare-stat-value {
+  font-size: 0.9rem;
+}
+
+.compare-lists {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.compare-list-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.compare-list-col h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.compare-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.compare-list-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.sort-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.sort-select {
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+}
+
+/* Fatias coloridas pela raridade (Raro → Mítico). */
+.progress-seg {
+  height: 100%;
+  transition: width 0.25s ease;
+}
+
+.progress-label {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.85rem;
+  min-width: 9.5rem;
+  text-align: right;
+}
+
+.elemental-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1rem;
+}
+
+.elemental-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: relative;
+  border-top: 4px solid var(--rarity-color, var(--border));
+  transition: transform 0.15s, box-shadow 0.15s;
+  /* O scroll do menu de navegação para abaixo do cabeçalho fixo e da
+     própria barra de ícones grudada. --card-scroll-offset é calculado em
+     JS a partir da altura real da barra (recolhida ou expandida). */
+  scroll-margin-top: var(--card-scroll-offset, calc(7.6rem + env(safe-area-inset-top, 0px)));
+}
+
+/* Destaque temporário no card alvo da navegação rápida. */
+@keyframes nav-flash {
+  0%,
+  60% {
+    box-shadow: 0 0 0 3px var(--rarity-color, var(--accent));
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+
+.elemental-card.nav-flash {
+  animation: nav-flash 1.6s ease-out 1;
+}
+
+.elemental-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.elemental-card.owned {
+  outline: 2px solid var(--rarity-color, var(--accent));
+}
+
+/* Alinhamento entre cards da mesma linha.
+   Cada card é uma coluna independente, e a descrição do Elemental tem de 1
+   a 3 linhas: isso empurrava a lista de variantes para alturas diferentes,
+   deixando "Base / Dourado / Trapaceiro" desalinhados entre os cards
+   vizinhos. Com subgrid, os quatro blocos do card (cabeçalho, descrição,
+   coleção e custos) passam a ocupar as MESMAS faixas da grade externa, de
+   modo que cada bloco fica na mesma altura em todos os cards da linha —
+   a faixa cresce até caber a maior descrição.
+   O botão de favoritar não entra na conta: é `position: absolute`.
+   Sem suporte a subgrid (navegador antigo), o flex acima continua valendo
+   e o layout volta a ser o de antes, só desalinhado. */
+@supports (grid-template-rows: subgrid) {
+  .elemental-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    /* Repete o gap do flex: o subgrid herdaria o da grade externa (1rem). */
+    row-gap: 0.6rem;
+  }
+
+  /* No flex, o `margin-top: auto` era o que empurrava os custos para o
+     rodapé do card. No subgrid a própria faixa já faz isso, e o auto passa
+     a desalinhar: quem tem uma linha de custo a menos (Elementais sem
+     variante) descia até o fim da faixa. */
+  .elemental-card .costs-block {
+    margin-top: 0;
+  }
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.elemental-icon {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.elemental-icon svg,
+.elemental-icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.card-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.elemental-name {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.rarity-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  color: #0f1115;
+  background: var(--rarity-color, var(--muted));
+  white-space: nowrap;
+}
+
+.upcoming-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  color: var(--muted);
+  border: 1px dashed var(--muted);
+  white-space: nowrap;
+}
+
+.upcoming-badge + * .tile-check,
+.sprite-tile .tile-check input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Deixa claro que o quadradinho inteiro está travado (Sprites "Em breve"),
+   e não só a caixinha em si. */
+.sprite-tile .tile-check:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.elemental-ability {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.variants {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.variants-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.sprite-tiles {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+}
+
+/* Ícone à esquerda, nome no meio, checkboxes à direita.
+   flex-wrap deixa os checkboxes caírem para a linha de baixo quando a
+   coluna é estreita, em vez de vazarem para fora do card. */
+.sprite-tile {
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--surface-hover);
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  min-width: 0;
+}
+
+.sprite-tile.owned {
+  border-color: var(--rarity-color, var(--accent));
+  background: color-mix(in srgb, var(--rarity-color, var(--accent)) 12%, var(--surface-hover));
+}
+
+.sprite-tile.mastered {
+  box-shadow: inset 0 0 0 1px var(--rarity-color, var(--accent));
+}
+
+.tile-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.tile-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tile-checks {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.tile-check {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  padding: 0.2rem 0;
+}
+
+.tile-check input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  accent-color: var(--rarity-color, var(--accent));
+  cursor: pointer;
+}
+
+.costs-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  /* Empurra os custos para o rodapé do card; a coleção fica alinhada
+     ao topo mesmo quando o card estica (ex.: só o quadradinho Base). */
+  margin-top: auto;
+}
+
+.elemental-costs {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--muted);
+  line-height: 1;
+  padding: 0.1rem;
+}
+
+.favorite-btn.active {
+  color: var(--legendary);
+}
+
+/* Toast de instalação fixado no topo da página, fechável pelo usuário. */
+/* O display:flex abaixo venceria o atributo hidden sem esta regra. */
+.install-toast[hidden] {
+  display: none !important;
+}
+
+.install-toast {
+  position: fixed;
+  /* Abaixo do cabeçalho fixo. */
+  top: calc(3.9rem + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: min(640px, calc(100vw - 1.5rem));
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.install-toast-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.install-toast-text strong {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.install-btn {
+  flex-shrink: 0;
+  padding: 0.55rem 1rem;
+  border-radius: 0.6rem;
+  border: none;
+  background: var(--accent);
+  color: #0f1115;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.install-btn:hover {
+  filter: brightness(1.08);
+}
+
+.install-close {
+  flex-shrink: 0;
+  align-self: flex-start;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--surface-hover);
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.install-close:hover {
+  color: var(--text);
+}
+
+.install-offline {
+  font-size: 0.75rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--muted);
+  margin-top: 3rem;
+}
+
+/* Botão flutuante de voltar ao topo. */
+.back-to-top {
+  position: fixed;
+  right: calc(1rem + env(safe-area-inset-right, 0px));
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: background 0.15s, transform 0.12s;
+}
+
+.back-to-top:hover {
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.footer a {
+  color: var(--accent);
+}
+
+/* ---- Responsividade ---- */
+
+/* Monitores largos: aproveita o espaço com mais colunas. */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/* Celulares estreitos: tipografia e espaçamentos mais compactos,
+   mantendo as áreas de toque grandes. */
+@media (max-width: 480px) {
+  .topbar h1 {
+    font-size: 1.45rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .container {
+    padding: 0 0.75rem 2.5rem;
+  }
+
+  .elemental-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .elemental-card {
+    padding: 0.85rem;
+  }
+
+  .filter-tab {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .progress-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+  }
+
+  /* No layout em coluna, flex:1 passaria a controlar a ALTURA da barra
+     e a colapsaria para zero — fixa a altura e ocupa toda a largura. */
+  .progress-bar {
+    flex: none;
+    width: 100%;
+    height: 0.6rem;
+  }
+
+  .progress-label {
+    text-align: left;
+    min-width: 0;
+  }
+
+  .compare-lists {
+    flex-direction: column;
+  }
+}
+
+/* Telas muito estreitas: o botão de atualizar vira só o ícone. */
+@media (max-width: 340px) {
+  .refresh-btn span:not([aria-hidden]) {
+    display: none;
+  }
+}

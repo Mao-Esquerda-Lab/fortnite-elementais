@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1115" />
+  <title>Fortnite Sprites Locker</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-apple.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Sprites Locker" />
+</head>
+<body>
+  <div class="install-toast" id="install-box" hidden>
+    <div class="install-toast-text">
+      <strong id="install-title"></strong>
+      <span id="install-text"></span>
+      <span class="install-offline" id="install-offline"></span>
+    </div>
+    <button class="install-btn" id="install-btn" type="button" hidden></button>
+    <button class="install-close" id="install-close" type="button" aria-label="×">×</button>
+  </div>
+
+  <div class="app-header">
+    <!-- O rótulo já vem preenchido para não depender do JavaScript. -->
+    <button class="refresh-btn" id="refresh-btn" type="button" title="Atualizar">
+      <span aria-hidden="true">⟳</span><span id="refresh-label">Atualizar</span>
+    </button>
+    <img class="header-icon" src="icon-192.png" alt="Fortnite Sprites Locker"
+         width="32" height="32" />
+    <div class="header-right">
+      <button class="refresh-btn account-btn" id="account-btn" type="button" title="Conta">
+        <span aria-hidden="true">☁</span><span id="account-label">Conta</span>
+      </button>
+      <div class="lang-switch" id="lang-switch">
+        <button class="lang-btn" data-lang="pt">PT</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <h1 id="app-title"></h1>
+    <p class="subtitle" id="app-subtitle"></p>
+  </header>
+
+  <main class="container">
+    <!-- Alterna entre a coleção de Sprites e a lista de códigos do lobby. -->
+    <div class="view-tabs" id="view-tabs" role="tablist">
+      <button class="view-tab active" type="button" data-view="sprites" role="tab"></button>
+      <button class="view-tab" type="button" data-view="codes" role="tab"></button>
+    </div>
+
+    <div id="view-sprites">
+    <!-- Menu de navegação rápida: um ícone por Elemental; clicar rola até o
+         card. Fica grudado abaixo do cabeçalho enquanto a página rola.
+         Recolhido é uma linha rolável; o botão expande em várias linhas. -->
+    <nav class="sprite-nav" id="sprite-nav">
+      <div class="sprite-nav-icons" id="sprite-nav-icons"></div>
+      <button class="sprite-nav-toggle" id="sprite-nav-toggle" type="button">▾</button>
+    </nav>
+
+    <section class="controls">
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="filter-tab active" data-rarity="all"></button>
+        <button class="filter-tab" data-rarity="Rare"></button>
+        <button class="filter-tab" data-rarity="Epic"></button>
+        <button class="filter-tab" data-rarity="Legendary"></button>
+        <button class="filter-tab" data-rarity="Mythic"></button>
+        <button class="filter-tab" data-rarity="owned"></button>
+        <button class="filter-tab" data-rarity="not-owned"></button>
+        <button class="filter-tab" data-rarity="mastered"></button>
+        <button class="filter-tab" data-rarity="not-mastered"></button>
+        <button class="filter-tab" data-rarity="favorites"></button>
+      </div>
+
+      <div class="sort-row">
+        <label class="sort-label" id="sort-label" for="sort-select"></label>
+        <select class="sort-select" id="sort-select">
+          <option value="default"></option>
+          <option value="rarity"></option>
+          <option value="alpha"></option>
+        </select>
+      </div>
+    </section>
+
+    <section class="progress">
+      <div class="progress-row">
+        <div class="progress-bar" id="progress-bar-owned"></div>
+        <span class="progress-label" id="progress-label-owned"></span>
+      </div>
+      <div class="progress-row">
+        <div class="progress-bar" id="progress-bar-mastered"></div>
+        <span class="progress-label" id="progress-label-mastered"></span>
+      </div>
+      <div class="progress-actions">
+        <!-- Baixa um PNG com o resumo da coleção (tenho/dominado). -->
+        <button class="export-btn" id="export-btn" type="button">
+          <span aria-hidden="true">📸</span><span id="export-label"></span>
+        </button>
+        <!-- Gera um link para comparar a coleção com a de um amigo (sem backend). -->
+        <button class="export-btn" id="share-btn" type="button">
+          <span aria-hidden="true">🔗</span><span id="share-label"></span>
+        </button>
+        <!-- Backup completo da coleção, para levar de um aparelho a outro. -->
+        <button class="export-btn" id="backup-btn" type="button">
+          <span aria-hidden="true">📦</span><span id="backup-label"></span>
+        </button>
+      </div>
+    </section>
+
+    <section id="elemental-grid" class="elemental-grid"></section>
+
+    <p id="empty-state" class="empty-state" hidden></p>
+    </div>
+
+    <!-- Aba dos códigos do Painel de Admin: marcar os já resgatados. -->
+    <div id="view-codes" hidden>
+      <p class="codes-intro" id="codes-intro"></p>
+      <div class="progress-row">
+        <div class="progress-bar" id="codes-progress-bar"></div>
+        <span class="progress-label" id="codes-progress-label"></span>
+      </div>
+      <!-- Código novo costuma circular no jogo antes de o IGN publicar, e a
+           ação diária só lê o IGN. Este formulário é a ponte: o código entra
+           na lista deste aparelho na hora, e a entrada oficial toma o lugar
+           dele quando o robô finalmente trouxer o código. -->
+      <div class="codes-add">
+        <button class="codes-add-toggle" id="codes-add-toggle" type="button"
+                aria-expanded="false" aria-controls="codes-add-form"></button>
+        <form class="codes-add-form" id="codes-add-form" hidden>
+          <div class="codes-add-field">
+            <label class="share-field-label" id="codes-add-code-label"
+                   for="codes-add-code"></label>
+            <input class="share-input" id="codes-add-code" type="text"
+                   maxlength="32" autocomplete="off" autocapitalize="off"
+                   autocorrect="off" spellcheck="false" />
+          </div>
+          <div class="codes-add-field">
+            <label class="share-field-label" id="codes-add-reward-label"
+                   for="codes-add-reward"></label>
+            <input class="share-input" id="codes-add-reward" type="text"
+                   maxlength="80" autocomplete="off" />
+          </div>
+          <p class="share-error" id="codes-add-error" hidden></p>
+          <div class="codes-add-actions">
+            <button class="export-copy" id="codes-add-submit" type="submit"></button>
+          </div>
+        </form>
+      </div>
+
+      <table class="codes-table">
+        <thead>
+          <tr>
+            <th id="codes-th-done"></th>
+            <th id="codes-th-code"></th>
+            <th id="codes-th-reward"></th>
+          </tr>
+        </thead>
+        <tbody id="codes-body"></tbody>
+      </table>
+      <p class="codes-source" id="codes-source"></p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p id="app-footer"></p>
+  </footer>
+
+  <button class="back-to-top" id="back-to-top" type="button" hidden>
+    <span aria-hidden="true">↑</span>
+  </button>
+
+  <!-- Visualizador do resumo exportado: mostra a imagem gerada com opção
+       de baixar, em vez de disparar o download direto. -->
+  <div class="export-overlay" id="export-overlay" hidden>
+    <div class="export-box">
+      <img id="export-img" alt="" />
+      <div class="export-actions">
+        <button class="export-copy" id="export-copy" type="button"></button>
+        <button class="export-copy" id="export-share" type="button"></button>
+        <a class="export-download" id="export-download"></a>
+        <button class="export-close" id="export-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gera/copia um link de comparação, ou aceita colar o de um amigo. -->
+  <div class="export-overlay" id="share-overlay" hidden>
+    <div class="export-box share-box">
+      <div class="share-section">
+        <label class="share-field-label" id="share-link-label" for="share-link-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="share-link-input" type="text" readonly />
+          <button class="export-copy" id="share-copy-btn" type="button"></button>
+        </div>
+      </div>
+      <div class="share-section">
+        <label class="share-field-label" id="share-paste-label" for="share-paste-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="share-paste-input" type="text" />
+          <button class="export-copy" id="share-paste-btn" type="button"></button>
+        </div>
+        <p class="share-error" id="share-paste-error" hidden></p>
+      </div>
+      <div class="export-actions">
+        <button class="export-close" id="share-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup: exporta a coleção inteira deste aparelho (incluindo favoritos,
+       que o link de comparação não leva) e importa a de outro. -->
+  <div class="export-overlay" id="backup-overlay" hidden>
+    <div class="export-box share-box">
+      <p class="backup-intro" id="backup-intro"></p>
+
+      <div class="share-section">
+        <label class="share-field-label" id="backup-export-label" for="backup-code-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="backup-code-input" type="text" readonly />
+          <button class="export-copy" id="backup-copy-btn" type="button"></button>
+        </div>
+        <a class="export-download" id="backup-download"></a>
+      </div>
+
+      <div class="share-section">
+        <label class="share-field-label" id="backup-import-label" for="backup-paste-input"></label>
+        <div class="share-field-row">
+          <input class="share-input" id="backup-paste-input" type="text" />
+          <button class="export-copy" id="backup-import-btn" type="button"></button>
+        </div>
+        <!-- Alternativa ao copiar/colar: o arquivo baixado acima. -->
+        <label class="backup-file">
+          <input type="file" id="backup-file-input" accept="application/json,.json,.txt" />
+          <span id="backup-file-label"></span>
+        </label>
+        <p class="share-error" id="backup-error" hidden></p>
+      </div>
+
+      <!-- Importar sobrescreve dados: confirma antes, mostrando os números. -->
+      <div class="backup-confirm" id="backup-confirm" hidden>
+        <p id="backup-confirm-text"></p>
+        <div class="backup-confirm-actions">
+          <button class="export-copy" id="backup-merge-btn" type="button"></button>
+          <button class="export-copy backup-danger" id="backup-replace-btn" type="button"></button>
+          <button class="export-close" id="backup-cancel-btn" type="button"></button>
+        </div>
+      </div>
+
+      <p class="backup-done" id="backup-done" hidden></p>
+
+      <div class="export-actions">
+        <button class="export-close" id="backup-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparação somente-leitura contra a coleção decodificada de um link. -->
+  <div class="export-overlay" id="compare-overlay" hidden>
+    <div class="export-box compare-box">
+      <div class="compare-header">
+        <h2 id="compare-title"></h2>
+        <button class="export-close" id="compare-close" type="button"></button>
+      </div>
+      <div class="compare-stats" id="compare-stats"></div>
+      <!-- Amigo-exclusivo primeiro, o seu-exclusivo abaixo (nessa ordem). -->
+      <div class="compare-lists">
+        <div class="compare-list-col" id="compare-only-them"></div>
+        <div class="compare-list-col" id="compare-only-you"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conta (opcional): login/senha para sincronizar a coleção entre
+       aparelhos via Firebase. Sem cloud-sync.js configurado, mostra só o
+       painel "não configurado" — o resto do app funciona igual, sem conta. -->
+  <div class="export-overlay" id="account-overlay" hidden>
+    <div class="export-box share-box">
+      <h2 id="account-title"></h2>
+
+      <p class="backup-intro" id="account-unconfigured-text" hidden></p>
+
+      <form id="account-form" class="share-section" hidden>
+        <label class="share-field-label" id="account-email-label" for="account-email-input"></label>
+        <input class="share-input" id="account-email-input" type="email" autocomplete="email" required />
+
+        <label class="share-field-label" id="account-password-label" for="account-password-input"></label>
+        <input class="share-input" id="account-password-input" type="password" autocomplete="current-password" required minlength="6" />
+
+        <p class="share-error" id="account-auth-error" hidden></p>
+
+        <div class="export-actions">
+          <button class="export-copy" id="account-login-btn" type="submit"></button>
+          <button class="export-copy" id="account-signup-btn" type="button"></button>
+        </div>
+        <button class="backup-file" id="account-forgot-link" type="button"></button>
+      </form>
+
+      <div class="share-section" id="account-signed-in" hidden>
+        <p id="account-signed-in-email"></p>
+        <p class="backup-done" id="account-sync-status"></p>
+        <div class="export-actions">
+          <button class="export-copy" id="account-resync-btn" type="button"></button>
+          <button class="export-copy backup-danger" id="account-logout-btn" type="button"></button>
+        </div>
+      </div>
+
+      <div class="export-actions">
+        <button class="export-close" id="account-close" type="button"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/cheat-codes.js"></script>
+  <script src="data/cheat-codes-auto.js"></script>
+  <script src="data/elementals.js"></script>
+  <script src="data/elementals-auto.js"></script>
+  <script src="icons.js"></script>
+  <script src="app.js"></script>
+  <script src="firebase-config.js"></script>
+  <script type="module" src="cloud-sync.js"></script>
+</body>
+</html>

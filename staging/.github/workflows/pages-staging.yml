@@ -1,0 +1,50 @@
+name: Deploy staging preview
+
+# Publica a branch "staging" em gh-pages:/staging/, sem tocar no resto da
+# gh-pages (a raiz continua sendo só o deploy de produção, feito pelo
+# pages.yml a partir da main). Serve para revisar mudanças (como login/conta)
+# num link real antes de abrir/mesclar o PR para a main.
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Mesmo grupo do deploy de produção: os dois escrevem na mesma branch
+# gh-pages, então nunca podem rodar ao mesmo tempo.
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout staging branch
+        uses: actions/checkout@v4
+        with:
+          path: staging-src
+
+      - name: Fetch and prepare gh-pages worktree
+        run: |
+          set -euo pipefail
+          git -C staging-src fetch origin gh-pages:gh-pages
+          git -C staging-src worktree add ../gh-pages-wt gh-pages
+
+      - name: Sync staging branch content into gh-pages:/staging
+        run: |
+          set -euo pipefail
+          rm -rf gh-pages-wt/staging
+          mkdir -p gh-pages-wt/staging
+          find staging-src -mindepth 1 -maxdepth 1 ! -name '.git' \
+            -exec cp -a {} gh-pages-wt/staging/ \;
+          cd gh-pages-wt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A staging
+          if ! git diff --cached --quiet; then
+            git commit -m "Deploy staging preview (${{ github.sha }})"
+            git push origin HEAD:gh-pages
+          fi
