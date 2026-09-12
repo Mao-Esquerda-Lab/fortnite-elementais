@@ -470,16 +470,20 @@ async function main() {
       const snap = await dbApi.getDoc(dbApi.doc(db, "users", signedInUid));
       if (snap.exists()) {
         myUsername = snap.data().username || null;
-        if (friendCode) return friendCode;
+        // O valor lido agora do Firestore sempre tem prioridade sobre o
+        // cache local — o cache só serve de fallback (abaixo, e no catch)
+        // pra quando não dá pra confirmar o valor atual.
         if (snap.data().friendCode) {
           friendCode = snap.data().friendCode;
           return friendCode;
         }
+        if (friendCode) return friendCode;
       } else if (friendCode) {
         return friendCode;
       }
     } catch (err) {
       console.warn("[cloud-sync] falha ao buscar código de amigo:", err);
+      if (friendCode) return friendCode;
     }
     // Tenta um código aleatório por vez, sem checar antes se já existe: uma
     // escrita numa doc que já existe conta como "update" pro Firestore (não
