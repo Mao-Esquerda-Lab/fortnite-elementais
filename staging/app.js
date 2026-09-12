@@ -32,6 +32,9 @@ const TRANSLATIONS = {
     exportCopied: "Copiado! ✓",
     exportShare: "Compartilhar",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
+    compareLinkToggle: "Comparar por link (sem conta)",
+    compareLinkToggleTitle:
+      "Gera um link, ou cole o de um amigo, para comparar sem precisar de conta",
     shareLinkLabel: "Seu link de comparação",
     shareCopyLink: "Copiar link",
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
@@ -205,6 +208,9 @@ const TRANSLATIONS = {
     exportCopied: "Copied! ✓",
     exportShare: "Share",
     exportTotal: (total) => `${total} items (Base + variants)`,
+    compareLinkToggle: "Compare via link (no account)",
+    compareLinkToggleTitle:
+      "Generate a link, or paste a friend's, to compare without an account",
     shareLinkLabel: "Your comparison link",
     shareCopyLink: "Copy link",
     sharePasteLabel: "Paste a friend's code or link here",
@@ -782,6 +788,9 @@ function applyLanguage() {
   document.getElementById("export-share").textContent = s.exportShare;
   document.getElementById("export-close").textContent = s.close;
 
+  const shareLinkToggle = document.getElementById("share-link-toggle");
+  shareLinkToggle.textContent = s.compareLinkToggle;
+  shareLinkToggle.title = s.compareLinkToggleTitle;
   document.getElementById("share-link-label").textContent = s.shareLinkLabel;
   document.getElementById("share-copy-btn").textContent = s.shareCopyLink;
   document.getElementById("share-paste-label").textContent = s.sharePasteLabel;
@@ -1921,6 +1930,17 @@ function mergeCollections(mine, theirs) {
 }
 
 // ---- Compartilhar/comparar coleção com um amigo (sem backend) ----
+// Fica dentro de um accordion fechado por padrão: é o caminho de antes de
+// existir conta, então secundário agora que a seção de Amigos (mais abaixo)
+// cobre o caso comum.
+const shareLinkAccordionToggle = document.getElementById("share-link-toggle");
+const shareLinkAccordionPanel = document.getElementById("share-link-panel");
+shareLinkAccordionToggle.addEventListener("click", () => {
+  const open = shareLinkAccordionPanel.hidden;
+  shareLinkAccordionPanel.hidden = !open;
+  shareLinkAccordionToggle.setAttribute("aria-expanded", String(open));
+});
+
 const shareLinkInput = document.getElementById("share-link-input");
 const shareCopyBtn = document.getElementById("share-copy-btn");
 const sharePasteInput = document.getElementById("share-paste-input");

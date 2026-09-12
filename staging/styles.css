@@ -758,15 +758,17 @@ textarea {
   }
 }
 
-/* ---- Adicionar código à mão ---- */
+/* ---- Accordion genérico (fechado por padrão, um botão revela o painel) ----
+   Usado por "Adicionar código à mão" (Códigos) e "Comparar por link"
+   (Comparar com amigos). */
 
-/* Fica entre a barra de progresso e a tabela: é sobre a tabela, mas é ação
-   ocasional — por isso o formulário nasce fechado, só o botão aparece. */
-.codes-add {
+/* Ex.: entre a barra de progresso e a tabela de Códigos — é ação ocasional,
+   por isso nasce fechado, só o botão aparece. */
+.accordion {
   margin: 0.9rem 0 0.25rem;
 }
 
-.codes-add-toggle {
+.accordion-toggle {
   padding: 0.35rem 0.7rem;
   border-radius: 0.6rem;
   border: 1px dashed var(--border);
@@ -777,12 +779,12 @@ textarea {
   cursor: pointer;
 }
 
-.codes-add-toggle:hover {
+.accordion-toggle:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.codes-add-form {
+.accordion-panel {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -794,8 +796,8 @@ textarea {
 }
 
 /* `display: flex` na classe vence o `display: none` que o navegador dá ao
-   [hidden]; sem isto o formulário nasceria aberto. */
-.codes-add-form[hidden] {
+   [hidden]; sem isto o painel nasceria aberto. */
+.accordion-panel[hidden] {
   display: none;
 }
 
