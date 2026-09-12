@@ -1081,20 +1081,22 @@ textarea {
   gap: 0.4rem;
 }
 
-/* Ícone só (lixeira) em vez de texto — mesmo padrão do "remover código"
-   (.code-remove) da aba Códigos. */
+/* Ícone só (✕) em vez de texto, já vermelho de cara — mesma marca do
+   "remover código" (.code-remove) da aba Códigos, mas sem esperar o hover
+   pra avisar que é uma ação destrutiva. */
 .friend-remove-btn {
   border: none;
   background: none;
-  color: var(--muted);
+  color: var(--mythic);
   font-size: 0.95rem;
   line-height: 1;
   padding: 0.15rem;
   cursor: pointer;
+  opacity: 0.85;
 }
 
 .friend-remove-btn:hover {
-  color: var(--mythic);
+  opacity: 1;
 }
 
 .sort-label {
@@ -1593,8 +1595,8 @@ textarea {
   }
 
   /* A coluna do nome (fixa em 9.5rem no desktop) não cabe inteira ao lado
-     do código + "Comparar" + lixeira numa tela estreita — aperta pra caber
-     sem estourar a largura da tela; o nome longo já trunca com "…" de
+     do código + "Comparar" + o ✕ de remover numa tela estreita — aperta pra
+     caber sem estourar a largura da tela; o nome longo já trunca com "…" de
      qualquer forma. */
   .friend-row {
     grid-template-columns: 6rem auto minmax(0, 1fr) auto;
