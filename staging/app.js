@@ -87,6 +87,8 @@ const TRANSLATIONS = {
     accountLabelSignedOut: "Fazer login",
     accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
+    accountModalTitleSignedOut: "Crie seu perfil",
+    accountModalTitleSignedIn: "Meu perfil",
     accountEmailLabel: "E-mail",
     accountPasswordLabel: "Senha",
     accountLoginButton: "Entrar",
@@ -264,6 +266,8 @@ const TRANSLATIONS = {
     accountLabelSignedOut: "Log in",
     accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
+    accountModalTitleSignedOut: "Create your profile",
+    accountModalTitleSignedIn: "My profile",
     accountEmailLabel: "Email",
     accountPasswordLabel: "Password",
     accountLoginButton: "Log in",
@@ -853,7 +857,9 @@ function applyLanguage() {
   const accountBtn = document.getElementById("account-btn");
   accountBtn.title = s.accountTitle;
   document.getElementById("account-label").textContent = s.accountLabelSignedOut;
-  document.getElementById("account-title").textContent = s.accountTitle;
+  // Reflete o login (cloud-sync.js, opcional): esse valor aqui é só o
+  // padrão deslogado, pra já nascer certo mesmo sem cloud-sync.js.
+  document.getElementById("account-title").textContent = s.accountModalTitleSignedOut;
   document.getElementById("account-close").title = s.close;
   document.getElementById("account-unconfigured-text").textContent =
     s.accountUnconfigured;

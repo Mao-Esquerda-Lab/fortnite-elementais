@@ -153,6 +153,7 @@ async function main() {
     overlay: document.getElementById("account-overlay"),
     btn: document.getElementById("account-btn"),
     label: document.getElementById("account-label"),
+    modalTitle: document.getElementById("account-title"),
     close: document.getElementById("account-close"),
     unconfiguredText: document.getElementById("account-unconfigured-text"),
     modeTabs: document.getElementById("account-mode-tabs"),
@@ -327,6 +328,9 @@ async function main() {
     els.label.textContent = signedIn
       ? bridge.t().accountLabelSignedIn
       : bridge.t().accountLabelSignedOut;
+    els.modalTitle.textContent = signedIn
+      ? bridge.t().accountModalTitleSignedIn
+      : bridge.t().accountModalTitleSignedOut;
   }
 
   function renderSignedIn(user, statusKey) {

@@ -82,7 +82,7 @@ textarea {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 0.5rem;
-  padding: 0.55rem 0.75rem;
+  padding: 0.85rem 0.75rem;
 }
 
 .app-header-row > .refresh-btn {
