@@ -451,6 +451,10 @@ textarea {
   gap: 0.5rem;
 }
 
+.export-actions.actions-start {
+  justify-content: flex-start;
+}
+
 .export-download {
   padding: 0.5rem 1rem;
   border-radius: 0.6rem;
