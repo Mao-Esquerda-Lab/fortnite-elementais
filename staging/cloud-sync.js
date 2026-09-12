@@ -163,6 +163,7 @@ async function main() {
     loginPasswordInput: document.getElementById("account-login-password-input"),
     signupForm: document.getElementById("account-signup-form"),
     signupEmailInput: document.getElementById("account-signup-email-input"),
+    signupUsernameInput: document.getElementById("account-signup-username-input"),
     signupPasswordInput: document.getElementById("account-signup-password-input"),
     passwordHint: document.getElementById("account-password-hint"),
     authError: document.getElementById("account-auth-error"),
@@ -170,10 +171,12 @@ async function main() {
     signedIn: document.getElementById("account-signed-in"),
     signedInEmail: document.getElementById("account-signed-in-email"),
     syncStatus: document.getElementById("account-sync-status"),
+    accountUsernameInput: document.getElementById("account-username-input"),
+    accountUsernameSaveBtn: document.getElementById("account-username-save-btn"),
     resyncBtn: document.getElementById("account-resync-btn"),
     logoutBtn: document.getElementById("account-logout-btn"),
-    shareBtn: document.getElementById("share-btn"),
-    shareOverlay: document.getElementById("share-overlay"),
+    friendsTab: document.querySelector('#view-tabs [data-view="friends"]'),
+    viewFriends: document.getElementById("view-friends"),
     friendsSection: document.getElementById("friends-section"),
     friendsSignedOutHint: document.getElementById("friends-signed-out-hint"),
     friendCodeInput: document.getElementById("friend-code-input"),
@@ -286,7 +289,11 @@ async function main() {
   let signedInUid = null;
   let pushTimer = null;
   let friendCode = null;
-  let friendsCache = []; // [{ uid, code, mutual }]
+  let myUsername = null;
+  // Definido só entre o submit do cadastro e o primeiro onAuthStateChanged
+  // da conta nova — handleAuthChange() grava e limpa em seguida.
+  let pendingUsername = null;
+  let friendsCache = []; // [{ uid, code, username, mutual }]
 
   function schedulePush() {
     if (!signedInUid) return;
@@ -320,9 +327,12 @@ async function main() {
     setAccountLabel(true);
     showPanel("signed-in");
     // Gera/busca o código de amigo já ao logar, sem esperar o usuário abrir
-    // o "Comparar" — é o que deixa o banner do topo e o campo no perfil
-    // preenchidos assim que possível.
-    ensureFriendCode().then(setFriendCodeDisplays);
+    // a aba "Comparar com amigos" — é o que deixa o banner do topo e o campo
+    // no perfil preenchidos assim que possível.
+    ensureFriendCode().then((code) => {
+      setFriendCodeDisplays(code);
+      els.accountUsernameInput.value = myUsername || "";
+    });
   }
 
   window.addEventListener("spriteslocker:lang-changed", () => {
@@ -339,6 +349,7 @@ async function main() {
     if (!user) {
       signedInUid = null;
       friendCode = null;
+      myUsername = null;
       friendsCache = [];
       els.friendsSection.hidden = true;
       els.friendsSignedOutHint.hidden = false;
@@ -367,6 +378,10 @@ async function main() {
       // já existe neste aparelho, mesmo que seja nada.
       signedInUid = user.uid;
       await dbApi.setDoc(docRef, bridge.getSnapshotJSON(), { mergeFields: SYNC_FIELDS });
+      if (pendingUsername) {
+        await dbApi.setDoc(docRef, { username: pendingUsername }, { mergeFields: ["username"] });
+        pendingUsername = null;
+      }
       lastSyncedUid.set(user.uid);
       renderSignedIn(user, "accountSyncedUp");
       return;
@@ -426,11 +441,16 @@ async function main() {
   }
 
   async function ensureFriendCode() {
-    if (friendCode) return friendCode;
     try {
       const snap = await dbApi.getDoc(dbApi.doc(db, "users", signedInUid));
-      if (snap.exists() && snap.data().friendCode) {
-        friendCode = snap.data().friendCode;
+      if (snap.exists()) {
+        myUsername = snap.data().username || null;
+        if (friendCode) return friendCode;
+        if (snap.data().friendCode) {
+          friendCode = snap.data().friendCode;
+          return friendCode;
+        }
+      } else if (friendCode) {
         return friendCode;
       }
     } catch (err) {
@@ -445,7 +465,10 @@ async function main() {
     for (let i = 0; i < 8; i++) {
       const candidate = randomFriendCode();
       try {
-        await dbApi.setDoc(dbApi.doc(db, "friendCodes", candidate), { uid: signedInUid });
+        await dbApi.setDoc(dbApi.doc(db, "friendCodes", candidate), {
+          uid: signedInUid,
+          username: myUsername,
+        });
         await dbApi.setDoc(
           dbApi.doc(db, "users", signedInUid),
           { friendCode: candidate },
@@ -468,7 +491,8 @@ async function main() {
   async function resolveFriendCode(code) {
     try {
       const snap = await dbApi.getDoc(dbApi.doc(db, "friendCodes", code));
-      return snap.exists() ? snap.data().uid : null;
+      if (!snap.exists()) return null;
+      return { uid: snap.data().uid, username: snap.data().username || null };
     } catch (err) {
       console.warn("[cloud-sync] falha ao resolver código de amigo:", err);
       return null;
@@ -479,7 +503,13 @@ async function main() {
     try {
       const snaps = await dbApi.getDocs(dbApi.collection(db, "users", signedInUid, "friends"));
       const list = [];
-      snaps.forEach((docSnap) => list.push({ uid: docSnap.id, code: docSnap.data().code }));
+      snaps.forEach((docSnap) =>
+        list.push({
+          uid: docSnap.id,
+          code: docSnap.data().code,
+          username: docSnap.data().username || null,
+        })
+      );
       return list;
     } catch (err) {
       console.warn("[cloud-sync] falha ao carregar amigos:", err);
@@ -509,8 +539,13 @@ async function main() {
         const compareBtn = f.mutual
           ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
           : "";
+        // Sem nome (raro — só contas de antes dessa função existir): mostra
+        // só o código, igual sempre foi.
+        const identity = f.username
+          ? `<span class="friend-row-name">${escapeHtml(f.username)}</span><span class="friend-row-code">${escapeHtml(f.code)}</span>`
+          : `<span class="friend-row-code">${escapeHtml(f.code)}</span>`;
         return `<li class="friend-row">
-          <span class="friend-row-code">${escapeHtml(f.code)}</span>
+          ${identity}
           <span class="friend-row-status">${status}</span>
           <div class="friend-row-actions">
             ${compareBtn}
@@ -551,24 +586,25 @@ async function main() {
     if (friendsCache.some((f) => f.code === normalized)) {
       return setFriendError(bridge.t().friendErrorAlreadyAdded);
     }
-    const uid = await resolveFriendCode(normalized);
-    if (!uid) return setFriendError(bridge.t().friendErrorNotFound);
-    if (uid === signedInUid) return setFriendError(bridge.t().friendErrorOwnCode);
+    const resolved = await resolveFriendCode(normalized);
+    if (!resolved) return setFriendError(bridge.t().friendErrorNotFound);
+    if (resolved.uid === signedInUid) return setFriendError(bridge.t().friendErrorOwnCode);
 
     try {
-      await dbApi.setDoc(dbApi.doc(db, "users", signedInUid, "friends", uid), {
+      await dbApi.setDoc(dbApi.doc(db, "users", signedInUid, "friends", resolved.uid), {
         code: normalized,
+        username: resolved.username,
         addedAt: new Date().toISOString(),
       });
     } catch (err) {
       return setFriendError(authErrorMessage(bridge, err));
     }
     els.friendAddInput.value = "";
-    friendsCache.push({ uid, code: normalized, mutual: false });
+    friendsCache.push({ uid: resolved.uid, code: normalized, username: resolved.username, mutual: false });
     renderFriendsList();
     // A checagem de mutualidade é assíncrona e não bloqueia a linha aparecer.
-    checkMutual(uid).then((mutual) => {
-      const entry = friendsCache.find((f) => f.uid === uid);
+    checkMutual(resolved.uid).then((mutual) => {
+      const entry = friendsCache.find((f) => f.uid === resolved.uid);
       if (entry) entry.mutual = mutual;
       renderFriendsList();
     });
@@ -598,10 +634,47 @@ async function main() {
     }
   }
 
-  els.shareBtn.addEventListener("click", refreshFriendsSection);
-  // Se o modal "Comparar" já estava aberto quando este script terminou de
-  // carregar (rede lenta), atualiza a seção de amigos sem esperar outro clique.
-  if (!els.shareOverlay.hidden) refreshFriendsSection();
+  // Editável no perfil (cobre também quem já tinha conta antes de o app
+  // pedir um nome no cadastro). Atualiza os dois lugares onde o nome mora:
+  // users/{uid} (fonte de verdade) e friendCodes/{código} (o que quem for
+  // adicionar esta pessoa enxerga).
+  async function saveUsername(rawValue) {
+    setAuthError("");
+    const trimmed = (rawValue || "").trim();
+    if (!trimmed) return setAuthError(bridge.t().accountErrorUsernameRequired);
+    try {
+      await dbApi.setDoc(
+        dbApi.doc(db, "users", signedInUid),
+        { username: trimmed },
+        { mergeFields: ["username"] }
+      );
+      if (friendCode) {
+        await dbApi.setDoc(
+          dbApi.doc(db, "friendCodes", friendCode),
+          { username: trimmed },
+          { mergeFields: ["username"] }
+        );
+      }
+    } catch (err) {
+      return setAuthError(authErrorMessage(bridge, err));
+    }
+    myUsername = trimmed;
+    els.accountUsernameInput.value = trimmed;
+    const original = els.accountUsernameSaveBtn.textContent;
+    els.accountUsernameSaveBtn.textContent = bridge.t().accountUsernameSaved;
+    setTimeout(() => {
+      els.accountUsernameSaveBtn.textContent = original;
+    }, 2000);
+  }
+  els.accountUsernameSaveBtn.addEventListener("click", () =>
+    saveUsername(els.accountUsernameInput.value)
+  );
+
+  els.friendsTab.addEventListener("click", refreshFriendsSection);
+  // Se a aba "Comparar com amigos" já estava ativa quando este script
+  // terminou de carregar (rede lenta, ou é a aba lembrada de uma visita
+  // anterior), atualiza a seção de amigos sem esperar outro clique.
+  if (!els.viewFriends.hidden) refreshFriendsSection();
 
   // Usado pelos três botões "copiar código" (Comparar, banner do topo,
   // perfil) — todos fazem a mesma coisa, só muda qual botão/texto/campo.
@@ -663,6 +736,8 @@ async function main() {
   els.signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     setAuthError("");
+    const username = els.signupUsernameInput.value.trim();
+    if (!username) return setAuthError(bridge.t().accountErrorUsernameRequired);
     // Confere a senha contra a política de verdade ANTES de gastar uma
     // tentativa no Firebase — evita o "weak-password" genérico e diz
     // exatamente o que falta.
@@ -675,6 +750,10 @@ async function main() {
         return;
       }
     }
+    // Grava ANTES de criar a conta: handleAuthChange() reage ao
+    // onAuthStateChanged, que pode disparar antes de qualquer código daqui
+    // rodar depois do await — pendingUsername precisa já estar pronto.
+    pendingUsername = username;
     try {
       await authApi.createUserWithEmailAndPassword(
         auth,
@@ -682,6 +761,7 @@ async function main() {
         els.signupPasswordInput.value
       );
     } catch (err) {
+      pendingUsername = null;
       setAuthError(authErrorMessage(bridge, err));
     }
   });

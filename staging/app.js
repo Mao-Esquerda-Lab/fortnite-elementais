@@ -32,8 +32,6 @@ const TRANSLATIONS = {
     exportCopied: "Copiado! ✓",
     exportShare: "Compartilhar",
     exportTotal: (total) => `${total} itens (Base + variantes)`,
-    shareLabel: "Comparar",
-    shareTitle: "Gera um link para comparar sua coleção com a de um amigo",
     shareLinkLabel: "Seu link de comparação",
     shareCopyLink: "Copiar link",
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
@@ -48,6 +46,10 @@ const TRANSLATIONS = {
     friendsSectionTitle: "Amigos",
     friendsIntro: "Compare em tempo real com amigos que também têm conta.",
     friendsSignedOutHint: "Entre na sua conta para comparar direto com amigos.",
+    accountUsernameLabel: "Nome de usuário",
+    accountUsernameSave: "Salvar",
+    accountUsernameSaved: "Salvo! ✓",
+    accountErrorUsernameRequired: "Digite um nome de usuário.",
     friendCodeLabel: "Seu código de amigo",
     friendCodeCopy: "Copiar código",
     friendAddLabel: "Adicionar amigo pelo código",
@@ -116,6 +118,7 @@ const TRANSLATIONS = {
     accountPolicyNumber: "um número",
     accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
+    viewCompareTab: "Comparar com amigos",
     viewCodes: "Códigos",
     codesIntro:
       "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
@@ -203,8 +206,6 @@ const TRANSLATIONS = {
     exportCopied: "Copied! ✓",
     exportShare: "Share",
     exportTotal: (total) => `${total} items (Base + variants)`,
-    shareLabel: "Compare",
-    shareTitle: "Generates a link to compare your collection with a friend's",
     shareLinkLabel: "Your comparison link",
     shareCopyLink: "Copy link",
     sharePasteLabel: "Paste a friend's code or link here",
@@ -219,6 +220,10 @@ const TRANSLATIONS = {
     friendsSectionTitle: "Friends",
     friendsIntro: "Compare live with friends who also have an account.",
     friendsSignedOutHint: "Sign in to compare live with friends.",
+    accountUsernameLabel: "Username",
+    accountUsernameSave: "Save",
+    accountUsernameSaved: "Saved! ✓",
+    accountErrorUsernameRequired: "Enter a username.",
     friendCodeLabel: "Your friend code",
     friendCodeCopy: "Copy code",
     friendAddLabel: "Add a friend by code",
@@ -286,6 +291,7 @@ const TRANSLATIONS = {
     accountPolicyNumber: "a number",
     accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
+    viewCompareTab: "Compare with friends",
     viewCodes: "Codes",
     codesIntro:
       "Admin Panel codes: on the main menu, click the “… / admin panel” box in the top right, type the code and submit. Tick here the ones you have already redeemed.",
@@ -485,7 +491,8 @@ let customCodes = loadCustomCodes();
 if (JSON.stringify(customCodes) !== storage.get(CUSTOM_CODES_KEY)) {
   saveCustomCodes();
 }
-let activeView = storage.get(VIEW_KEY) === "codes" ? "codes" : "sprites";
+const VALID_VIEWS = ["sprites", "friends", "codes"];
+let activeView = VALID_VIEWS.includes(storage.get(VIEW_KEY)) ? storage.get(VIEW_KEY) : "sprites";
 let lang = loadLang();
 let activeFilter = "all";
 let sortMode = ["default", "rarity", "alpha"].includes(storage.get(SORT_KEY))
@@ -777,14 +784,10 @@ function applyLanguage() {
   document.getElementById("export-share").textContent = s.exportShare;
   document.getElementById("export-close").textContent = s.close;
 
-  const shareBtn = document.getElementById("share-btn");
-  shareBtn.title = s.shareTitle;
-  document.getElementById("share-label").textContent = s.shareLabel;
   document.getElementById("share-link-label").textContent = s.shareLinkLabel;
   document.getElementById("share-copy-btn").textContent = s.shareCopyLink;
   document.getElementById("share-paste-label").textContent = s.sharePasteLabel;
   document.getElementById("share-paste-btn").textContent = s.sharePasteButton;
-  document.getElementById("share-close").textContent = s.close;
 
   // Seção de amigos (cloud-sync.js, opcional): este arquivo só entrega o
   // texto estático, igual faz para o modal de conta — a lógica de quando
@@ -799,13 +802,16 @@ function applyLanguage() {
   document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
   document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
   document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;
+  document.getElementById("account-username-label").textContent = s.accountUsernameLabel;
+  document.getElementById("account-username-save-btn").textContent = s.accountUsernameSave;
   document.getElementById("account-friend-code-label").textContent = s.friendCodeLabel;
   document.getElementById("account-friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
 
+  const viewTabLabels = { sprites: s.viewSprites, friends: s.viewCompareTab, codes: s.viewCodes };
   [...viewTabs.children].forEach((tab) => {
-    tab.textContent = tab.dataset.view === "codes" ? s.viewCodes : s.viewSprites;
+    tab.textContent = viewTabLabels[tab.dataset.view];
   });
   document.getElementById("codes-intro").textContent = s.codesIntro;
   document.getElementById("codes-th-done").textContent = s.codesThDone;
@@ -852,6 +858,8 @@ function applyLanguage() {
     s.accountPasswordLabel;
   document.getElementById("account-login-submit").textContent = s.accountLoginButton;
   document.getElementById("account-signup-email-label").textContent = s.accountEmailLabel;
+  document.getElementById("account-signup-username-label").textContent =
+    s.accountUsernameLabel;
   document.getElementById("account-signup-password-label").textContent =
     s.accountPasswordLabel;
   document.getElementById("account-signup-submit").textContent = s.accountSignupButton;
@@ -1540,6 +1548,7 @@ document.getElementById("export-btn").addEventListener("click", () => {
 // ---- Aba dos códigos do Painel de Admin ----
 const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
+const viewFriends = document.getElementById("view-friends");
 const viewCodes = document.getElementById("view-codes");
 const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
@@ -1632,6 +1641,7 @@ function renderCodes() {
 
 function applyView() {
   viewSprites.hidden = activeView !== "sprites";
+  viewFriends.hidden = activeView !== "friends";
   viewCodes.hidden = activeView !== "codes";
   [...viewTabs.children].forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.view === activeView)
@@ -1639,6 +1649,7 @@ function applyView() {
   // O menu de navegação rápida é grudento e só faz sentido com a grade.
   spriteNav.hidden = activeView !== "sprites";
   if (activeView === "codes") renderCodes();
+  if (activeView === "friends") refreshShareLink();
 }
 
 viewTabs.addEventListener("click", (e) => {
@@ -1896,7 +1907,6 @@ function mergeCollections(mine, theirs) {
 }
 
 // ---- Compartilhar/comparar coleção com um amigo (sem backend) ----
-const shareOverlay = document.getElementById("share-overlay");
 const shareLinkInput = document.getElementById("share-link-input");
 const shareCopyBtn = document.getElementById("share-copy-btn");
 const sharePasteInput = document.getElementById("share-paste-input");
@@ -1907,17 +1917,13 @@ const compareStats = document.getElementById("compare-stats");
 const compareOnlyYou = document.getElementById("compare-only-you");
 const compareOnlyThem = document.getElementById("compare-only-them");
 
-function openShareModal() {
+// Chamado sempre que a aba "Comparar com amigos" fica visível (applyView()).
+function refreshShareLink() {
   const s = t();
   shareLinkInput.value = `${location.origin}${location.pathname}#c=${encodeCollectionCode()}`;
   shareCopyBtn.textContent = s.shareCopyLink;
   sharePasteInput.value = "";
   sharePasteError.hidden = true;
-  shareOverlay.hidden = false;
-}
-
-function closeShareModal() {
-  shareOverlay.hidden = true;
 }
 
 // Aceita tanto o link inteiro colado quanto só o código puro.
@@ -1968,7 +1974,6 @@ function openCompareModal(theirCollection) {
   compareOnlyYou.innerHTML = compareListColumn(s.compareOnlyYou, onlyMine);
   compareOnlyThem.innerHTML = compareListColumn(s.compareOnlyThem, onlyTheirs);
 
-  closeShareModal();
   compareOverlay.hidden = false;
 }
 
@@ -1993,12 +1998,6 @@ function readShareHashOnLoad() {
   openCompareModal(theirCollection);
 }
 window.addEventListener("hashchange", readShareHashOnLoad);
-
-document.getElementById("share-btn").addEventListener("click", openShareModal);
-document.getElementById("share-close").addEventListener("click", closeShareModal);
-shareOverlay.addEventListener("click", (e) => {
-  if (e.target === shareOverlay) closeShareModal();
-});
 
 shareCopyBtn.addEventListener("click", async () => {
   try {
