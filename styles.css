@@ -34,6 +34,12 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
+  /* Tira o gesto de dar dois toques rápidos pra dar zoom (e o atraso de
+     ~300ms no toque que vem junto dele) — clicar rápido demais em qualquer
+     lugar não deveria mexer no zoom da página. "manipulation" preserva o
+     pinça-pra-zoom (pinch-to-zoom): acessibilidade continua funcionando,
+     só o toque-duplo-sem-querer some. */
+  touch-action: manipulation;
 }
 
 /* Botões e campos de formulário não herdam a fonte da página por padrão —
@@ -46,20 +52,48 @@ textarea {
   font-family: inherit;
 }
 
-/* Cabeçalho fixo e opaco, igual na web e no app instalado.
-   O padding com env(safe-area-inset-top) cobre a barra de status/notch. */
+/* Cabeçalho fixo e opaco, igual na web e no app instalado. O padding aqui
+   é só a área segura (notch/Dynamic Island/barra de status no iOS, inclusive
+   nas laterais em paisagem) — nenhum espaçamento visual. Separado da linha
+   de conteúdo (.app-header-row) de propósito: tentar embutir os dois num
+   `calc()` só (como era antes) deixava o ícone e os botões posicionados a
+   partir do meio da área segura em vez de abaixo dela, cortando o cabeçalho
+   e desalinhando o toque nos botões no iOS. */
 .app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(0.55rem + env(safe-area-inset-top, 0px)) 0.75rem 0.55rem;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) 0
+    env(safe-area-inset-left, 0px);
   background: var(--bg);
   border-bottom: 1px solid var(--border);
+}
+
+/* Grid de 3 colunas (não flex + posicionamento absoluto, como era): a coluna
+   do meio (auto) tem o tamanho exato do ícone e fica sempre 100% centralizada
+   de verdade, porque as duas colunas 1fr ao redor são sempre iguais entre si
+   — sem depender de calc/z-index, e sem correr o risco de um grupo de botões
+   largo (conta + idioma) invadir e cobrir o ícone numa tela estreita, porque
+   cada coluna tem seu próprio espaço reservado, nunca sobreposto. */
+.app-header-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  /* "end" (não "center"): o que corta é sempre a borda de cima (barra de
+     status/notch, por cima do padding de área segura de .app-header) —
+     grudar tudo na base do cabeçalho afasta ao máximo dessa borda. */
+  align-items: end;
+  gap: 0.5rem;
+  padding: 0.85rem 0.75rem;
+}
+
+.app-header-row > .refresh-btn {
+  justify-self: start;
+}
+
+.app-header-row > .header-right {
+  justify-self: end;
 }
 
 .topbar {
@@ -94,20 +128,25 @@ textarea {
   color: var(--muted);
 }
 
+/* `display: flex` acima venceria o `display: none` padrão do navegador pro
+   atributo hidden (JS só alterna o atributo, nunca o display) — sem isto o
+   balão ficava visível, vazio, mesmo deslogado. */
+.friend-code-banner[hidden] {
+  display: none;
+}
+
 .friend-code-banner strong {
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Ícone do app centralizado na barra do cabeçalho. */
+/* Ícone do app: sua própria coluna no grid de .app-header-row (ver acima) —
+   nunca precisa de position/z-index pra ficar centralizado ou por cima dos
+   vizinhos, porque a coluna do meio nunca se sobrepõe às laterais. */
 .header-icon {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + env(safe-area-inset-top, 0px) / 2);
-  transform: translate(-50%, -50%);
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.45rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.5rem;
   object-fit: cover;
 }
 
@@ -146,7 +185,7 @@ textarea {
 }
 
 .refresh-btn span[aria-hidden] {
-  font-size: 1.15rem;
+  font-size: 1.4rem;
 }
 
 .refresh-btn:hover {
@@ -528,6 +567,15 @@ textarea {
   gap: 0.4rem;
 }
 
+/* #friends-section é um .share-section que também alterna o atributo hidden
+   via JS (cloud-sync.js) — sem isto, o display:flex acima venceria o hidden
+   padrão do navegador e a seção de Amigos ficaria visível (vazia) mesmo
+   deslogado. Mesmo problema já visto no account-overlay e no banner do
+   código de amigo. */
+#friends-section[hidden] {
+  display: none;
+}
+
 .share-field-label {
   font-size: 0.85rem;
   color: var(--muted);
@@ -758,15 +806,17 @@ textarea {
   }
 }
 
-/* ---- Adicionar código à mão ---- */
+/* ---- Accordion genérico (fechado por padrão, um botão revela o painel) ----
+   Usado por "Adicionar código à mão" (Códigos) e "Comparar por link"
+   (Comparar com amigos). */
 
-/* Fica entre a barra de progresso e a tabela: é sobre a tabela, mas é ação
-   ocasional — por isso o formulário nasce fechado, só o botão aparece. */
-.codes-add {
+/* Ex.: entre a barra de progresso e a tabela de Códigos — é ação ocasional,
+   por isso nasce fechado, só o botão aparece. */
+.accordion {
   margin: 0.9rem 0 0.25rem;
 }
 
-.codes-add-toggle {
+.accordion-toggle {
   padding: 0.35rem 0.7rem;
   border-radius: 0.6rem;
   border: 1px dashed var(--border);
@@ -777,12 +827,12 @@ textarea {
   cursor: pointer;
 }
 
-.codes-add-toggle:hover {
+.accordion-toggle:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
 
-.codes-add-form {
+.accordion-panel {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -794,8 +844,8 @@ textarea {
 }
 
 /* `display: flex` na classe vence o `display: none` que o navegador dá ao
-   [hidden]; sem isto o formulário nasceria aberto. */
-.codes-add-form[hidden] {
+   [hidden]; sem isto o painel nasceria aberto. */
+.accordion-panel[hidden] {
   display: none;
 }
 
@@ -1002,6 +1052,12 @@ textarea {
   font-size: 1rem;
 }
 
+#friend-list-title {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .friend-list {
   margin: 0;
   padding: 0;
@@ -1011,8 +1067,13 @@ textarea {
   gap: 0.4rem;
 }
 
+/* Grid (não flex) de propósito: a coluna do nome tem largura FIXA, igual em
+   toda linha — sem isso, um nome mais comprido empurra o código/status/ações
+   pra direita só naquela linha, desalinhando a lista inteira. 9.5rem cobre
+   os até 15 caracteres do nome (limite do cadastro) com folga. */
 .friend-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 9.5rem auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.7rem;
@@ -1023,6 +1084,9 @@ textarea {
 
 .friend-row-name {
   font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .friend-row-code {
@@ -1030,15 +1094,14 @@ textarea {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Com nome do lado, o código vira só uma referência secundária. */
-.friend-row-name + .friend-row-code {
+/* Com nome ao lado, o código vira só uma referência secundária. */
+.friend-row-code-secondary {
   font-weight: 400;
   font-size: 0.8rem;
   color: var(--muted);
 }
 
 .friend-row-status {
-  flex: 1;
   min-width: 0;
   font-size: 0.8rem;
   color: var(--muted);
@@ -1046,7 +1109,32 @@ textarea {
 
 .friend-row-actions {
   display: flex;
+  align-items: center;
   gap: 0.4rem;
+}
+
+/* Ícone só (✕) em vez de texto, já vermelho de cara — mesma marca do
+   "remover código" (.code-remove) da aba Códigos, mas sem esperar o hover
+   pra avisar que é uma ação destrutiva. */
+.friend-remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  min-height: 2.2rem;
+  border: none;
+  background: none;
+  color: var(--mythic);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.25rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.friend-remove-btn:hover {
+  opacity: 1;
 }
 
 .sort-label {
@@ -1437,7 +1525,10 @@ textarea {
   filter: brightness(1.08);
 }
 
-.install-close {
+/* Botão "×" redondo e discreto, reaproveitado por qualquer modal (toast de
+   instalação, conta/login) que precise de um fechar no canto — em vez do
+   botão "Fechar" de texto, que fica melhor só quando é a única ação. */
+.modal-close-x {
   flex-shrink: 0;
   align-self: flex-start;
   width: 1.8rem;
@@ -1451,7 +1542,7 @@ textarea {
   cursor: pointer;
 }
 
-.install-close:hover {
+.modal-close-x:hover {
   color: var(--text);
 }
 
@@ -1537,11 +1628,21 @@ textarea {
     font-size: 0.85rem;
   }
 
-  /* Três abas agora (era duas) e "Comparar com amigos" é bem mais longo que
-     os outros dois rótulos — aperta fonte/padding para não quebrar feio. */
+  /* Três abas agora (era duas) — aperta fonte/padding pra caber sem quebrar
+     feio numa tela estreita. */
   .view-tab {
     padding: 0.5rem 0.4rem;
     font-size: 0.78rem;
+  }
+
+  /* A coluna do nome (fixa em 9.5rem no desktop) não cabe inteira ao lado
+     do código + "Comparar" + o ✕ de remover numa tela estreita — aperta pra
+     caber sem estourar a largura da tela; o nome longo já trunca com "…" de
+     qualquer forma. */
+  .friend-row {
+    grid-template-columns: 6rem auto minmax(0, 1fr) auto;
+    gap: 0.35rem;
+    padding: 0.5rem;
   }
 
   .progress-row {
@@ -1566,10 +1667,12 @@ textarea {
   .compare-lists {
     flex-direction: column;
   }
-}
 
-/* Telas muito estreitas: o botão de atualizar vira só o ícone. */
-@media (max-width: 340px) {
+  /* "Atualizar"/"Fazer login" viram só o ícone: com o texto, o botão de
+     conta precisa de mais largura do que sobra na coluna lateral do grid
+     do cabeçalho (a coluna do meio, reservada pro logo, nunca cede espaço),
+     e o texto quebra em duas linhas — button vira mais alto que a linha do
+     cabeçalho e passa a cobrir o logo. */
   .refresh-btn span:not([aria-hidden]) {
     display: none;
   }

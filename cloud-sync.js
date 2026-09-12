@@ -153,6 +153,7 @@ async function main() {
     overlay: document.getElementById("account-overlay"),
     btn: document.getElementById("account-btn"),
     label: document.getElementById("account-label"),
+    modalTitle: document.getElementById("account-title"),
     close: document.getElementById("account-close"),
     unconfiguredText: document.getElementById("account-unconfigured-text"),
     modeTabs: document.getElementById("account-mode-tabs"),
@@ -178,8 +179,6 @@ async function main() {
     viewFriends: document.getElementById("view-friends"),
     friendsSection: document.getElementById("friends-section"),
     friendsSignedOutHint: document.getElementById("friends-signed-out-hint"),
-    friendCodeInput: document.getElementById("friend-code-input"),
-    friendCodeCopyBtn: document.getElementById("friend-code-copy-btn"),
     friendAddInput: document.getElementById("friend-add-input"),
     friendAddBtn: document.getElementById("friend-add-btn"),
     friendAddError: document.getElementById("friend-add-error"),
@@ -251,6 +250,18 @@ async function main() {
     const app = initializeApp(window.FIREBASE_CONFIG);
     auth = authApi.getAuth(app);
     db = dbApi.getFirestore(app);
+    // Já é o padrão do SDK num navegador comum, mas fica explícito de
+    // propósito: garante a sessão sobrevivendo a fechar a aba/o navegador
+    // mesmo que algum ambiente específico (extensão, build diferente do
+    // SDK) tivesse um padrão menos persistente. Não resolve limitações do
+    // próprio navegador (Safari apaga o IndexedDB de um site não visitado
+    // há 7+ dias, e o modo anônimo/privado nunca persiste nada) — falha
+    // silenciosa aqui só significa "login não sobrevive a fechar a aba
+    // desta vez", nunca perda de progresso (o merge ao logar de novo cobre
+    // isso).
+    authApi
+      .setPersistence(auth, authApi.browserLocalPersistence)
+      .catch((err) => console.warn("[cloud-sync] não deu pra fixar a persistência do login:", err));
   } catch (err) {
     console.warn("[cloud-sync] Firebase indisponível:", err);
     showPanel("unconfigured");
@@ -293,6 +304,10 @@ async function main() {
   // da conta nova — handleAuthChange() grava e limpa em seguida.
   let pendingUsername = null;
   let friendsCache = []; // [{ uid, code, username, mutual }]
+  // uid do amigo com o "tem certeza?" aberto na lista (no máximo um por
+  // vez) — nunca remove direto no clique do ✕, só troca a linha por uma
+  // confirmação inline.
+  let pendingRemoveUid = null;
 
   function schedulePush() {
     if (!signedInUid) return;
@@ -317,6 +332,9 @@ async function main() {
     els.label.textContent = signedIn
       ? bridge.t().accountLabelSignedIn
       : bridge.t().accountLabelSignedOut;
+    els.modalTitle.textContent = signedIn
+      ? bridge.t().accountModalTitleSignedIn
+      : bridge.t().accountModalTitleSignedOut;
   }
 
   function renderSignedIn(user, statusKey) {
@@ -325,11 +343,13 @@ async function main() {
     els.btn.classList.add("signed-in");
     setAccountLabel(true);
     showPanel("signed-in");
-    // Gera/busca o código de amigo já ao logar, sem esperar o usuário abrir
-    // a aba "Comparar com amigos" — é o que deixa o banner do topo e o campo
-    // no perfil preenchidos assim que possível.
-    ensureFriendCode().then((code) => {
-      setFriendCodeDisplays(code);
+    bridge.setCompareAvailable(true);
+    // Gera/busca o código de amigo e recarrega a lista de amigos já ao
+    // logar, sem esperar um clique na aba "Comparar" — é o que deixa o
+    // banner do topo, o perfil e a própria aba (se já for a que está aberta,
+    // ex.: depois do botão Atualizar com a sessão sendo restaurada) com a
+    // informação certa em vez de vazia.
+    refreshFriendsSection().then(() => {
       if (myUsername) {
         els.accountUsernameDisplay.textContent = bridge.t().accountUsernameDisplay(myUsername);
       }
@@ -361,6 +381,7 @@ async function main() {
       els.btn.classList.remove("signed-in");
       setAccountLabel(false);
       showPanel("signed-out");
+      bridge.setCompareAvailable(false);
       return;
     }
 
@@ -435,10 +456,10 @@ async function main() {
     els.friendAddError.hidden = !message;
   }
 
-  // Mesmo código em três lugares: dentro do "Comparar", no banner do topo da
-  // página e no "Meu perfil" — todos refletem o mesmo estado.
+  // Mesmo código em dois lugares: no banner do topo da página e no "Meu
+  // perfil" — a aba Comparar não repete mais (fica só no banner, ali em
+  // cima). Os dois refletem o mesmo estado.
   function setFriendCodeDisplays(code) {
-    els.friendCodeInput.value = code || "";
     els.accountFriendCodeInput.value = code || "";
     els.friendCodeBanner.hidden = !code;
     els.friendCodeBannerValue.textContent = code || "";
@@ -449,16 +470,20 @@ async function main() {
       const snap = await dbApi.getDoc(dbApi.doc(db, "users", signedInUid));
       if (snap.exists()) {
         myUsername = snap.data().username || null;
-        if (friendCode) return friendCode;
+        // O valor lido agora do Firestore sempre tem prioridade sobre o
+        // cache local — o cache só serve de fallback (abaixo, e no catch)
+        // pra quando não dá pra confirmar o valor atual.
         if (snap.data().friendCode) {
           friendCode = snap.data().friendCode;
           return friendCode;
         }
+        if (friendCode) return friendCode;
       } else if (friendCode) {
         return friendCode;
       }
     } catch (err) {
       console.warn("[cloud-sync] falha ao buscar código de amigo:", err);
+      if (friendCode) return friendCode;
     }
     // Tenta um código aleatório por vez, sem checar antes se já existe: uma
     // escrita numa doc que já existe conta como "update" pro Firestore (não
@@ -539,21 +564,37 @@ async function main() {
     els.friendListEmpty.hidden = friendsCache.length !== 0;
     els.friendList.innerHTML = friendsCache
       .map((f) => {
+        // O nome sempre ocupa a mesma coluna (mesmo vazio, em contas raras de
+        // antes dessa função existir) — é o que mantém as linhas 100%
+        // alinhadas independente do tamanho de cada nome.
+        const codeClass = f.username ? "friend-row-code friend-row-code-secondary" : "friend-row-code";
+
+        // Confirmação inline no lugar do status/ações normais — nunca some
+        // um amigo direto no clique do ✕.
+        if (f.uid === pendingRemoveUid) {
+          return `<li class="friend-row">
+            <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
+            <span class="${codeClass}">${escapeHtml(f.code)}</span>
+            <span class="friend-row-status">${escapeHtml(s.friendRemoveConfirm)}</span>
+            <div class="friend-row-actions">
+              <button class="export-copy backup-danger" data-confirm-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.friendRemoveConfirmYes)}</button>
+              <button class="export-copy" data-cancel-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.backupCancel)}</button>
+            </div>
+          </li>`;
+        }
+
         const status = f.mutual ? "" : escapeHtml(s.friendWaitingMutual);
         const compareBtn = f.mutual
           ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
           : "";
-        // Sem nome (raro — só contas de antes dessa função existir): mostra
-        // só o código, igual sempre foi.
-        const identity = f.username
-          ? `<span class="friend-row-name">${escapeHtml(f.username)}</span><span class="friend-row-code">${escapeHtml(f.code)}</span>`
-          : `<span class="friend-row-code">${escapeHtml(f.code)}</span>`;
         return `<li class="friend-row">
-          ${identity}
+          <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
+          <span class="${codeClass}">${escapeHtml(f.code)}</span>
           <span class="friend-row-status">${status}</span>
           <div class="friend-row-actions">
             ${compareBtn}
-            <button class="export-copy backup-danger" data-remove-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.friendRemoveButton)}</button>
+            <button class="friend-remove-btn" data-remove-uid="${escapeHtml(f.uid)}" type="button"
+                    title="${escapeHtml(s.friendRemoveButton)}" aria-label="${escapeHtml(s.friendRemoveButton)}">✕</button>
           </div>
         </li>`;
       })
@@ -569,6 +610,7 @@ async function main() {
     els.friendsSection.hidden = false;
     els.friendsSignedOutHint.hidden = true;
     setFriendError("");
+    pendingRemoveUid = null;
 
     const code = await ensureFriendCode();
     setFriendCodeDisplays(code);
@@ -615,10 +657,12 @@ async function main() {
   }
 
   async function removeFriend(friendUid) {
+    pendingRemoveUid = null;
     try {
       await dbApi.deleteDoc(dbApi.doc(db, "users", signedInUid, "friends", friendUid));
     } catch (err) {
       console.warn("[cloud-sync] falha ao remover amigo:", err);
+      renderFriendsList();
       return;
     }
     friendsCache = friendsCache.filter((f) => f.uid !== friendUid);
@@ -638,14 +682,17 @@ async function main() {
     }
   }
 
+  // Também recarrega ao clicar na aba (não só ao logar) — pega amigos que
+  // viraram mútuos etc. sem precisar de um F5. O caso "aba Comparar já
+  // estava aberta quando a sessão foi restaurada" (ex.: botão Atualizar)
+  // é coberto por renderSignedIn() chamar refreshFriendsSection() direto,
+  // não por uma checagem aqui: essa checagem rodaria antes do
+  // onAuthStateChanged assíncrono resolver e sempre perderia a corrida,
+  // achando "deslogado" e nunca mais tentando de novo.
   els.friendsTab.addEventListener("click", refreshFriendsSection);
-  // Se a aba "Comparar com amigos" já estava ativa quando este script
-  // terminou de carregar (rede lenta, ou é a aba lembrada de uma visita
-  // anterior), atualiza a seção de amigos sem esperar outro clique.
-  if (!els.viewFriends.hidden) refreshFriendsSection();
 
-  // Usado pelos três botões "copiar código" (Comparar, banner do topo,
-  // perfil) — todos fazem a mesma coisa, só muda qual botão/texto/campo.
+  // Usado pelos dois botões "copiar código" (banner do topo, perfil) —
+  // fazem a mesma coisa, só muda qual botão/texto/campo.
   async function copyFriendCode(button, text, fallbackInput) {
     try {
       await navigator.clipboard.writeText(text);
@@ -659,9 +706,6 @@ async function main() {
     }
   }
 
-  els.friendCodeCopyBtn.addEventListener("click", () =>
-    copyFriendCode(els.friendCodeCopyBtn, els.friendCodeInput.value, els.friendCodeInput)
-  );
   els.friendCodeBannerCopyBtn.addEventListener("click", () =>
     copyFriendCode(els.friendCodeBannerCopyBtn, friendCode || "")
   );
@@ -678,8 +722,21 @@ async function main() {
   els.friendList.addEventListener("click", (e) => {
     const compareBtn = e.target.closest("[data-compare-uid]");
     if (compareBtn) return compareWithFriend(compareBtn.dataset.compareUid);
+    // O ✕ só abre a confirmação inline na própria linha — nunca remove
+    // direto. data-confirm-remove-uid/data-cancel-remove-uid são os botões
+    // dessa confirmação.
     const removeBtn = e.target.closest("[data-remove-uid]");
-    if (removeBtn) removeFriend(removeBtn.dataset.removeUid);
+    if (removeBtn) {
+      pendingRemoveUid = removeBtn.dataset.removeUid;
+      return renderFriendsList();
+    }
+    const confirmBtn = e.target.closest("[data-confirm-remove-uid]");
+    if (confirmBtn) return removeFriend(confirmBtn.dataset.confirmRemoveUid);
+    const cancelBtn = e.target.closest("[data-cancel-remove-uid]");
+    if (cancelBtn) {
+      pendingRemoveUid = null;
+      return renderFriendsList();
+    }
   });
 
   function setAuthError(message) {

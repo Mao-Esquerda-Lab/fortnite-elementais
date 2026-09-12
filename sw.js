@@ -6,8 +6,10 @@
 // - Imagens dos Sprites (IGN/Fandom): cache-first, guardadas na primeira
 //   visualização, para o app abrir offline com a arte.
 //
-// Aumente VERSION ao mudar a lista de arquivos do shell.
-const VERSION = "v23";
+// Aumente VERSION ao mudar a lista de arquivos do shell, ou pra forçar todo
+// mundo a descartar o cache antigo (ex.: PWA instalada no iOS que não estava
+// pegando um fix novo).
+const VERSION = "v24";
 const SHELL_CACHE = `elementais-shell-${VERSION}`;
 const IMAGE_CACHE = "elementais-images-v1";
 
@@ -55,7 +57,12 @@ self.addEventListener("activate", (event) => {
 
 function networkFirst(request) {
   return caches.open(SHELL_CACHE).then((cache) =>
-    fetch(request)
+    // "no-store" ignora o cache HTTP do próprio navegador (Cache-Control do
+    // GitHub Pages), não só o Cache Storage daqui: sem isso, "network-first"
+    // podia devolver uma resposta velha que o navegador já tinha guardado
+    // por conta própria, sem nunca chegar a perguntar pro servidor de novo —
+    // visto com o ícone do cabeçalho ficando parado numa versão antiga.
+    fetch(request, { cache: "no-store" })
       .then((response) => {
         if (response && response.ok) cache.put(request, response.clone());
         return response;
