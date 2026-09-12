@@ -93,6 +93,12 @@ const TRANSLATIONS = {
     accountErrorPermission:
       "Sem permissão para acessar seus dados — confira se as regras do Firestore foram publicadas.",
     accountErrorGeneric: "Não foi possível completar essa ação. Tente de novo.",
+    accountPasswordRequirements: (items) => `A senha precisa ter: ${items.join(", ")}.`,
+    accountPolicyMinLength: (n) => `pelo menos ${n} caracteres`,
+    accountPolicyUppercase: "uma letra maiúscula",
+    accountPolicyLowercase: "uma letra minúscula",
+    accountPolicyNumber: "um número",
+    accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
     viewCodes: "Códigos",
     codesIntro:
@@ -241,6 +247,12 @@ const TRANSLATIONS = {
     accountErrorPermission:
       "No permission to access your data — check whether the Firestore rules were published.",
     accountErrorGeneric: "Couldn't complete that action. Try again.",
+    accountPasswordRequirements: (items) => `Password needs: ${items.join(", ")}.`,
+    accountPolicyMinLength: (n) => `at least ${n} characters`,
+    accountPolicyUppercase: "an uppercase letter",
+    accountPolicyLowercase: "a lowercase letter",
+    accountPolicyNumber: "a number",
+    accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
     viewCodes: "Codes",
     codesIntro:

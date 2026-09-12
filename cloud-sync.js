@@ -69,6 +69,45 @@ function authErrorMessage(bridge, error) {
   return bridge.t()[key];
 }
 
+// Cada item aqui é opcional na política (Authentication → Password policy no
+// console) — só vira exigência de verdade quando a chave correspondente
+// existe em `customStrengthOptions`. Uma tabela só, usada tanto pra montar a
+// dica de requisitos quanto pra listar o que falta numa tentativa.
+const PASSWORD_POLICY_CHECKS = [
+  { key: "containsUppercaseLetter", labelKey: "accountPolicyUppercase" },
+  { key: "containsLowercaseLetter", labelKey: "accountPolicyLowercase" },
+  { key: "containsNumericCharacter", labelKey: "accountPolicyNumber" },
+  { key: "containsNonAlphanumericCharacter", labelKey: "accountPolicySpecial" },
+];
+
+// Lista todos os requisitos da política (pra mostrar como dica, antes de o
+// usuário digitar qualquer coisa).
+function passwordRequirementLabels(bridge, customStrengthOptions) {
+  const opts = customStrengthOptions || {};
+  const s = bridge.t();
+  const items = [];
+  if (opts.minPasswordLength) items.push(s.accountPolicyMinLength(opts.minPasswordLength));
+  PASSWORD_POLICY_CHECKS.forEach(({ key, labelKey }) => {
+    if (opts[key]) items.push(s[labelKey]);
+  });
+  return items;
+}
+
+// Lista só o que uma senha específica não atende, a partir do resultado de
+// `validatePassword()` — usada pra dizer exatamente o que falta.
+function missingPasswordRequirements(bridge, status) {
+  const opts = (status.passwordPolicy && status.passwordPolicy.customStrengthOptions) || {};
+  const s = bridge.t();
+  const items = [];
+  if (opts.minPasswordLength && !status.meetsMinPasswordLength) {
+    items.push(s.accountPolicyMinLength(opts.minPasswordLength));
+  }
+  PASSWORD_POLICY_CHECKS.forEach(({ key, labelKey }) => {
+    if (opts[key] && !status[key]) items.push(s[labelKey]);
+  });
+  return items;
+}
+
 async function main() {
   const bridge = window.SpritesLockerBridge;
 
@@ -87,6 +126,7 @@ async function main() {
     signupForm: document.getElementById("account-signup-form"),
     signupEmailInput: document.getElementById("account-signup-email-input"),
     signupPasswordInput: document.getElementById("account-signup-password-input"),
+    passwordHint: document.getElementById("account-password-hint"),
     authError: document.getElementById("account-auth-error"),
     forgotLink: document.getElementById("account-forgot-link"),
     signedIn: document.getElementById("account-signed-in"),
@@ -164,6 +204,31 @@ async function main() {
 
   showPanel("signed-out");
 
+  // Lê a política de senha configurada no console (Authentication → Password
+  // policy) direto do Firebase — nunca fica hardcoded aqui, então continua
+  // válida se a política mudar sem precisar mexer no código. Passar uma
+  // senha vazia só serve pra pegar a política de volta; `isValid` é
+  // descartado (é claro que "" não é válida).
+  let passwordPolicy = null;
+  try {
+    const probe = await authApi.validatePassword(auth, "");
+    passwordPolicy = probe.passwordPolicy;
+  } catch (err) {
+    console.warn("[cloud-sync] não deu pra carregar a política de senha:", err);
+  }
+
+  function renderPasswordHint() {
+    const enforced = passwordPolicy && passwordPolicy.enforcementState === "ENFORCE";
+    els.passwordHint.hidden = !enforced;
+    if (!enforced) return;
+    const opts = passwordPolicy.customStrengthOptions || {};
+    if (opts.minPasswordLength) els.signupPasswordInput.minLength = opts.minPasswordLength;
+    els.passwordHint.textContent = bridge
+      .t()
+      .accountPasswordRequirements(passwordRequirementLabels(bridge, opts));
+  }
+  renderPasswordHint();
+
   let signedInUid = null;
   let pushTimer = null;
 
@@ -204,6 +269,7 @@ async function main() {
       els.signedInEmail.textContent = bridge.t().accountSignedInAs(user.email);
     }
     setAccountLabel(!!signedInUid);
+    renderPasswordHint();
   });
 
   async function handleAuthChange(user) {
@@ -293,6 +359,18 @@ async function main() {
   els.signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     setAuthError("");
+    // Confere a senha contra a política de verdade ANTES de gastar uma
+    // tentativa no Firebase — evita o "weak-password" genérico e diz
+    // exatamente o que falta.
+    if (passwordPolicy && passwordPolicy.enforcementState === "ENFORCE") {
+      const status = await authApi.validatePassword(auth, els.signupPasswordInput.value);
+      if (!status.isValid) {
+        setAuthError(
+          bridge.t().accountPasswordRequirements(missingPasswordRequirements(bridge, status))
+        );
+        return;
+      }
+    }
     try {
       await authApi.createUserWithEmailAndPassword(
         auth,
