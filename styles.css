@@ -1050,6 +1050,45 @@ textarea {
   color: var(--muted);
 }
 
+/* Spinner genérico (giro simples via borda), reaproveitado em qualquer lugar
+   que dependa de rede (SDK do Firebase, leituras do Firestore) e por isso
+   pode demorar um instante — sem ele essas áreas ficavam em branco enquanto
+   carregavam, parecendo travadas ou quebradas. */
+.spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mesmo cuidado de sempre com hidden + display do author stylesheet: sem
+   este [hidden], o display:flex abaixo bateria a regra padrão do navegador
+   em empate de especificidade. */
+.modal-loading[hidden],
+.friend-list-loading[hidden] {
+  display: none;
+}
+
+.modal-loading,
+.friend-list-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
 #friends-section-title {
   margin: 0;
   font-size: 1rem;
