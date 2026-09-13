@@ -1,5 +1,7 @@
 # Fortnite Sprites Locker
 
+🇧🇷 Português | [🇺🇸 English](README.en.md)
+
 App web (PWA) para acompanhar sua coleção de **Sprites (Elementais)** do Fortnite Battle Royale — quais você já tem, quais já dominou (incluindo as variantes Dourada e especial) e quais códigos do Painel de Admin ("Lobby Hack codes") você já resgatou.
 
 Escopo atual: **Chapter 7, Temporada 4 "Override"**.
