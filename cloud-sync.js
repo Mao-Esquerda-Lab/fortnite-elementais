@@ -189,6 +189,8 @@ async function main() {
     friendCodeBannerCopyBtn: document.getElementById("friend-code-banner-copy"),
     accountFriendCodeInput: document.getElementById("account-friend-code-input"),
     accountFriendCodeCopyBtn: document.getElementById("account-friend-code-copy-btn"),
+    welcomeToast: document.getElementById("welcome-toast"),
+    welcomeToastText: document.getElementById("welcome-toast-text"),
   };
 
   function openModal() {
@@ -253,15 +255,20 @@ async function main() {
     // Já é o padrão do SDK num navegador comum, mas fica explícito de
     // propósito: garante a sessão sobrevivendo a fechar a aba/o navegador
     // mesmo que algum ambiente específico (extensão, build diferente do
-    // SDK) tivesse um padrão menos persistente. Não resolve limitações do
-    // próprio navegador (Safari apaga o IndexedDB de um site não visitado
-    // há 7+ dias, e o modo anônimo/privado nunca persiste nada) — falha
+    // SDK) tivesse um padrão menos persistente. AGUARDA terminar antes de
+    // registrar o onAuthStateChanged (abaixo) — trocar de persistência
+    // depois que a sessão inicial já começou a ser restaurada é uma corrida
+    // desnecessária, fácil de evitar. Não resolve limitações do próprio
+    // navegador (Safari pode apagar o IndexedDB de um site/PWA sem uso
+    // recente, e o modo anônimo/privado nunca persiste nada) — falha
     // silenciosa aqui só significa "login não sobrevive a fechar a aba
     // desta vez", nunca perda de progresso (o merge ao logar de novo cobre
     // isso).
-    authApi
-      .setPersistence(auth, authApi.browserLocalPersistence)
-      .catch((err) => console.warn("[cloud-sync] não deu pra fixar a persistência do login:", err));
+    try {
+      await authApi.setPersistence(auth, authApi.browserLocalPersistence);
+    } catch (err) {
+      console.warn("[cloud-sync] não deu pra fixar a persistência do login:", err);
+    }
   } catch (err) {
     console.warn("[cloud-sync] Firebase indisponível:", err);
     showPanel("unconfigured");
@@ -308,6 +315,31 @@ async function main() {
   // vez) — nunca remove direto no clique do ✕, só troca a linha por uma
   // confirmação inline.
   let pendingRemoveUid = null;
+  // true só entre o submit do formulário de login/cadastro e o
+  // onAuthStateChanged que resulta dele — é o que diferencia "acabou de
+  // logar agora" (fecha o modal, mostra o toast) de uma sessão restaurada
+  // sozinha ao abrir a página, ou de um resync manual já dentro do perfil
+  // (nenhum dos dois deve fechar nada nem mostrar toast).
+  let showWelcomeOnNextSignIn = false;
+  let welcomeToastTimer = null;
+
+  function showWelcomeToast(username) {
+    els.welcomeToastText.textContent = username
+      ? bridge.t().accountWelcomeToast(username)
+      : bridge.t().accountWelcomeToastGeneric;
+    // Se o toast de "instale como app" também estiver visível (primeira
+    // visita), empilha o de boas-vindas logo abaixo dele em vez de
+    // sobrepor os dois — o resto do tempo (imensa maioria) usa a posição
+    // padrão do CSS.
+    const installBox = document.getElementById("install-box");
+    els.welcomeToast.style.top =
+      installBox && !installBox.hidden ? `${installBox.getBoundingClientRect().bottom + 10}px` : "";
+    els.welcomeToast.classList.add("visible");
+    clearTimeout(welcomeToastTimer);
+    welcomeToastTimer = setTimeout(() => {
+      els.welcomeToast.classList.remove("visible");
+    }, 3500);
+  }
 
   function schedulePush() {
     if (!signedInUid) return;
@@ -369,6 +401,17 @@ async function main() {
     if (!els.friendsSection.hidden) renderFriendsList();
   });
 
+  // Fecha o modal de conta e mostra o toast de boas-vindas, mas só quando o
+  // login/cadastro acabou de acontecer de verdade (showWelcomeOnNextSignIn)
+  // — nunca numa sessão restaurada sozinha ao abrir a página, nem num
+  // resync manual feito já de dentro do perfil.
+  function finishSignIn(username) {
+    if (!showWelcomeOnNextSignIn) return;
+    showWelcomeOnNextSignIn = false;
+    closeModal();
+    showWelcomeToast(username);
+  }
+
   async function handleAuthChange(user) {
     if (!user) {
       signedInUid = null;
@@ -391,6 +434,9 @@ async function main() {
       snap = await dbApi.getDoc(docRef);
     } catch (err) {
       signedInUid = user.uid;
+      // Não fecha nem mostra o toast aqui: tem um erro de verdade pra
+      // mostrar no próprio perfil (syncStatus, abaixo).
+      showWelcomeOnNextSignIn = false;
       renderSignedIn(user, null);
       els.syncStatus.textContent = authErrorMessage(bridge, err);
       return;
@@ -402,6 +448,9 @@ async function main() {
       // Conta nova (ou primeira vez sincronizando): semeia a nuvem com o que
       // já existe neste aparelho, mesmo que seja nada.
       signedInUid = user.uid;
+      // Guarda antes de zerar: é o nome que acabou de vir do formulário de
+      // cadastro, ainda não voltou de uma leitura do Firestore.
+      const usernameForToast = pendingUsername;
       await dbApi.setDoc(docRef, bridge.getSnapshotJSON(), { mergeFields: SYNC_FIELDS });
       if (pendingUsername) {
         await dbApi.setDoc(docRef, { username: pendingUsername }, { mergeFields: ["username"] });
@@ -409,6 +458,7 @@ async function main() {
       }
       lastSyncedUid.set(user.uid);
       renderSignedIn(user, "accountSyncedUp");
+      finishSignIn(usernameForToast);
       return;
     }
 
@@ -419,6 +469,7 @@ async function main() {
       bridge.applyRemoteSnapshot(snap.data(), "merge");
       await dbApi.setDoc(docRef, bridge.getSnapshotJSON(), { mergeFields: SYNC_FIELDS });
       renderSignedIn(user, "accountSyncedOk");
+      finishSignIn(snap.data().username || null);
       return;
     }
 
@@ -428,6 +479,7 @@ async function main() {
       bridge.applyRemoteSnapshot(snap.data(), "replace");
       lastSyncedUid.set(user.uid);
       renderSignedIn(user, "accountSyncedDown");
+      finishSignIn(snap.data().username || null);
       return;
     }
 
@@ -439,6 +491,7 @@ async function main() {
     closeModal();
     bridge.openReviewModal(snap.data());
     renderSignedIn(user, "accountSyncNotDone");
+    finishSignIn(snap.data().username || null);
   }
 
   authApi.onAuthStateChanged(auth, (user) => {
@@ -747,6 +800,10 @@ async function main() {
   els.loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     setAuthError("");
+    // Igual ao pendingUsername do cadastro: precisa já estar marcado antes
+    // do await, porque onAuthStateChanged pode disparar antes de qualquer
+    // código daqui rodar depois dele.
+    showWelcomeOnNextSignIn = true;
     try {
       await authApi.signInWithEmailAndPassword(
         auth,
@@ -754,6 +811,7 @@ async function main() {
         els.loginPasswordInput.value
       );
     } catch (err) {
+      showWelcomeOnNextSignIn = false;
       setAuthError(authErrorMessage(bridge, err));
     }
   });
@@ -779,6 +837,7 @@ async function main() {
     // onAuthStateChanged, que pode disparar antes de qualquer código daqui
     // rodar depois do await — pendingUsername precisa já estar pronto.
     pendingUsername = username;
+    showWelcomeOnNextSignIn = true;
     try {
       await authApi.createUserWithEmailAndPassword(
         auth,
@@ -787,6 +846,7 @@ async function main() {
       );
     } catch (err) {
       pendingUsername = null;
+      showWelcomeOnNextSignIn = false;
       setAuthError(authErrorMessage(bridge, err));
     }
   });
