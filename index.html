@@ -170,6 +170,10 @@
 
         <h4 id="friend-list-title"></h4>
         <ul class="friend-list" id="friend-list"></ul>
+        <p class="friend-list-loading" id="friend-list-loading" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="friend-list-loading-text"></span>
+        </p>
         <p class="compare-list-empty" id="friend-list-empty" hidden></p>
       </div>
       <p class="share-field-label" id="friends-signed-out-hint" hidden></p>
@@ -319,6 +323,16 @@
         <button class="modal-close-x" id="account-close" type="button" aria-label="×">×</button>
       </div>
 
+      <!-- Visível por padrão, antes mesmo de o cloud-sync.js carregar (o SDK
+           do Firebase vem de um CDN — pode levar um instante) — sem isto,
+           abrir o modal nesse meio-tempo mostrava o formulário de login cru,
+           sem as abas Login/Cadastro (só apareciam depois) e sem o listener
+           de submit ainda registrado. -->
+      <div class="modal-loading" id="account-loading">
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="account-loading-text"></span>
+      </div>
+
       <p class="backup-intro" id="account-unconfigured-text" hidden></p>
 
       <div class="view-tabs" id="account-mode-tabs" hidden>
@@ -326,7 +340,7 @@
         <button class="view-tab" type="button" id="account-tab-signup"></button>
       </div>
 
-      <form id="account-login-form" class="share-section">
+      <form id="account-login-form" class="share-section" hidden>
         <label class="share-field-label" id="account-login-email-label" for="account-login-email-input"></label>
         <input class="share-input" id="account-login-email-input" type="email" autocomplete="email" required />
 

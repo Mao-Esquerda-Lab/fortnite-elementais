@@ -4,7 +4,6 @@ const SORT_KEY = "fortnite-elementals-sort";
 const CODES_KEY = "fortnite-lobby-codes-v1";
 // Códigos que o usuário digitou à mão, antes de o IGN publicá-los.
 const CUSTOM_CODES_KEY = "fortnite-lobby-custom-codes-v1";
-const VIEW_KEY = "fortnite-elementals-view";
 
 const RARITY_COLORS = {
   Rare: "var(--rare)",
@@ -103,6 +102,7 @@ const TRANSLATIONS = {
     accountSignedInAs: (email) => `Conectado como ${email}`,
     accountWelcomeToast: (name) => `Olá, ${name}!`,
     accountWelcomeToastGeneric: "Login realizado!",
+    loadingLabel: "Carregando...",
     accountUnconfigured:
       "A sincronização por conta ainda não foi configurada neste app.",
     accountSyncedUp: "Sua coleção deste aparelho foi salva na sua conta.",
@@ -286,6 +286,7 @@ const TRANSLATIONS = {
     accountSignedInAs: (email) => `Signed in as ${email}`,
     accountWelcomeToast: (name) => `Hi, ${name}!`,
     accountWelcomeToastGeneric: "Logged in!",
+    loadingLabel: "Loading...",
     accountUnconfigured: "Account sync hasn't been set up on this app yet.",
     accountSyncedUp: "Your collection on this device was saved to your account.",
     accountSyncedOk: "Synced with your account.",
@@ -509,8 +510,9 @@ let customCodes = loadCustomCodes();
 if (JSON.stringify(customCodes) !== storage.get(CUSTOM_CODES_KEY)) {
   saveCustomCodes();
 }
-const VALID_VIEWS = ["sprites", "friends", "codes"];
-let activeView = VALID_VIEWS.includes(storage.get(VIEW_KEY)) ? storage.get(VIEW_KEY) : "sprites";
+// Sempre abre em Elementais — nunca lembra a última aba entre sessões (só
+// dentro da mesma sessão, ao trocar de aba).
+let activeView = "sprites";
 let lang = loadLang();
 let activeFilter = "all";
 let sortMode = ["default", "rarity", "alpha"].includes(storage.get(SORT_KEY))
@@ -820,6 +822,7 @@ function applyLanguage() {
   document.getElementById("friend-add-btn").textContent = s.friendAddButton;
   document.getElementById("friend-list-title").textContent = s.friendListTitle;
   document.getElementById("friend-list-empty").textContent = s.friendListEmpty;
+  document.getElementById("friend-list-loading-text").textContent = s.loadingLabel;
   document.getElementById("friend-code-banner-label").textContent = s.friendCodeLabel;
   document.getElementById("friend-code-banner-copy").textContent = s.friendCodeCopy;
   document.getElementById("account-friend-code-label").textContent = s.friendCodeLabel;
@@ -869,6 +872,7 @@ function applyLanguage() {
   // padrão deslogado, pra já nascer certo mesmo sem cloud-sync.js.
   document.getElementById("account-title").textContent = s.accountModalTitleSignedOut;
   document.getElementById("account-close").title = s.close;
+  document.getElementById("account-loading-text").textContent = s.loadingLabel;
   document.getElementById("account-unconfigured-text").textContent =
     s.accountUnconfigured;
   document.getElementById("account-tab-login").textContent = s.accountLoginButton;
@@ -1677,7 +1681,6 @@ viewTabs.addEventListener("click", (e) => {
   const tab = e.target.closest("[data-view]");
   if (!tab || tab.dataset.view === activeView) return;
   activeView = tab.dataset.view;
-  storage.set(VIEW_KEY, activeView);
   applyView();
 });
 
@@ -2323,7 +2326,6 @@ window.SpritesLockerBridge = {
     friendsTabBtn.hidden = !available;
     if (!available && activeView === "friends") {
       activeView = "sprites";
-      storage.set(VIEW_KEY, activeView);
       applyView();
     }
   },
