@@ -594,7 +594,10 @@ textarea {
   border: 1px solid var(--border);
   background: var(--surface-hover);
   color: var(--text);
-  font-size: 0.9rem;
+  /* Abaixo de 16px o Safari do iOS dá zoom sozinho ao focar o campo (login,
+     senha, código, etc.) — não tem como desligar esse comportamento, só
+     evitar o gatilho dele. */
+  font-size: 1rem;
 }
 
 .share-error {
@@ -1149,7 +1152,9 @@ textarea {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
-  font-size: 0.9rem;
+  /* Mesmo motivo do .share-input: abaixo de 16px o Safari do iOS dá zoom
+     sozinho ao focar (aqui, ao abrir o <select>). */
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -1548,6 +1553,44 @@ textarea {
 
 .install-offline {
   font-size: 0.75rem;
+}
+
+/* Toast de boas-vindas ao logar. Nunca usa o atributo hidden (o app já
+   pisou nesse rastro várias vezes: display do author stylesheet bate a
+   regra padrão [hidden]{display:none} em empate de especificidade) — fica
+   sempre no DOM e alterna só opacidade/visibilidade via .visible. */
+.welcome-toast {
+  position: fixed;
+  top: calc(3.9rem + env(safe-area-inset-top, 0px));
+  left: 50%;
+  z-index: 130;
+  width: min(360px, calc(100vw - 1.5rem));
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-10px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+
+.welcome-toast.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .empty-state {
