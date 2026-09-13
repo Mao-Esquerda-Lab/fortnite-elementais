@@ -594,7 +594,10 @@ textarea {
   border: 1px solid var(--border);
   background: var(--surface-hover);
   color: var(--text);
-  font-size: 0.9rem;
+  /* Abaixo de 16px o Safari do iOS dá zoom sozinho ao focar o campo (login,
+     senha, código, etc.) — não tem como desligar esse comportamento, só
+     evitar o gatilho dele. */
+  font-size: 1rem;
 }
 
 .share-error {
@@ -1149,7 +1152,9 @@ textarea {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
-  font-size: 0.9rem;
+  /* Mesmo motivo do .share-input: abaixo de 16px o Safari do iOS dá zoom
+     sozinho ao focar (aqui, ao abrir o <select>). */
+  font-size: 1rem;
   cursor: pointer;
 }
 
