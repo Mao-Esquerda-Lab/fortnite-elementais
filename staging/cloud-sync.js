@@ -191,6 +191,8 @@ async function main() {
     accountFriendCodeCopyBtn: document.getElementById("account-friend-code-copy-btn"),
     welcomeToast: document.getElementById("welcome-toast"),
     welcomeToastText: document.getElementById("welcome-toast-text"),
+    loading: document.getElementById("account-loading"),
+    friendListLoading: document.getElementById("friend-list-loading"),
   };
 
   function openModal() {
@@ -205,10 +207,16 @@ async function main() {
     if (e.target === els.overlay) closeModal();
   });
 
-  let currentPanel = "unconfigured";
+  // "loading" é o estado inicial: o SDK do Firebase vem de um CDN (linha
+  // abaixo, no import()) e pode levar um instante — sem um estado dedicado
+  // pra isso, o modal mostrava o formulário de login cru (sem abas, sem o
+  // listener de submit ainda registrado) se o usuário abrisse a conta
+  // durante esse meio-tempo.
+  let currentPanel = "loading";
   let authMode = "login";
 
   function render() {
+    els.loading.hidden = currentPanel !== "loading";
     els.unconfiguredText.hidden = currentPanel !== "unconfigured";
     els.modeTabs.hidden = currentPanel !== "signed-out";
     els.loginForm.hidden = !(currentPanel === "signed-out" && authMode === "login");
@@ -613,6 +621,7 @@ async function main() {
 
   function renderFriendsList() {
     const s = bridge.t();
+    els.friendListLoading.hidden = true;
     els.friendList.hidden = friendsCache.length === 0;
     els.friendListEmpty.hidden = friendsCache.length !== 0;
     els.friendList.innerHTML = friendsCache
@@ -664,6 +673,12 @@ async function main() {
     els.friendsSignedOutHint.hidden = true;
     setFriendError("");
     pendingRemoveUid = null;
+    // Enquanto ensureFriendCode()/loadFriends() ainda não voltaram do
+    // Firestore, mostra isto no lugar da lista em vez de deixar a aba
+    // parecendo vazia/travada por alguns segundos.
+    els.friendList.hidden = true;
+    els.friendListEmpty.hidden = true;
+    els.friendListLoading.hidden = false;
 
     const code = await ensureFriendCode();
     setFriendCodeDisplays(code);
