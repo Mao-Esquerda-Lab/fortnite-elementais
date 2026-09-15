@@ -88,11 +88,23 @@ const AUTO_CHEAT_CODES = [
     },
     "untranslated": true,
     "isNew": true
+  },
+  {
+    "id": "beammeup",
+    "code": "BEAMMEUP",
+    "autoAdded": "2026-09-15",
+    "reward": {
+      "pt": "2x Extraction Accelerator",
+      "en": "2x Extraction Accelerator"
+    },
+    "untranslated": true,
+    "isNew": true
   }
 ];
 
 const AUTO_EXPIRED_CODES = [
-  "brb"
+  "brb",
+  "noprollama"
 ];
 
 AUTO_CHEAT_CODES.forEach((c) => {
