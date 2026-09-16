@@ -948,6 +948,14 @@ textarea {
   background: var(--surface-hover);
 }
 
+/* Sem isto, o display:flex acima vence o "display:none" que o atributo
+   hidden aplicaria sozinho — some por acidente dentro do modal de backup
+   (que já começa escondido), mas fica visível o tempo todo no "Limpar
+   tudo" da coleção, que não tem outro elemento escondendo por cima. */
+.backup-confirm[hidden] {
+  display: none !important;
+}
+
 .backup-confirm p {
   margin: 0;
   font-size: 0.85rem;
