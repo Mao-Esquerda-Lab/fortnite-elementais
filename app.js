@@ -85,6 +85,13 @@ const TRANSLATIONS = {
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
+    clearLabel: "Limpar tudo",
+    clearTitle: "Apaga tenho/dominado/favoritos de todos os Sprites deste aparelho",
+    clearConfirmText: (total) =>
+      total > 0
+        ? `Isso vai apagar ${total} marcação(ões) deste aparelho — não dá para desfazer. Se quiser guardar antes, use o Backup.`
+        : "Este aparelho não tem nenhuma marcação para apagar.",
+    clearConfirmYes: "Sim, limpar tudo",
     accountLabelSignedOut: "Fazer login",
     accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
@@ -269,6 +276,13 @@ const TRANSLATIONS = {
     backupMerge: "Merge both",
     backupCancel: "Cancel",
     backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
+    clearLabel: "Clear all",
+    clearTitle: "Wipes owned/mastered/favourites for every Sprite on this device",
+    clearConfirmText: (total) =>
+      total > 0
+        ? `This will erase ${total} mark(s) on this device — it can't be undone. Use Backup first if you want to keep a copy.`
+        : "This device has no marks to clear.",
+    clearConfirmYes: "Yes, clear everything",
     accountLabelSignedOut: "Log in",
     accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
@@ -864,6 +878,12 @@ function applyLanguage() {
   document.getElementById("backup-replace-btn").textContent = s.backupReplace;
   document.getElementById("backup-cancel-btn").textContent = s.backupCancel;
   document.getElementById("backup-close").textContent = s.close;
+
+  const clearBtn = document.getElementById("clear-btn");
+  clearBtn.title = s.clearTitle;
+  document.getElementById("clear-label").textContent = s.clearLabel;
+  document.getElementById("clear-confirm-btn").textContent = s.clearConfirmYes;
+  document.getElementById("clear-cancel-btn").textContent = s.backupCancel;
 
   const accountBtn = document.getElementById("account-btn");
   accountBtn.title = s.accountTitle;
@@ -2238,6 +2258,26 @@ document.getElementById("backup-replace-btn").addEventListener("click", () => {
 document.getElementById("backup-cancel-btn").addEventListener("click", () => {
   pendingBackup = null;
   backupConfirm.hidden = true;
+});
+
+// ---- Limpar tudo (zera tenho/dominado/favoritos de todos os Sprites) ----
+const clearConfirmBox = document.getElementById("clear-confirm");
+const clearConfirmText = document.getElementById("clear-confirm-text");
+
+document.getElementById("clear-btn").addEventListener("click", () => {
+  clearConfirmText.textContent = t().clearConfirmText(countMarks(collection));
+  clearConfirmBox.hidden = false;
+});
+
+document.getElementById("clear-cancel-btn").addEventListener("click", () => {
+  clearConfirmBox.hidden = true;
+});
+
+document.getElementById("clear-confirm-btn").addEventListener("click", () => {
+  collection = {};
+  saveCollection(collection);
+  clearConfirmBox.hidden = true;
+  render();
 });
 
 // Botão flutuante de voltar ao topo: aparece depois de rolar um pouco.
