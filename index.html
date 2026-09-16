@@ -119,6 +119,20 @@
         <button class="export-btn" id="backup-btn" type="button">
           <span aria-hidden="true">📦</span><span id="backup-label"></span>
         </button>
+        <!-- Zera tenho/dominado/favoritos de todos os Sprites de uma vez. -->
+        <button class="export-btn" id="clear-btn" type="button">
+          <span aria-hidden="true">🗑️</span><span id="clear-label"></span>
+        </button>
+      </div>
+
+      <!-- Confirmação inline antes de apagar tudo (mesmo padrão do "Remover
+           amigo" do cloud-sync.js: sem modal, um segundo clique confirma). -->
+      <div class="backup-confirm" id="clear-confirm" hidden>
+        <p id="clear-confirm-text"></p>
+        <div class="backup-confirm-actions">
+          <button class="export-copy backup-danger" id="clear-confirm-btn" type="button"></button>
+          <button class="export-close" id="clear-cancel-btn" type="button"></button>
+        </div>
       </div>
     </section>
 

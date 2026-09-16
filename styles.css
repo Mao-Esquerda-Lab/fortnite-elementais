@@ -422,8 +422,8 @@ textarea {
 
 /* Botão de exportar o resumo da coleção como imagem,
    logo abaixo das barras de progresso, alinhado à direita. */
-/* Exportar, Comparar e Backup ficam lado a lado abaixo das barras. Em telas
-   estreitas quebram para a linha de baixo em vez de transbordar. */
+/* Exportar, Backup e Limpar tudo ficam lado a lado abaixo das barras. Em
+   telas estreitas quebram para a linha de baixo em vez de transbordar. */
 .progress-actions {
   display: flex;
   flex-wrap: wrap;
