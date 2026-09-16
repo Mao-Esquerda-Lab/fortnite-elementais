@@ -2371,3 +2371,12 @@ window.SpritesLockerBridge = {
   },
   t: () => t(),
 };
+
+// ---- Splash de abertura (GIF em tela cheia por alguns segundos) ----
+const gifSplash = document.getElementById("gif-splash");
+if (gifSplash) {
+  setTimeout(() => {
+    gifSplash.classList.add("gif-splash-hide");
+    setTimeout(() => gifSplash.remove(), 400);
+  }, 3000);
+}
