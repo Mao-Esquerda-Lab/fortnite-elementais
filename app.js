@@ -39,6 +39,7 @@ const TRANSLATIONS = {
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
     sharePasteButton: "Comparar",
     compareTitle: "Comparação de coleção",
+    compareTitleWithName: (name) => `Comparação com ${name}`,
     compareYou: "Você",
     compareThem: "Amigo(a)",
     compareOnlyYou: "Só você tem",
@@ -230,6 +231,7 @@ const TRANSLATIONS = {
     sharePasteLabel: "Paste a friend's code or link here",
     sharePasteButton: "Compare",
     compareTitle: "Collection comparison",
+    compareTitleWithName: (name) => `Comparison with ${name}`,
     compareYou: "You",
     compareThem: "Friend",
     compareOnlyYou: "Only you have",
@@ -2026,9 +2028,13 @@ function compareListColumn(title, labels) {
 
 // Nunca mexe em collection/localStorage: theirCollection só existe como
 // variável local, passada por parâmetro para os helpers somente-leitura.
-function openCompareModal(theirCollection) {
+function openCompareModal(theirCollection, theirName) {
   const s = t();
   const rows = diffCollections(collection, theirCollection);
+
+  document.getElementById("compare-title").textContent = theirName
+    ? s.compareTitleWithName(theirName)
+    : s.compareTitle;
 
   compareStats.innerHTML =
     statTile(s.compareYou, computeTotals(collection)) +
@@ -2356,7 +2362,7 @@ window.SpritesLockerBridge = {
   },
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
   // modal somente-leitura já usado pelo código de compartilhamento.
-  openCompareModal: (theirCollection) => openCompareModal(theirCollection),
+  openCompareModal: (theirCollection, theirName) => openCompareModal(theirCollection, theirName),
   // Mostra/esconde a aba "Comparar" conforme o login (cloud-sync.js, opcional
   // — sem ele a aba fica sempre visível, igual sempre foi). Se a aba some
   // enquanto ela era a atual (ex.: usuário saiu da conta com "Comparar"
