@@ -197,7 +197,7 @@ const TRANSLATIONS = {
     installOffline:
       "Depois de instalado, o app abre offline: seu progresso e os ícones já vistos ficam salvos no aparelho.",
     footer:
-      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
+      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
     costUnknown: "ainda não revelado",
     rarities: {
       Rare: "Raro",
@@ -386,7 +386,7 @@ const TRANSLATIONS = {
     installOffline:
       "Once installed, the app opens offline: your progress and previously viewed icons stay saved on your device.",
     footer:
-      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
+      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
     costUnknown: "not revealed yet",
     rarities: {
       Rare: "Rare",
