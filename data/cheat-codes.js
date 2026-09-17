@@ -20,9 +20,80 @@
 // recente carrega `isNew: true` (tira o `isNew` do que tinha antes).
 const CHEAT_CODES = [
   {
+    id: "beammeup",
+    code: "BEAMMEUP",
+    isNew: true,
+    reward: {
+      pt: "2x Acelerador de Extração",
+      en: "2x Extraction Accelerator",
+    },
+  },
+  {
+    id: "sayh12wr1x3l",
+    code: "SAYH12WR1X3L",
+    reward: {
+      pt: "Spray Retrato de Herói do Wrixel",
+      en: "Wrixel's Hero Portrait Spray",
+    },
+  },
+  {
+    id: "playtolevelup",
+    code: "PlayToLevelUp",
+    reward: { pt: "2.000 de Pó de Elemental", en: "2,000 Sprite Dust" },
+  },
+  {
+    id: "dustinthewind",
+    code: "DustInTheWind",
+    reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
+  },
+  {
+    // Some da página do IGN — ver AUTO_EXPIRED_CODES em cheat-codes-auto.js.
+    id: "noprollama",
+    code: "NOPROLLAMA",
+    reward: {
+      pt: "1x Entrega de Suprimentos de Lhama",
+      en: "1x Llama Supply Drop",
+    },
+  },
+  {
+    id: "insertcointocontinue",
+    code: "InsertCoinToContinue",
+    reward: {
+      pt: "Transforma você numa máquina de fliperama temporariamente",
+      en: "Transforms you into an arcade machine temporarily",
+    },
+  },
+  {
+    id: "chatwheredoyoufindthekey",
+    code: "ChatWhereDoYouFindTheKey",
+    reward: {
+      pt: "2x Acelerador de Extração",
+      en: "2x Extraction Accelerator",
+    },
+  },
+  {
+    id: "invalidcheat",
+    code: "INVALIDCHEAT",
+    reward: {
+      pt: "2x Localizador de Cheat Code",
+      en: "2x Cheat Code Locator",
+    },
+  },
+  {
+    id: "yourthoughtsaremine",
+    code: "YourThoughtsAreMine",
+    reward: {
+      pt: "5.000 de Pó de Elemental, Estilo Alternativo da Skin Geno Mestre do Vazio e Estilo Alternativo do Acessório de Costas Condutos de Poder do Vazio",
+      en: "5,000 Sprite Dust, Void Master Geno Skin Edit Style and Void Conduits of Power Back Bling Edit Style",
+    },
+    note: {
+      pt: "Só funciona depois de completar as missões da história do Geno.",
+      en: "Only redeemable after completing Geno's Story quests first.",
+    },
+  },
+  {
     id: "whereisthedustytree",
     code: "WhereIsTheDustyTree",
-    isNew: true,
     reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
   },
   {
