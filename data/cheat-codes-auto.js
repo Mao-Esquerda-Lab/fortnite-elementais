@@ -88,11 +88,44 @@ const AUTO_CHEAT_CODES = [
     },
     "untranslated": true,
     "isNew": true
+  },
+  {
+    "id": "playtolevelup",
+    "code": "PlayToLevelUp",
+    "autoAdded": "2026-09-17",
+    "reward": {
+      "pt": "2,000 Sprite Dust",
+      "en": "2,000 Sprite Dust"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "sayh12wr1x3l",
+    "code": "SAYH12WR1X3L",
+    "autoAdded": "2026-09-17",
+    "reward": {
+      "pt": "Wrixel's Hero Portrait Spray",
+      "en": "Wrixel's Hero Portrait Spray"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "beammeup",
+    "code": "BEAMMEUP",
+    "autoAdded": "2026-09-17",
+    "reward": {
+      "pt": "2x Extraction Accelerator",
+      "en": "2x Extraction Accelerator"
+    },
+    "untranslated": true
   }
 ];
 
 const AUTO_EXPIRED_CODES = [
-  "brb"
+  "brb",
+  "noprollama"
 ];
 
 AUTO_CHEAT_CODES.forEach((c) => {
