@@ -1773,12 +1773,14 @@ textarea {
     flex-direction: column;
   }
 
-  /* "Atualizar"/"Fazer login" viram só o ícone: com o texto, o botão de
-     conta precisa de mais largura do que sobra na coluna lateral do grid
-     do cabeçalho (a coluna do meio, reservada pro logo, nunca cede espaço),
-     e o texto quebra em duas linhas — button vira mais alto que a linha do
-     cabeçalho e passa a cobrir o logo. */
-  .refresh-btn span:not([aria-hidden]) {
+  /* Só "Fazer login" vira ícone: com o texto, o botão de conta precisa de
+     mais largura do que sobra na coluna lateral do grid do cabeçalho (a
+     coluna do meio, reservada pro logo, nunca cede espaço — e essa coluna
+     ainda divide espaço com o seletor de idioma), e o texto quebra em duas
+     linhas — o botão vira mais alto que a linha do cabeçalho e passa a
+     cobrir o logo. O "Atualizar" fica sozinho na coluna do outro lado, sem
+     esse aperto, então mantém o texto. */
+  .account-btn span:not([aria-hidden]) {
     display: none;
   }
 }
