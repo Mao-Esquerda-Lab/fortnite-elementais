@@ -164,6 +164,13 @@ const IGN_ART = {
     "loot-hacker": "8/84/Fortnite_loot_hacker_crash_bandicoot_sprite_CORRECT",
     "bounty-hunter": "a/a7/Fortnite_bounty_hunter_crash_bandicoot_sprite",
   },
+  "pond": {
+    base: "7/71/Fortnite_pond_sprite_CORRECT",
+    gold: "b/b9/Fortnite_gold_pond_sprite_CORRECT",
+    "cheat-master": "2/20/Fortnite_cheat_master_pond_sprite_CORRECT",
+    "loot-hacker": "2/20/Fortnite_loot_hacker_pond_sprite_CORRECT",
+    "bounty-hunter": "e/ee/Fortnite_bounty_hunter_pond_sprite",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -541,9 +548,27 @@ const ELEMENTALS = [
     dust: 4500,
     variantCost: 6750,
   },
+  {
+    // Era vencedor "Design-A-Sprite" sem data (ver bloco abaixo); lançado —
+    // detectado em 18/set/2026 junto com a variante Bounty Hunter e a aba
+    // de Domínio (ver commits anteriores). Raridade e habilidade vêm direto
+    // da tabela do IGN. Nome em PT ("Lago") mantido da curadoria anterior.
+    id: "pond",
+    name: { pt: "Lago", en: "Pond" },
+    wikiName: "Pond Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Concede um Super Pulo depois de pular, ganhando mais cargas com o tempo. A força do Super Pulo aumenta a cada nível.",
+      en: "Grants you a Super Jump after jumping, with more charges gained over time. Super Jump strength increases with each level.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
-  // com nome e autor.
+  // com nome e autor. O Lago (Pine & Kiri) já foi lançado — ver entrada
+  // própria acima.
   ...[
     { id: "bullet", pt: "Bala", en: "Bullet", author: "Enorull" },
     {
@@ -553,7 +578,6 @@ const ELEMENTALS = [
       author: "StinkyPrincessGoose",
     },
     { id: "honey", pt: "Mel", en: "Honey", author: "Conejito_sam" },
-    { id: "pond", pt: "Lago", en: "Pond", author: "Pine & Kiri" },
   ].map((c) => ({
     id: c.id,
     name: { pt: c.pt, en: c.en },
