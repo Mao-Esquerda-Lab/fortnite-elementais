@@ -39,6 +39,7 @@ const TRANSLATIONS = {
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
     sharePasteButton: "Comparar",
     compareTitle: "Comparação de coleção",
+    compareTitleWithName: (name) => `Comparação com ${name}`,
     compareYou: "Você",
     compareThem: "Amigo(a)",
     compareOnlyYou: "Só você tem",
@@ -196,7 +197,7 @@ const TRANSLATIONS = {
     installOffline:
       "Depois de instalado, o app abre offline: seu progresso e os ícones já vistos ficam salvos no aparelho.",
     footer:
-      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
+      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
     costUnknown: "ainda não revelado",
     rarities: {
       Rare: "Raro",
@@ -230,6 +231,7 @@ const TRANSLATIONS = {
     sharePasteLabel: "Paste a friend's code or link here",
     sharePasteButton: "Compare",
     compareTitle: "Collection comparison",
+    compareTitleWithName: (name) => `Comparison with ${name}`,
     compareYou: "You",
     compareThem: "Friend",
     compareOnlyYou: "Only you have",
@@ -384,7 +386,7 @@ const TRANSLATIONS = {
     installOffline:
       "Once installed, the app opens offline: your progress and previously viewed icons stay saved on your device.",
     footer:
-      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
+      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
     costUnknown: "not revealed yet",
     rarities: {
       Rare: "Rare",
@@ -2026,9 +2028,13 @@ function compareListColumn(title, labels) {
 
 // Nunca mexe em collection/localStorage: theirCollection só existe como
 // variável local, passada por parâmetro para os helpers somente-leitura.
-function openCompareModal(theirCollection) {
+function openCompareModal(theirCollection, theirName) {
   const s = t();
   const rows = diffCollections(collection, theirCollection);
+
+  document.getElementById("compare-title").textContent = theirName
+    ? s.compareTitleWithName(theirName)
+    : s.compareTitle;
 
   compareStats.innerHTML =
     statTile(s.compareYou, computeTotals(collection)) +
@@ -2356,7 +2362,7 @@ window.SpritesLockerBridge = {
   },
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
   // modal somente-leitura já usado pelo código de compartilhamento.
-  openCompareModal: (theirCollection) => openCompareModal(theirCollection),
+  openCompareModal: (theirCollection, theirName) => openCompareModal(theirCollection, theirName),
   // Mostra/esconde a aba "Comparar" conforme o login (cloud-sync.js, opcional
   // — sem ele a aba fica sempre visível, igual sempre foi). Se a aba some
   // enquanto ela era a atual (ex.: usuário saiu da conta com "Comparar"

@@ -20,9 +20,47 @@
 // recente carrega `isNew: true` (tira o `isNew` do que tinha antes).
 const CHEAT_CODES = [
   {
+    id: "nocturneop55n1",
+    code: "NOCTURNEOP55N1",
+    isNew: true,
+    reward: {
+      pt: "2x Acelerador de Extração",
+      en: "2x Extraction Accelerator",
+    },
+  },
+  {
+    id: "blinkyinkypinkyclyde",
+    code: "BLINKYINKYPINKYCLYDE",
+    reward: { pt: "5.000 de Pó de Elemental", en: "5,000 Sprite Dust" },
+  },
+  {
+    id: "destinyawaits",
+    code: "DestinyAwaits",
+    reward: {
+      pt: "2x Entrega de Suprimentos de Lhama",
+      en: "2x Llama Supply Drop",
+    },
+  },
+  {
+    id: "chatfindmeanothercode",
+    code: "ChatFindMeAnotherCode",
+    reward: {
+      pt: "2x Localizador de Cheat Code",
+      en: "2x Cheat Code Locator",
+    },
+  },
+  {
+    id: "magicisreal",
+    code: "MagicIsReal",
+    reward: { pt: "Desconhecido", en: "Unknown" },
+    note: {
+      pt: "Só funciona depois de completar a missão da história do Bastian — o IGN diz que está bugado no momento.",
+      en: "Only redeemable after completing Bastian's Story Quest first — IGN says it currently appears to be bugged.",
+    },
+  },
+  {
     id: "beammeup",
     code: "BEAMMEUP",
-    isNew: true,
     reward: {
       pt: "2x Acelerador de Extração",
       en: "2x Extraction Accelerator",

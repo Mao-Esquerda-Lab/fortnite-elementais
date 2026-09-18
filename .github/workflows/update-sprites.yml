@@ -59,7 +59,7 @@ jobs:
             gh pr create --base main --head auto/update-sprites \
               --title "Dados novos do wiki do IGN: $NEW" \
               --body "$(cat <<'EOF'
-          O robô de atualização encontrou novidades no wiki do IGN — na [página dos Sprites](https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List) e/ou na [dos códigos do Painel de Admin](https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards).
+          O robô de atualização encontrou novidades no wiki do IGN — na [página dos Sprites](https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List) e/ou na [dos códigos do Painel de Admin](https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards).
 
           **Sprites novos** entram no app com nome em inglês e habilidade "ainda não revelada" até serem curados. Os que aparecem na seção "Unreleased Sprites List" entram marcados como `upcoming`: ganham o selo "Em breve", ficam com as caixinhas travadas e não contam no progresso nem no código de comparação.
 
