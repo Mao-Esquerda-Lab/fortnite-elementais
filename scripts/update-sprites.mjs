@@ -40,9 +40,12 @@ const RAW_URL = `https://fortnite.fandom.com/wiki/${PAGE}?action=raw`;
 
 // Fonte principal: o wiki do IGN da temporada atual. Ao virar a temporada,
 // troque esta URL pela página nova (o título traz o capítulo/temporada).
+// Renomeada em 17/set/2026 (o IGN acrescentou "and Mastery Rewards" ao
+// título) — a URL antiga ainda redireciona (301), então isso sozinho não
+// quebrava o scraper.
 const IGN_URL =
   "https://www.ign.com/wikis/fortnite/" +
-  "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List";
+  "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List";
 
 // Segunda página do IGN: os códigos do Painel de Admin. Ao virar a
 // temporada, confira se ela continua sendo a lista da temporada corrente.
@@ -110,6 +113,12 @@ const VARIANT_PREFIXES = [
   // Nova variante, aparecendo aos poucos por Sprite desde 03/set/2026 — sem
   // isto, "Loot Hacker Klombo Sprite" entraria como se fosse um Sprite novo.
   "Loot Hacker",
+  // Variante nova, detectada em 17/set/2026: sem isto, "Bounty Hunter Klombo
+  // Sprite" (e o resto dos 15 Sprites já lançados) entrava como Sprite novo
+  // de uma vez só, estourava MAX_NEW_PER_RUN e abortava a execução inteira
+  // (fail-closed) — por isso nenhum Sprite novo de verdade entrava havia
+  // dias, mesmo com Blinky/Crash Bandicoot já lançados no jogo.
+  "Bounty Hunter",
 ];
 
 const RARITIES = ["Mythic", "Legendary", "Epic", "Rare"];

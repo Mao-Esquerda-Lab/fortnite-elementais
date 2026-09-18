@@ -132,6 +132,19 @@ const IGN_ART = {
     "cheat-master": "b/bf/Fortnite_cheat_master_overshield_sprite",
     "loot-hacker": "8/88/Fortnite_loot_hacker_overshield_sprite",
   },
+  // O arquivo base no IGN é "..._CORRECT.png" (mesmo caso do Onigiri acima).
+  "blinky": {
+    base: "5/59/Fortnite_blinky_sprite_CORRECT",
+    gold: "b/bf/Fortnite_gold_blinky_sprite_CORRECT",
+    "cheat-master": "4/41/Fortnite_cheat_master_blinky_sprite_CORRECT",
+    "loot-hacker": "d/d7/Fortnite_loot_hacker_blinky_sprite_CORRECT",
+  },
+  "crash-bandicoot": {
+    base: "f/f9/Fortnite_crash_bandicoot_sprite_CORRECT",
+    gold: "8/87/Fortnite_gold_crash_bandicoot_sprite_CORRECT",
+    "cheat-master": "f/ff/Fortnite_cheat_master_crash_bandicoot_sprite_CORRECT",
+    "loot-hacker": "8/84/Fortnite_loot_hacker_crash_bandicoot_sprite_CORRECT",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -461,6 +474,39 @@ const ELEMENTALS = [
     },
     dust: 6750,
     variantCost: 10000,
+  },
+  {
+    // Detectado em 17/set/2026 — a wiki do IGN mudou de URL nesse meio tempo
+    // ("...All_Variants_List" virou "...All_Variants_and_Mastery_Rewards_List",
+    // ver scripts/update-sprites.mjs) e o robô ficou dias sem achar Sprite
+    // novo nenhum por causa disso combinado com a variante Bounty Hunter
+    // travando o parser (ver VARIANT_PREFIXES). Raridade e habilidade vêm
+    // direto da tabela do IGN.
+    id: "blinky",
+    name: { pt: "Blinky", en: "Blinky" },
+    wikiName: "Blinky Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    ability: {
+      pt: "Concede Camuflagem ao levar dano, que aumenta a cada nível.",
+      en: "Grants you Cloak when you take damage, which increases with each level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
+    // Mesmo lançamento do Blinky (ver comentário acima).
+    id: "crash-bandicoot",
+    name: { pt: "Crash Bandicoot", en: "Crash Bandicoot" },
+    wikiName: "Crash Bandicoot Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    ability: {
+      pt: "Pule para ativar um ataque giratório que causa dano e arremessa os inimigos para trás. O dano aumenta a cada nível.",
+      en: "Jump to trigger a whirlwind attack, which damages and knocks back enemies. Damage increases with each level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
