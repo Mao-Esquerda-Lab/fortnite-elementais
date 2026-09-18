@@ -163,6 +163,20 @@ const TRANSLATIONS = {
     codesRemove: "Remover este código",
     codesSource:
       'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, atualizada todo dia. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
+    viewMastery: "Domínio",
+    masteryIntro:
+      "A cada Sprite Dominado (Base ou variante) você desbloqueia uma recompensa sozinho — não precisa resgatar nada aqui, é só acompanhar.",
+    masteryThDone: "Desbloqueado",
+    masteryThLevel: "Nível",
+    masteryThReward: "Recompensa",
+    masteryProgress: (unlocked, total) => `${unlocked} / ${total} desbloqueados`,
+    masteryNext: (remaining) =>
+      remaining === 1
+        ? "Falta 1 Sprite Dominado para a próxima recompensa."
+        : `Faltam ${remaining} Sprites Dominados para a próxima recompensa.`,
+    masteryDone: "Concluído — todas as recompensas reveladas até agora foram desbloqueadas.",
+    masterySource:
+      'Lista do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, seção "Sprite Mastery Rewards" — a Epic ainda não revelou os níveis depois do 28º. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -353,6 +367,20 @@ const TRANSLATIONS = {
     codesRemove: "Remove this code",
     codesSource:
       'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>, refreshed daily. Reward wording is our own translation, not the game\'s official text.',
+    viewMastery: "Mastery",
+    masteryIntro:
+      "Every Mastered Sprite (Base or variant) unlocks a reward on its own — nothing to redeem here, just track it.",
+    masteryThDone: "Unlocked",
+    masteryThLevel: "Level",
+    masteryThReward: "Reward",
+    masteryProgress: (unlocked, total) => `${unlocked} / ${total} unlocked`,
+    masteryNext: (remaining) =>
+      remaining === 1
+        ? "1 more Mastered Sprite until the next reward."
+        : `${remaining} more Mastered Sprites until the next reward.`,
+    masteryDone: "Done — every reward revealed so far is unlocked.",
+    masterySource:
+      'List from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>, "Sprite Mastery Rewards" section — Epic hasn\'t revealed levels past 28 yet. Reward wording is our own translation, not the game\'s official text.',
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -846,7 +874,12 @@ function applyLanguage() {
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
 
-  const viewTabLabels = { sprites: s.viewSprites, friends: s.viewCompareTab, codes: s.viewCodes };
+  const viewTabLabels = {
+    sprites: s.viewSprites,
+    friends: s.viewCompareTab,
+    codes: s.viewCodes,
+    mastery: s.viewMastery,
+  };
   [...viewTabs.children].forEach((tab) => {
     tab.textContent = viewTabLabels[tab.dataset.view];
   });
@@ -856,6 +889,11 @@ function applyLanguage() {
   document.getElementById("codes-th-reward").textContent = s.codesThReward;
   // Tem link para a página de origem, então precisa de innerHTML.
   document.getElementById("codes-source").innerHTML = s.codesSource;
+  document.getElementById("mastery-intro").textContent = s.masteryIntro;
+  document.getElementById("mastery-th-done").textContent = s.masteryThDone;
+  document.getElementById("mastery-th-level").textContent = s.masteryThLevel;
+  document.getElementById("mastery-th-reward").textContent = s.masteryThReward;
+  document.getElementById("mastery-source").innerHTML = s.masterySource;
   const codesAddBtn = document.getElementById("codes-add-toggle");
   codesAddBtn.textContent = `+ ${s.codesAdd}`;
   codesAddBtn.title = s.codesAddTitle;
@@ -1596,10 +1634,15 @@ const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
 const viewFriends = document.getElementById("view-friends");
 const viewCodes = document.getElementById("view-codes");
+const viewMastery = document.getElementById("view-mastery");
 const friendsTabBtn = document.querySelector('#view-tabs [data-view="friends"]');
 const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
 const codesProgressLabel = document.getElementById("codes-progress-label");
+const masteryBody = document.getElementById("mastery-body");
+const masteryProgressBar = document.getElementById("mastery-progress-bar");
+const masteryProgressLabel = document.getElementById("mastery-progress-label");
+const masteryNextEl = document.getElementById("mastery-next");
 
 // O que o usuário digitou entra na tabela com a mesma cara das entradas do
 // robô. A recompensa vale nos dois idiomas: é o texto dele, não tem tradução
@@ -1686,16 +1729,56 @@ function renderCodes() {
   codesProgressLabel.textContent = s.codesProgress(done, total);
 }
 
+// Desbloqueia sozinho pela contagem total de Sprites Dominados (mesma
+// definição da barra "Dominados" da aba de Sprites — Base + cada variante
+// conta separado): nada para o usuário marcar aqui, ao contrário dos
+// códigos do lobby.
+function renderMastery() {
+  const s = t();
+  const masteredCount = computeTotals(collection).mastered;
+
+  masteryBody.innerHTML = MASTERY_REWARDS.map((m) => {
+    const unlocked = masteredCount >= m.level;
+    return `
+      <tr class="mastery-row${unlocked ? "" : " locked"}">
+        <td class="code-check-cell">
+          <span class="mastery-check" aria-hidden="true">${unlocked ? "✓" : ""}</span>
+        </td>
+        <td>${m.level}</td>
+        <td><span class="code-reward">${escapeHtml(m.reward[lang])}</span></td>
+      </tr>`;
+  }).join("");
+
+  const unlockedCount = MASTERY_REWARDS.filter((m) => masteredCount >= m.level).length;
+  const total = MASTERY_REWARDS.length;
+  const width = total === 0 ? 0 : (unlockedCount / total) * 100;
+  masteryProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
+  masteryProgressLabel.textContent = s.masteryProgress(unlockedCount, total);
+
+  const next = MASTERY_REWARDS.find((m) => masteredCount < m.level);
+  if (next) {
+    masteryNextEl.textContent = s.masteryNext(next.level - masteredCount);
+    masteryNextEl.hidden = false;
+  } else if (total > 0) {
+    masteryNextEl.textContent = s.masteryDone;
+    masteryNextEl.hidden = false;
+  } else {
+    masteryNextEl.hidden = true;
+  }
+}
+
 function applyView() {
   viewSprites.hidden = activeView !== "sprites";
   viewFriends.hidden = activeView !== "friends";
   viewCodes.hidden = activeView !== "codes";
+  viewMastery.hidden = activeView !== "mastery";
   [...viewTabs.children].forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.view === activeView)
   );
   // O menu de navegação rápida é grudento e só faz sentido com a grade.
   spriteNav.hidden = activeView !== "sprites";
   if (activeView === "codes") renderCodes();
+  if (activeView === "mastery") renderMastery();
   if (activeView === "friends") refreshShareLink();
 }
 
