@@ -44,78 +44,93 @@ const IGN_ART = {
     gold: "9/9e/Fortnite_gold_8bit_sprite",
     "cheat-master": "8/84/Fortnite_cheat_master_8bit_sprite",
     "loot-hacker": "b/be/Fortnite_loot_hacker_8-bit_sprite",
+    "bounty-hunter": "8/8b/Fortnite_bounty_hunter_8-bit_sprite",
   },
   "adventure": {
     base: "d/db/Fortnite_adventure_sprite",
     gold: "7/71/Fortnite_gold_adventure_sprite",
     "cheat-master": "1/19/Fortnite_cheat_master_adventure_sprite",
     "loot-hacker": "5/55/Fortnite_loot_hacker_adventure_sprite",
+    "bounty-hunter": "0/01/Fortnite_bounty_hunter_adventure_sprite",
   },
   "bush": {
     base: "2/28/Fortnite_bush_sprite",
     gold: "f/fa/Fortnite_gold_bush_sprite",
     "cheat-master": "6/6d/Fortnite_cheat_master_bush_sprite",
     "loot-hacker": "0/00/Fortnite_loot_hacker_bush_sprite",
+    "bounty-hunter": "3/3c/Fortnite_bounty_hunter_bush_sprite",
   },
   "jonesy": {
     base: "e/ed/Fortnite_jonesy_sprite",
     gold: "6/68/Fortnite_gold_jonesy_sprite",
     "cheat-master": "2/2a/Fortnite_cheat_master_jonesy_sprite",
     "loot-hacker": "8/87/Fortnite_loot_hacker_jonesy_sprite",
+    "bounty-hunter": "8/8f/Fortnite_bounty_hunter_jonesy_sprite",
   },
   "sonic": {
     base: "a/ab/Fortnite_sonic_sprite",
     gold: "5/55/Fortnite_gold_sonic_sprite",
     "cheat-master": "7/7b/Fortnite_cheat_master_sonic_sprite",
     "loot-hacker": "f/ff/Fortnite_loot_hacker_sonic_sprite",
+    "bounty-hunter": "8/80/Fortnite_bounty_hunter_sonic_sprite",
   },
   "tails": {
     base: "8/8a/Fortnite_tails_sprite",
     gold: "7/7c/Fortnite_gold_tails_sprite",
     "cheat-master": "d/d8/Fortnite_cheat_master_tails_sprite",
     "loot-hacker": "a/a4/Fortnite_loot_hacker_tails_sprite",
+    "bounty-hunter": "6/62/Fortnite_bounty_hunter_tails_sprite",
   },
   "shadow": {
     base: "6/64/Fortnite_shadow_sprite",
     gold: "3/3c/Fortnite_gold_shadow_sprite",
     "cheat-master": "6/6d/Fortnite_cheat_master_shadow_sprite",
     "loot-hacker": "c/c6/Fortnite_loot_hacker_shadow_sprite",
+    "bounty-hunter": "b/bb/Fortnite_bounty_hunter_shadow_sprite",
   },
   "killswitch": {
     base: "a/a0/Fortnite_killswitch_sprite",
     gold: "7/76/Fortnite_gold_killswitch_sprite",
     "cheat-master": "1/18/Fortnite_cheat_master_killswitch_sprite",
     "loot-hacker": "1/17/Fortnite_loot_hacker_killswitch_sprite",
+    "bounty-hunter": "4/4d/Fortnite_bounty_hunter_killswitch_sprite",
   },
   "jackrabbit": {
     base: "1/18/Fortnite_jackrabbit_sprite",
     gold: "3/3e/Fortnite_gold_jackrabbit_sprite",
     "cheat-master": "1/1f/Fortnite_cheat_master_jackrabbit_sprite",
     "loot-hacker": "e/e6/Fortnite_loot_hacker_jackrabbit_sprite",
+    "bounty-hunter": "7/77/Fortnite_bounty_hunter_jackrabbit_sprite",
   },
   "crown": {
     base: "b/b2/Fortnite_crown_sprite",
     gold: "5/59/Fortnite_gold_crown_sprite",
     "cheat-master": "1/17/Fortnite_cheat_master_crown_sprite",
     "loot-hacker": "8/82/Fortnite_loot_hacker_crown_sprite",
+    // Único que já saiu "..._CORRECT.png" de cara — provavelmente por causa
+    // do bug que a Epic confirmou nele (ver comentário no EXTRA_VARIANTS).
+    "bounty-hunter": "9/95/Fortnite_bounty_hunter_crown_sprite_CORRECT",
   },
   "klombo": {
     base: "8/8e/Fortnite_klombo_sprite",
     gold: "c/ce/Fortnite_gold_klombo_sprite",
     "cheat-master": "1/1e/Fortnite_cheat_master_klombo_sprite",
     "loot-hacker": "1/14/Fortnite_loot_hacker_klombo_sprite",
+    "bounty-hunter": "e/e9/Fortnite_bounty_hunter_klombo_sprite",
   },
   "storm-scout": {
     base: "a/a3/Fortnite_storm_scout_sprite",
     gold: "6/64/Fortnite_gold_storm_scout_sprite",
     "cheat-master": "3/31/Fortnite_cheat_master_storm_scout_sprite",
     "loot-hacker": "d/df/Fortnite_loot_hacker_storm_scout_sprite",
+    "bounty-hunter": "b/bf/Fortnite_bounty_hunter_storm_scout_sprite",
   },
   "x-ray": {
     base: "0/09/Fortnite_x-ray_sprite",
     gold: "6/6d/Fortnite_gold_x-ray_sprite",
     "cheat-master": "5/54/Fortnite_cheat_master_x-ray_sprite",
     "loot-hacker": "a/ae/Fortnite_loot_hacker_x-ray_sprite",
+    "bounty-hunter": "9/98/Fortnite_bounty_hunter_x-ray_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (corrigiram uma arte errada
   // publicada antes) — foge do padrão "Fortnite_{slug}_sprite.png" das
@@ -125,12 +140,14 @@ const IGN_ART = {
     gold: "4/4a/Fortnite_gold_onigiri_sprite",
     "cheat-master": "0/0d/Fortnite_cheat_master_onigiri_sprite",
     "loot-hacker": "b/b2/Fortnite_loot_hacker_onigiri_sprite",
+    "bounty-hunter": "a/ad/Fortnite_bounty_hunter_onigiri_sprite",
   },
   "overshield": {
     base: "1/10/Fortnite_overshield_sprite",
     gold: "2/2c/Fortnite_gold_overshield_sprite",
     "cheat-master": "b/bf/Fortnite_cheat_master_overshield_sprite",
     "loot-hacker": "8/88/Fortnite_loot_hacker_overshield_sprite",
+    "bounty-hunter": "7/74/Fortnite_bounty_hunter_overshield_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (mesmo caso do Onigiri acima).
   "blinky": {
@@ -138,12 +155,14 @@ const IGN_ART = {
     gold: "b/bf/Fortnite_gold_blinky_sprite_CORRECT",
     "cheat-master": "4/41/Fortnite_cheat_master_blinky_sprite_CORRECT",
     "loot-hacker": "d/d7/Fortnite_loot_hacker_blinky_sprite_CORRECT",
+    "bounty-hunter": "6/66/Fortnite_bounty_hunter_blinky_sprite",
   },
   "crash-bandicoot": {
     base: "f/f9/Fortnite_crash_bandicoot_sprite_CORRECT",
     gold: "8/87/Fortnite_gold_crash_bandicoot_sprite_CORRECT",
     "cheat-master": "f/ff/Fortnite_cheat_master_crash_bandicoot_sprite_CORRECT",
     "loot-hacker": "8/84/Fortnite_loot_hacker_crash_bandicoot_sprite_CORRECT",
+    "bounty-hunter": "a/a7/Fortnite_bounty_hunter_crash_bandicoot_sprite",
   },
 };
 
@@ -195,6 +214,20 @@ const EXTRA_VARIANTS = {
     effect: {
       pt: "Aumenta a chance de itens aparecerem nos seus Loot Hacks.",
       en: "Increases chance of spawning items from your Loot Hacks.",
+    },
+  },
+  // Variante nova, detectada em 17/set/2026 na mesma atualização que
+  // renomeou a página do IGN (ver scripts/update-sprites.mjs). O IGN
+  // confirma que já está nos 17 Sprites lançados da temporada (com a
+  // Coroa bugada no momento, segundo a Epic) mas não diz o que ela
+  // concede — nome em PT é tradução nossa provisória. Corrigir efeito e
+  // nome ao confirmar no jogo.
+  "bounty-hunter": {
+    id: "bounty-hunter",
+    name: { pt: "Caçador de Recompensas", en: "Bounty Hunter" },
+    effect: {
+      pt: "Efeito ainda não revelado.",
+      en: "Effect not yet revealed.",
     },
   },
 };
@@ -249,7 +282,7 @@ const ELEMENTALS = [
     name: { pt: "8-Bit", en: "8-Bit" },
     wikiName: "8-Bit Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Garante uma Espingarda 8-Bit no primeiro baú que você abrir, com multiplicador de pontuação.",
       en: "Find an 8-Bit Shotgun in your first Chest and gain a score multiplier for it.",
@@ -262,7 +295,7 @@ const ELEMENTALS = [
     name: { pt: "Aventura", en: "Adventure" },
     wikiName: "Adventure Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Melhora um item aleatório do seu inventário a cada nível.",
       en: "Upgrade a random item in your inventory at each Level.",
@@ -275,7 +308,7 @@ const ELEMENTALS = [
     name: { pt: "Arbusto", en: "Bush" },
     wikiName: "Bush Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Cria um Arbusto em você depois de um tempo. No nível máximo, ganha outro a cada eliminação.",
       en: "Spawns a Bush on you after a duration. At max Level, gain a Bush on elimination.",
@@ -288,7 +321,7 @@ const ELEMENTALS = [
     name: { pt: "Jonesy", en: "Jonesy" },
     wikiName: "Jonesy Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
       en: "After a short duration, recover some Health or Shield after being damaged.",
@@ -303,7 +336,7 @@ const ELEMENTALS = [
     name: { pt: "Onigiri", en: "Onigiri" },
     wikiName: "Onigiri Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Concede Sobrecarga depois de usar um item consumível, com duração maior a cada nível.",
       en: "Grants Overdrive after using a Consumable item, lasting longer per level.",
@@ -320,7 +353,7 @@ const ELEMENTALS = [
     name: { pt: "Meteorológico", en: "Storm Scout" },
     wikiName: "Storm Scout Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Concede Sobrecarga e Energia infinita depois que você toma 10 de dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
       en: "Grants Overdrive and unlimited Energy after you take 10 Storm damage, and at max level reveals where future circles will land.",
@@ -336,7 +369,7 @@ const ELEMENTALS = [
     name: { pt: "Sobrescudo", en: "Overshield" },
     wikiName: "Overshield Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Concede Sobrescudo, com a quantidade aumentando a cada nível.",
       en: "Grants Overshield, with the amount increasing at higher Levels.",
@@ -369,7 +402,7 @@ const ELEMENTALS = [
     name: { pt: "Sonic", en: "Sonic" },
     wikiName: "Sonic Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Aumenta a velocidade de corrida.",
       en: "Sprint faster.",
@@ -382,7 +415,7 @@ const ELEMENTALS = [
     name: { pt: "Tails", en: "Tails" },
     wikiName: "Tails Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Permite pairar no ar com a ajuda da cauda, anulando todo o dano de queda.",
       en: "Hover in mid-air with the help of Tails, and cancels all fall damage.",
@@ -395,7 +428,7 @@ const ELEMENTALS = [
     name: { pt: "Shadow", en: "Shadow" },
     wikiName: "Shadow Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Recarrega as armas automaticamente com o tempo, mesmo as que não estão equipadas.",
       en: "Automatically reload weapons over time, even when unequipped.",
@@ -408,7 +441,7 @@ const ELEMENTALS = [
     name: { pt: "Disruptor", en: "Killswitch" },
     wikiName: "Killswitch Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Ative a câmera lenta com precisão melhorada ao mirar enquanto pula.",
       en: "Enter Hangtime with improved accuracy.",
@@ -421,7 +454,7 @@ const ELEMENTALS = [
     name: { pt: "Jackrabbit", en: "Jackrabbit" },
     wikiName: "Jackrabbit Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Permite dar mais um pulo enquanto está no ar.",
       en: "Perform another jump while mid-air.",
@@ -438,7 +471,7 @@ const ELEMENTALS = [
     name: { pt: "Raio-X", en: "X-Ray" },
     wikiName: "X-Ray Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Marca periodicamente os inimigos próximos. A frequência e o raio de detecção aumentam a cada nível.",
       en: "Periodically marks nearby enemies. Frequency and radius increases with each level.",
@@ -454,7 +487,7 @@ const ELEMENTALS = [
     name: { pt: "Coroa", en: "Crown" },
     wikiName: "Crown Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Ganha Coroas extras (Crown Wins) depois de uma Vitória Royale.",
       en: "Gain extra Crown Wins after getting a Victory Royale.",
@@ -467,7 +500,7 @@ const ELEMENTALS = [
     name: { pt: "Klombo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Concede itens aleatórios a cada nível. Só sobe de nível usando itens consumíveis que dão vida ou escudo.",
       en: "Grants random items at each level. You can only level it up by using consumable items that give Health or Shield.",
@@ -486,7 +519,7 @@ const ELEMENTALS = [
     name: { pt: "Blinky", en: "Blinky" },
     wikiName: "Blinky Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Concede Camuflagem ao levar dano, que aumenta a cada nível.",
       en: "Grants you Cloak when you take damage, which increases with each level.",
@@ -500,7 +533,7 @@ const ELEMENTALS = [
     name: { pt: "Crash Bandicoot", en: "Crash Bandicoot" },
     wikiName: "Crash Bandicoot Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
     ability: {
       pt: "Pule para ativar um ataque giratório que causa dano e arremessa os inimigos para trás. O dano aumenta a cada nível.",
       en: "Jump to trigger a whirlwind attack, which damages and knocks back enemies. Damage increases with each level.",

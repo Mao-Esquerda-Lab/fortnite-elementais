@@ -699,6 +699,21 @@ textarea {
   opacity: 0.5;
 }
 
+/* Recompensas de Domínio: o oposto dos códigos — aqui é o BLOQUEADO (ainda
+   não atingiu o nível) que fica discreto; o desbloqueado é a conquista, por
+   isso continua em destaque. */
+.mastery-row.locked .code-reward {
+  opacity: 0.5;
+}
+
+.mastery-check {
+  display: inline-block;
+  width: 1.15rem;
+  text-align: center;
+  color: var(--rare);
+  font-weight: 700;
+}
+
 .code-cell {
   display: flex;
   align-items: center;
