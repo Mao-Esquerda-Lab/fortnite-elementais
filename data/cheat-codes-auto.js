@@ -11,7 +11,30 @@
 // AUTO_EXPIRED_CODES: ids que o IGN deixou de listar. Ficam visíveis no app
 // marcados como expirados, em vez de sumirem — assim dá para saber que não
 // adianta mais tentar. Se um código voltar à página, sai desta lista sozinho.
-const AUTO_CHEAT_CODES = [];
+const AUTO_CHEAT_CODES = [
+  {
+    "id": "almostscaringseason",
+    "code": "AlmostScaringSeason",
+    "autoAdded": "2026-09-21",
+    "reward": {
+      "pt": "2x Cheat Code Locator",
+      "en": "2x Cheat Code Locator"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "9years",
+    "code": "9YEARS",
+    "autoAdded": "2026-09-21",
+    "reward": {
+      "pt": "9th Birthday Sprite Spray",
+      "en": "9th Birthday Sprite Spray"
+    },
+    "untranslated": true,
+    "isNew": true
+  }
+];
 
 const AUTO_EXPIRED_CODES = [
   "brb",
