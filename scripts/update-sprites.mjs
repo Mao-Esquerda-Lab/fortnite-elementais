@@ -488,13 +488,19 @@ function writeCodesAutoFile(entries, expiredIds) {
 // AUTO_EXPIRED_CODES: ids que o IGN deixou de listar. Ficam visíveis no app
 // marcados como expirados, em vez de sumirem — assim dá para saber que não
 // adianta mais tentar. Se um código voltar à página, sai desta lista sozinho.
+//
+// Ordem: os mais novos ficam no COMEÇO de AUTO_CHEAT_CODES (mesma regra de
+// data/cheat-codes.js). Por não terem sido curados ainda, são a coisa mais
+// recente que o app conhece — por isso entram no início de CHEAT_CODES, na
+// frente até da lista manual, em vez de no fim: assim aparecem sempre no
+// topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = ${JSON.stringify(entries, null, 2)};
 
 const AUTO_EXPIRED_CODES = ${JSON.stringify(expiredIds, null, 2)};
 
-AUTO_CHEAT_CODES.forEach((c) => {
-  if (!CHEAT_CODES.some((x) => x.id === c.id)) CHEAT_CODES.push(c);
-});
+CHEAT_CODES.unshift(
+  ...AUTO_CHEAT_CODES.filter((c) => !CHEAT_CODES.some((x) => x.id === c.id))
+);
 
 // Reatribui sempre (e não só marca): um código que reaparecer na página sai
 // da lista de expirados e volta a valer.
@@ -551,9 +557,12 @@ async function updateCodes(fixtureHtml, today) {
     return null;
   }
 
+  // Os mais novos entram no COMEÇO da lista, não no fim (mesma regra de
+  // data/cheat-codes.js) — assim eles aparecem no topo da tabela do app em
+  // vez de ficarem enterrados atrás de dezenas de códigos antigos.
   const entries = [
-    ...loadAutoCodes(),
     ...newIds.map((id) => makeCodeEntry(id, parsed.get(id), today)),
+    ...loadAutoCodes(),
   ];
   writeCodesAutoFile(entries, expiredIds);
   return {
