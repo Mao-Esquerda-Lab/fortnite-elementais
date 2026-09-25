@@ -10,66 +10,6 @@
 // próxima execução.
 const AUTO_ELEMENTALS = [
   {
-    "id": "blinky",
-    "name": {
-      "pt": "Blinky",
-      "en": "Blinky"
-    },
-    "wikiName": "Blinky Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-09-17",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ]
-  },
-  {
-    "id": "crash-bandicoot",
-    "name": {
-      "pt": "Crash Bandicoot",
-      "en": "Crash Bandicoot"
-    },
-    "wikiName": "Crash Bandicoot Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-09-17",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ]
-  },
-  {
-    "id": "morgana",
-    "name": {
-      "pt": "Morgana",
-      "en": "Morgana"
-    },
-    "wikiName": "Morgana Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-09-17",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "upcoming": true,
-    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/b/b0/Fortnite_morgana_sprite.png",
-    "variantImages": {
-      "gold": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/5/58/Fortnite_gold_morgana_sprite.png",
-      "cheat-master": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/0/0d/Fortnite_cheat_master_morgana_sprite.png"
-    }
-  },
-  {
     "id": "birthday",
     "name": {
       "pt": "Birthday",
