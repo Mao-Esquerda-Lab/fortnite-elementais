@@ -171,6 +171,13 @@ const IGN_ART = {
     "loot-hacker": "2/20/Fortnite_loot_hacker_pond_sprite_CORRECT",
     "bounty-hunter": "e/ee/Fortnite_bounty_hunter_pond_sprite",
   },
+  "morgana": {
+    base: "d/d2/Fortnite_morgana_sprite_CORRECT",
+    gold: "c/cd/Fortnite_gold_morgana_sprite_CORRECT",
+    "cheat-master": "8/89/Fortnite_cheat_master_morgana_sprite_CORRECT",
+    "loot-hacker": "c/c5/Fortnite_loot_hacker_morgana_sprite_CORRECT",
+    "bounty-hunter": "9/99/Fortnite_bounty_hunter_morgana_sprite_CORRECT",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -561,6 +568,24 @@ const ELEMENTALS = [
     ability: {
       pt: "Concede um Super Pulo depois de pular, ganhando mais cargas com o tempo. A força do Super Pulo aumenta a cada nível.",
       en: "Grants you a Super Jump after jumping, with more charges gained over time. Super Jump strength increases with each level.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    // Detectado como "Em breve" em 17/set/2026 (ver data/elementals-auto.js)
+    // e só confirmado como lançado ao reconferir a página do IGN em
+    // 25/set/2026 — nesse meio tempo ele saiu da seção "Upcoming Sprites
+    // List" e entrou na tabela principal, com raridade e habilidade
+    // publicadas. Raridade e habilidade vêm direto da tabela do IGN.
+    id: "morgana",
+    name: { pt: "Morgana", en: "Morgana" },
+    wikiName: "Morgana Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Aumenta a eficácia dos itens de cura, que aumenta a cada nível.",
+      en: "Increases effectiveness of healing items, which increases with each level.",
     },
     dust: 2700,
     variantCost: 4000,

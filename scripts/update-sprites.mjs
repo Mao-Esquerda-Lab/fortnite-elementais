@@ -53,8 +53,12 @@ const IGN_CODES_URL =
   "https://www.ign.com/wikis/fortnite/" +
   "All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards";
 
-// O IGN serve a arte do wiki dele por este CDN.
-const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_-]+)_sprite\.png/g;
+// O IGN serve a arte do wiki dele por este CDN. O sufixo opcional
+// "_CORRECT" (ou parecido) antes de ".png" apareceu nos arquivos em
+// set/2026 — sem aceitá-lo, nenhuma imagem batia mais e Sprites novos
+// entravam sem `image`/`variantImages` (caso do Morgana, detectado em
+// 17/set/2026 e só curado com arte em 25/set/2026 depois desse ajuste).
+const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_-]+)_sprite(?:_[A-Za-z]+)?\.png/g;
 
 // O app cobre apenas Sprites do Chapter 7 em diante.
 const MIN_CHAPTER = 7;
@@ -203,6 +207,11 @@ function ignSections(html) {
   return sections;
 }
 
+// Falta "loot_hacker_"/"bounty_hunter_" aqui de propósito: para esses dois,
+// o nome do arquivo não segue um padrão fixo o bastante pra confiar (ver
+// IGN_ART em data/elementals.js, preenchida à mão pra cada Sprite). Slug sem
+// prefixo conhecido cai em "base" e não bate com nenhum Sprite — é
+// descartado silenciosamente, não vira imagem errada.
 const IGN_VARIANT_SLUGS = { gold_: "gold", cheat_master_: "cheat-master" };
 
 // Extrai de um nome de arquivo do IGN ("Fortnite_gold_klombo_sprite.png") o
