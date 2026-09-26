@@ -19,6 +19,39 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "whocrackedthecode",
+    "code": "WhoCrackedTheCode",
+    "autoAdded": "2026-09-26",
+    "reward": {
+      "pt": "40,000 XP",
+      "en": "40,000 XP"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "wearetheworldchampionstoday",
+    "code": "WeAreTheWorldChampionsToday",
+    "autoAdded": "2026-09-26",
+    "reward": {
+      "pt": "FNCS Sentry Back Bling",
+      "en": "FNCS Sentry Back Bling"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "dustysprites",
+    "code": "DustySprites",
+    "autoAdded": "2026-09-26",
+    "reward": {
+      "pt": "5,000 Sprite Dust",
+      "en": "5,000 Sprite Dust"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "almostscaringseason",
     "code": "AlmostScaringSeason",
     "autoAdded": "2026-09-21",
