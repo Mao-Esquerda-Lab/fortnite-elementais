@@ -1062,9 +1062,33 @@ textarea {
 
 .compare-list {
   margin: 0;
-  padding-left: 1.1rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   font-size: 0.85rem;
-  line-height: 1.5;
+  line-height: 1.3;
+}
+
+.compare-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* O modal reaproveita .export-box, cujo "img" estica (flex: 1) pra caber a
+   imagem do resumo — aqui o ícone precisa ficar do tamanho fixo. */
+.export-box .compare-list-img {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 0.4rem;
+  border: 1px solid var(--rarity-color, var(--border));
+  background: var(--surface-hover);
 }
 
 .compare-list-empty {
