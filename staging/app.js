@@ -1390,11 +1390,10 @@ function roundedRect(ctx, x, y, w, h, r) {
   }
 }
 
-// Carrega uma imagem da wiki com CORS liberado para poder desenhá-la no
-// canvas sem "sujá-lo". O ?cors=1 evita colidir com as respostas opacas já
-// guardadas pelo service worker. Resolve null se falhar ou demorar demais —
-// nesse caso a linha usa a bolinha colorida com a inicial.
-function loadCorsImage(url) {
+// Carrega uma imagem com CORS liberado para poder desenhá-la no canvas sem
+// "sujá-lo". O ?cors=1 evita colidir com as respostas opacas já guardadas
+// pelo service worker. Resolve null se falhar ou passar de timeoutMs.
+function loadImageWithCors(src, timeoutMs) {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -1407,9 +1406,28 @@ function loadCorsImage(url) {
     };
     img.onload = () => done(true);
     img.onerror = () => done(false);
-    setTimeout(() => done(false), 5000);
-    img.src = `${url}${url.includes("?") ? "&" : "?"}cors=1`;
+    setTimeout(() => done(false), timeoutMs);
+    img.src = src;
   });
+}
+
+// O CDN do IGN não manda Access-Control-Allow-Origin, então a imagem direta
+// falha no modo CORS; nesse caso passa pelo images.weserv.nl, um proxy de
+// imagens público que devolve a mesma imagem (reduzida) com CORS liberado.
+// O proxy busca cada imagem no IGN na primeira vez e são ~100 de uma vez,
+// então ganha mais tempo que a tentativa direta.
+// Se os dois falharem, resolve null e o resumo usa a bolinha com a inicial
+// (ou o chip só com o texto).
+async function loadCorsImage(url) {
+  const direct = await loadImageWithCors(
+    `${url}${url.includes("?") ? "&" : "?"}cors=1`,
+    5000
+  );
+  if (direct) return direct;
+  return loadImageWithCors(
+    `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=96&h=96&fit=contain`,
+    20000
+  );
 }
 
 async function exportSummary() {
