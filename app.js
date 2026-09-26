@@ -1346,8 +1346,9 @@ grid.addEventListener("click", (e) => {
 });
 
 // ---- Exportar resumo da coleção como PNG ----
-// Desenha tudo em canvas com formas e texto (sem imagens externas: as da
-// wiki são cross-origin e "sujariam" o canvas, impedindo o toBlob).
+// Desenha tudo em canvas com formas, texto e os ícones dos Sprites (esses
+// carregados com CORS via loadCorsImage, pra não "sujar" o canvas e
+// impedir o toBlob).
 // Cores fixas do tema escuro, iguais às de styles.css.
 const EXPORT_COLORS = {
   bg: "#0f1115",
@@ -1389,11 +1390,10 @@ function roundedRect(ctx, x, y, w, h, r) {
   }
 }
 
-// Carrega uma imagem da wiki com CORS liberado para poder desenhá-la no
-// canvas sem "sujá-lo". O ?cors=1 evita colidir com as respostas opacas já
-// guardadas pelo service worker. Resolve null se falhar ou demorar demais —
-// nesse caso a linha usa a bolinha colorida com a inicial.
-function loadCorsImage(url) {
+// Carrega uma imagem com CORS liberado para poder desenhá-la no canvas sem
+// "sujá-lo". O ?cors=1 evita colidir com as respostas opacas já guardadas
+// pelo service worker. Resolve null se falhar ou passar de timeoutMs.
+function loadImageWithCors(src, timeoutMs) {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -1406,9 +1406,28 @@ function loadCorsImage(url) {
     };
     img.onload = () => done(true);
     img.onerror = () => done(false);
-    setTimeout(() => done(false), 5000);
-    img.src = `${url}${url.includes("?") ? "&" : "?"}cors=1`;
+    setTimeout(() => done(false), timeoutMs);
+    img.src = src;
   });
+}
+
+// O CDN do IGN não manda Access-Control-Allow-Origin, então a imagem direta
+// falha no modo CORS; nesse caso passa pelo images.weserv.nl, um proxy de
+// imagens público que devolve a mesma imagem (reduzida) com CORS liberado.
+// O proxy busca cada imagem no IGN na primeira vez e são ~100 de uma vez,
+// então ganha mais tempo que a tentativa direta.
+// Se os dois falharem, resolve null e o resumo usa a bolinha com a inicial
+// (ou o chip só com o texto).
+async function loadCorsImage(url) {
+  const direct = await loadImageWithCors(
+    `${url}${url.includes("?") ? "&" : "?"}cors=1`,
+    5000
+  );
+  if (direct) return direct;
+  return loadImageWithCors(
+    `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=96&h=96&fit=contain`,
+    20000
+  );
 }
 
 async function exportSummary() {
@@ -1416,8 +1435,14 @@ async function exportSummary() {
   const c = EXPORT_COLORS;
   const list = ELEMENTALS.filter((e) => !e.upcoming);
 
-  // Ícones oficiais dos Sprites (os que falharem viram bolinha + inicial).
-  const icons = await Promise.all(list.map((e) => loadCorsImage(e.image)));
+  // Ícones oficiais dos Sprites (os que falharem viram bolinha + inicial)
+  // e de cada variante (os que falharem deixam o chip só com o texto).
+  const [icons, variantIcons] = await Promise.all([
+    Promise.all(list.map((e) => loadCorsImage(e.image))),
+    Promise.all(
+      list.map((e) => Promise.all(e.variants.map((v) => loadCorsImage(v.image))))
+    ),
+  ]);
 
   const W = 840;
   const HEADER = 196;
@@ -1474,12 +1499,14 @@ async function exportSummary() {
   ctx.stroke();
 
   // Uma linha por Elemental: bolinha na cor da raridade com a inicial,
-  // nome e um chip por quadradinho (Base + variantes).
+  // nome e um chip por quadradinho (Base + variantes), cada um com o ícone
+  // do Sprite/variante. Cabem 5 chips (Base + 4 variantes) na largura.
   const NAME_X = 62;
   const CHIPS_X = 218;
-  const CHIP_W = 72;
-  const CHIP_H = 26;
+  const CHIP_W = 114;
+  const CHIP_H = 30;
   const CHIP_GAP = 4;
+  const CHIP_ICON = 22;
 
   list.forEach((e, i) => {
     const y = HEADER + i * ROW + ROW / 2;
@@ -1505,10 +1532,11 @@ async function exportSummary() {
     ctx.fillText(name, NAME_X, y);
 
     const items = [
-      { label: s.baseVariant, state: entry },
-      ...e.variants.map((v) => ({
+      { label: s.baseVariant, state: entry, icon: icons[i] },
+      ...e.variants.map((v, k) => ({
         label: v.name[lang],
         state: getVariantEntry(entry, v.id),
+        icon: variantIcons[i][k],
       })),
     ];
 
@@ -1526,9 +1554,17 @@ async function exportSummary() {
         ctx.stroke();
         ctx.fillStyle = c.muted;
       }
+      let textX = x + 8;
+      if (item.icon) {
+        // Apagado quando não tem, como os quadradinhos não marcados.
+        ctx.globalAlpha = item.state.owned ? 1 : 0.45;
+        ctx.drawImage(item.icon, x + 4, y - CHIP_ICON / 2, CHIP_ICON, CHIP_ICON);
+        ctx.globalAlpha = 1;
+        textX = x + 4 + CHIP_ICON + 4;
+      }
       const mark = item.state.mastered ? "★ " : item.state.owned ? "✓ " : "";
-      const label = fitText(ctx, `${mark}${item.label}`, CHIP_W - 14, 11, 600, FONT);
-      ctx.fillText(label, x + 8, y + 1);
+      const label = fitText(ctx, `${mark}${item.label}`, x + CHIP_W - 6 - textX, 11, 600, FONT);
+      ctx.fillText(label, textX, y + 1);
     });
   });
 
