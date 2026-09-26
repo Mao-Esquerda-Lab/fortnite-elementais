@@ -2140,7 +2140,7 @@ function openCompareModal(theirCollection, theirName) {
   rows.forEach((row) => {
     row.tiles.forEach((tile) => {
       const item = {
-        label: `${row.elemental.name[lang]} — ${tile.name}`,
+        label: `${row.elemental.name[lang]} ${tile.name}`,
         image: tile.image,
         color: RARITY_COLORS[row.elemental.rarity],
       };
