@@ -178,6 +178,13 @@ const IGN_ART = {
     "loot-hacker": "c/c5/Fortnite_loot_hacker_morgana_sprite_CORRECT",
     "bounty-hunter": "9/99/Fortnite_bounty_hunter_morgana_sprite_CORRECT",
   },
+  "birthday": {
+    base: "c/cc/Fortnite_birthday_sprite_CORRECT",
+    gold: "6/6a/Fortnite_gold_birthday_sprite_CORRECT",
+    "cheat-master": "5/5c/Fortnite_cheat_master_birthday_sprite_CORRECT",
+    "loot-hacker": "0/09/Fortnite_loot_hacker_birthday_sprite_CORRECT",
+    "bounty-hunter": "9/96/Fortnite_bounty_hunter_birthday_sprite_CORRECT",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -589,6 +596,24 @@ const ELEMENTALS = [
     },
     dust: 2700,
     variantCost: 4000,
+  },
+  {
+    // Detectado como "Em breve" em 17/set/2026 (ver data/elementals-auto.js)
+    // e só confirmado como lançado ao reconferir a página do IGN em
+    // 26/set/2026 — mesmo lançamento do evento de 9º aniversário do jogo
+    // (ver código 9YEARS em data/cheat-codes-auto.js). Raridade e habilidade
+    // vêm direto da tabela do IGN.
+    id: "birthday",
+    name: { pt: "Aniversário", en: "Birthday" },
+    wikiName: "Birthday Sprite",
+    rarity: "Rare",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Dá uma chance de receber um pedaço de bolo ao abrir baús.",
+      en: "Gives you a chance to receive a piece of cake when opening chests.",
+    },
+    dust: 100,
+    variantCost: 2700,
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
