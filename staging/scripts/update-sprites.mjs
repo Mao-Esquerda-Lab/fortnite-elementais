@@ -40,9 +40,12 @@ const RAW_URL = `https://fortnite.fandom.com/wiki/${PAGE}?action=raw`;
 
 // Fonte principal: o wiki do IGN da temporada atual. Ao virar a temporada,
 // troque esta URL pela página nova (o título traz o capítulo/temporada).
+// Renomeada em 17/set/2026 (o IGN acrescentou "and Mastery Rewards" ao
+// título) — a URL antiga ainda redireciona (301), então isso sozinho não
+// quebrava o scraper.
 const IGN_URL =
   "https://www.ign.com/wikis/fortnite/" +
-  "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List";
+  "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List";
 
 // Segunda página do IGN: os códigos do Painel de Admin. Ao virar a
 // temporada, confira se ela continua sendo a lista da temporada corrente.
@@ -50,8 +53,12 @@ const IGN_CODES_URL =
   "https://www.ign.com/wikis/fortnite/" +
   "All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards";
 
-// O IGN serve a arte do wiki dele por este CDN.
-const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_-]+)_sprite\.png/g;
+// O IGN serve a arte do wiki dele por este CDN. O sufixo opcional
+// "_CORRECT" (ou parecido) antes de ".png" apareceu nos arquivos em
+// set/2026 — sem aceitá-lo, nenhuma imagem batia mais e Sprites novos
+// entravam sem `image`/`variantImages` (caso do Morgana, detectado em
+// 17/set/2026 e só curado com arte em 25/set/2026 depois desse ajuste).
+const IGN_IMAGE = /https:\/\/oyster\.ignimgs\.com\/mediawiki\/apis\.ign\.com\/fortnite\/[0-9a-f]\/[0-9a-f]{2}\/Fortnite_([a-z0-9_-]+)_sprite(?:_[A-Za-z]+)?\.png/g;
 
 // O app cobre apenas Sprites do Chapter 7 em diante.
 const MIN_CHAPTER = 7;
@@ -110,6 +117,12 @@ const VARIANT_PREFIXES = [
   // Nova variante, aparecendo aos poucos por Sprite desde 03/set/2026 — sem
   // isto, "Loot Hacker Klombo Sprite" entraria como se fosse um Sprite novo.
   "Loot Hacker",
+  // Variante nova, detectada em 17/set/2026: sem isto, "Bounty Hunter Klombo
+  // Sprite" (e o resto dos 15 Sprites já lançados) entrava como Sprite novo
+  // de uma vez só, estourava MAX_NEW_PER_RUN e abortava a execução inteira
+  // (fail-closed) — por isso nenhum Sprite novo de verdade entrava havia
+  // dias, mesmo com Blinky/Crash Bandicoot já lançados no jogo.
+  "Bounty Hunter",
 ];
 
 const RARITIES = ["Mythic", "Legendary", "Epic", "Rare"];
@@ -194,6 +207,11 @@ function ignSections(html) {
   return sections;
 }
 
+// Falta "loot_hacker_"/"bounty_hunter_" aqui de propósito: para esses dois,
+// o nome do arquivo não segue um padrão fixo o bastante pra confiar (ver
+// IGN_ART em data/elementals.js, preenchida à mão pra cada Sprite). Slug sem
+// prefixo conhecido cai em "base" e não bate com nenhum Sprite — é
+// descartado silenciosamente, não vira imagem errada.
 const IGN_VARIANT_SLUGS = { gold_: "gold", cheat_master_: "cheat-master" };
 
 // Extrai de um nome de arquivo do IGN ("Fortnite_gold_klombo_sprite.png") o
@@ -479,13 +497,19 @@ function writeCodesAutoFile(entries, expiredIds) {
 // AUTO_EXPIRED_CODES: ids que o IGN deixou de listar. Ficam visíveis no app
 // marcados como expirados, em vez de sumirem — assim dá para saber que não
 // adianta mais tentar. Se um código voltar à página, sai desta lista sozinho.
+//
+// Ordem: os mais novos ficam no COMEÇO de AUTO_CHEAT_CODES (mesma regra de
+// data/cheat-codes.js). Por não terem sido curados ainda, são a coisa mais
+// recente que o app conhece — por isso entram no início de CHEAT_CODES, na
+// frente até da lista manual, em vez de no fim: assim aparecem sempre no
+// topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = ${JSON.stringify(entries, null, 2)};
 
 const AUTO_EXPIRED_CODES = ${JSON.stringify(expiredIds, null, 2)};
 
-AUTO_CHEAT_CODES.forEach((c) => {
-  if (!CHEAT_CODES.some((x) => x.id === c.id)) CHEAT_CODES.push(c);
-});
+CHEAT_CODES.unshift(
+  ...AUTO_CHEAT_CODES.filter((c) => !CHEAT_CODES.some((x) => x.id === c.id))
+);
 
 // Reatribui sempre (e não só marca): um código que reaparecer na página sai
 // da lista de expirados e volta a valer.
@@ -542,9 +566,12 @@ async function updateCodes(fixtureHtml, today) {
     return null;
   }
 
+  // Os mais novos entram no COMEÇO da lista, não no fim (mesma regra de
+  // data/cheat-codes.js) — assim eles aparecem no topo da tabela do app em
+  // vez de ficarem enterrados atrás de dezenas de códigos antigos.
   const entries = [
-    ...loadAutoCodes(),
     ...newIds.map((id) => makeCodeEntry(id, parsed.get(id), today)),
+    ...loadAutoCodes(),
   ];
   writeCodesAutoFile(entries, expiredIds);
   return {

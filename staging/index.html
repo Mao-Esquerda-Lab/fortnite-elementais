@@ -66,6 +66,7 @@
       <button class="view-tab active" type="button" data-view="sprites" role="tab"></button>
       <button class="view-tab" type="button" data-view="friends" role="tab"></button>
       <button class="view-tab" type="button" data-view="codes" role="tab"></button>
+      <button class="view-tab" type="button" data-view="mastery" role="tab"></button>
     </div>
 
     <div id="view-sprites">
@@ -119,6 +120,20 @@
         <button class="export-btn" id="backup-btn" type="button">
           <span aria-hidden="true">📦</span><span id="backup-label"></span>
         </button>
+        <!-- Zera tenho/dominado/favoritos de todos os Sprites de uma vez. -->
+        <button class="export-btn" id="clear-btn" type="button">
+          <span aria-hidden="true">🗑️</span><span id="clear-label"></span>
+        </button>
+      </div>
+
+      <!-- Confirmação inline antes de apagar tudo (mesmo padrão do "Remover
+           amigo" do cloud-sync.js: sem modal, um segundo clique confirma). -->
+      <div class="backup-confirm" id="clear-confirm" hidden>
+        <p id="clear-confirm-text"></p>
+        <div class="backup-confirm-actions">
+          <button class="export-copy backup-danger" id="clear-confirm-btn" type="button"></button>
+          <button class="export-close" id="clear-cancel-btn" type="button"></button>
+        </div>
       </div>
     </section>
 
@@ -225,6 +240,29 @@
         <tbody id="codes-body"></tbody>
       </table>
       <p class="codes-source" id="codes-source"></p>
+    </div>
+
+    <!-- Aba de recompensas de Domínio: desbloqueiam sozinhas pela contagem
+         total de Sprites Dominados — nada para marcar à mão. -->
+    <div id="view-mastery" hidden>
+      <p class="codes-intro" id="mastery-intro"></p>
+      <div class="progress-row">
+        <div class="progress-bar" id="mastery-progress-bar"></div>
+        <span class="progress-label" id="mastery-progress-label"></span>
+      </div>
+      <p class="codes-intro" id="mastery-next" hidden></p>
+
+      <table class="codes-table">
+        <thead>
+          <tr>
+            <th id="mastery-th-done"></th>
+            <th id="mastery-th-level"></th>
+            <th id="mastery-th-reward"></th>
+          </tr>
+        </thead>
+        <tbody id="mastery-body"></tbody>
+      </table>
+      <p class="codes-source" id="mastery-source"></p>
     </div>
   </main>
 
@@ -396,6 +434,7 @@
 
   <script src="data/cheat-codes.js"></script>
   <script src="data/cheat-codes-auto.js"></script>
+  <script src="data/mastery-rewards.js"></script>
   <script src="data/elementals.js"></script>
   <script src="data/elementals-auto.js"></script>
   <script src="icons.js"></script>

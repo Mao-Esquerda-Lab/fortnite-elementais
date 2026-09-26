@@ -744,7 +744,8 @@ async function main() {
       if (!snap.exists() || !snap.data().collection) {
         return setFriendError(bridge.t().friendCompareUnavailable);
       }
-      bridge.openCompareModal(snap.data().collection);
+      const friend = friendsCache.find((f) => f.uid === friendUid);
+      bridge.openCompareModal(snap.data().collection, friend && friend.username);
     } catch {
       setFriendError(bridge.t().friendCompareUnavailable);
     }

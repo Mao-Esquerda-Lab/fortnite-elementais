@@ -422,8 +422,8 @@ textarea {
 
 /* Botão de exportar o resumo da coleção como imagem,
    logo abaixo das barras de progresso, alinhado à direita. */
-/* Exportar, Comparar e Backup ficam lado a lado abaixo das barras. Em telas
-   estreitas quebram para a linha de baixo em vez de transbordar. */
+/* Exportar, Backup e Limpar tudo ficam lado a lado abaixo das barras. Em
+   telas estreitas quebram para a linha de baixo em vez de transbordar. */
 .progress-actions {
   display: flex;
   flex-wrap: wrap;
@@ -699,6 +699,21 @@ textarea {
   opacity: 0.5;
 }
 
+/* Recompensas de Domínio: o oposto dos códigos — aqui é o BLOQUEADO (ainda
+   não atingiu o nível) que fica discreto; o desbloqueado é a conquista, por
+   isso continua em destaque. */
+.mastery-row.locked .code-reward {
+  opacity: 0.5;
+}
+
+.mastery-check {
+  display: inline-block;
+  width: 1.15rem;
+  text-align: center;
+  color: var(--rare);
+  font-weight: 700;
+}
+
 .code-cell {
   display: flex;
   align-items: center;
@@ -948,6 +963,14 @@ textarea {
   background: var(--surface-hover);
 }
 
+/* Sem isto, o display:flex acima vence o "display:none" que o atributo
+   hidden aplicaria sozinho — some por acidente dentro do modal de backup
+   (que já começa escondido), mas fica visível o tempo todo no "Limpar
+   tudo" da coleção, que não tem outro elemento escondendo por cima. */
+.backup-confirm[hidden] {
+  display: none !important;
+}
+
 .backup-confirm p {
   margin: 0;
   font-size: 0.85rem;
@@ -1039,9 +1062,33 @@ textarea {
 
 .compare-list {
   margin: 0;
-  padding-left: 1.1rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   font-size: 0.85rem;
-  line-height: 1.5;
+  line-height: 1.3;
+}
+
+.compare-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* O modal reaproveita .export-box, cujo "img" estica (flex: 1) pra caber a
+   imagem do resumo — aqui o ícone precisa ficar do tamanho fixo. */
+.export-box .compare-list-img {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 0.4rem;
+  border: 1px solid var(--rarity-color, var(--border));
+  background: var(--surface-hover);
 }
 
 .compare-list-empty {
@@ -1750,12 +1797,14 @@ textarea {
     flex-direction: column;
   }
 
-  /* "Atualizar"/"Fazer login" viram só o ícone: com o texto, o botão de
-     conta precisa de mais largura do que sobra na coluna lateral do grid
-     do cabeçalho (a coluna do meio, reservada pro logo, nunca cede espaço),
-     e o texto quebra em duas linhas — button vira mais alto que a linha do
-     cabeçalho e passa a cobrir o logo. */
-  .refresh-btn span:not([aria-hidden]) {
+  /* Só "Fazer login" vira ícone: com o texto, o botão de conta precisa de
+     mais largura do que sobra na coluna lateral do grid do cabeçalho (a
+     coluna do meio, reservada pro logo, nunca cede espaço — e essa coluna
+     ainda divide espaço com o seletor de idioma), e o texto quebra em duas
+     linhas — o botão vira mais alto que a linha do cabeçalho e passa a
+     cobrir o logo. O "Atualizar" fica sozinho na coluna do outro lado, sem
+     esse aperto, então mantém o texto. */
+  .account-btn span:not([aria-hidden]) {
     display: none;
   }
 }

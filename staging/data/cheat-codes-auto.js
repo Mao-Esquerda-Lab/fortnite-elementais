@@ -11,33 +11,50 @@
 // AUTO_EXPIRED_CODES: ids que o IGN deixou de listar. Ficam visíveis no app
 // marcados como expirados, em vez de sumirem — assim dá para saber que não
 // adianta mais tentar. Se um código voltar à página, sai desta lista sozinho.
+//
+// Ordem: os mais novos ficam no COMEÇO de AUTO_CHEAT_CODES (mesma regra de
+// data/cheat-codes.js). Por não terem sido curados ainda, são a coisa mais
+// recente que o app conhece — por isso entram no início de CHEAT_CODES, na
+// frente até da lista manual, em vez de no fim: assim aparecem sempre no
+// topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
-    "id": "insertcointocontinue",
-    "code": "InsertCoinToContinue",
-    "autoAdded": "2026-09-04",
+    "id": "whocrackedthecode",
+    "code": "WhoCrackedTheCode",
+    "autoAdded": "2026-09-26",
     "reward": {
-      "pt": "Transforms you into an arcade machine temporarily",
-      "en": "Transforms you into an arcade machine temporarily"
+      "pt": "40,000 XP",
+      "en": "40,000 XP"
     },
     "untranslated": true,
     "isNew": true
   },
   {
-    "id": "chatwheredoyoufindthekey",
-    "code": "ChatWhereDoYouFindTheKey",
-    "autoAdded": "2026-09-04",
+    "id": "wearetheworldchampionstoday",
+    "code": "WeAreTheWorldChampionsToday",
+    "autoAdded": "2026-09-26",
     "reward": {
-      "pt": "2x Extraction Accelerator",
-      "en": "2x Extraction Accelerator"
+      "pt": "FNCS Sentry Back Bling",
+      "en": "FNCS Sentry Back Bling"
     },
     "untranslated": true,
     "isNew": true
   },
   {
-    "id": "invalidcheat",
-    "code": "INVALIDCHEAT",
-    "autoAdded": "2026-09-04",
+    "id": "dustysprites",
+    "code": "DustySprites",
+    "autoAdded": "2026-09-26",
+    "reward": {
+      "pt": "5,000 Sprite Dust",
+      "en": "5,000 Sprite Dust"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "almostscaringseason",
+    "code": "AlmostScaringSeason",
+    "autoAdded": "2026-09-21",
     "reward": {
       "pt": "2x Cheat Code Locator",
       "en": "2x Cheat Code Locator"
@@ -46,45 +63,12 @@ const AUTO_CHEAT_CODES = [
     "isNew": true
   },
   {
-    "id": "yourthoughtsaremine",
-    "code": "YourThoughtsAreMine",
-    "autoAdded": "2026-09-04",
+    "id": "9years",
+    "code": "9YEARS",
+    "autoAdded": "2026-09-21",
     "reward": {
-      "pt": "5,000 Sprite Dust e Void Master Geno Skin Edit Style e Void Conduits of Power Back Bling Edit Style e (Must complete e Geno's Story quests first e before you can redeem)",
-      "en": "5,000 Sprite Dust e Void Master Geno Skin Edit Style e Void Conduits of Power Back Bling Edit Style e (Must complete e Geno's Story quests first e before you can redeem)"
-    },
-    "untranslated": true,
-    "isNew": true
-  },
-  {
-    "id": "whereisthedustytree",
-    "code": "WhereIsTheDustyTree",
-    "autoAdded": "2026-09-06",
-    "reward": {
-      "pt": "5,000 Sprite Dust",
-      "en": "5,000 Sprite Dust"
-    },
-    "untranslated": true,
-    "isNew": true
-  },
-  {
-    "id": "noprollama",
-    "code": "NOPROLLAMA",
-    "autoAdded": "2026-09-09",
-    "reward": {
-      "pt": "1x Llama Supply Drop",
-      "en": "1x Llama Supply Drop"
-    },
-    "untranslated": true,
-    "isNew": true
-  },
-  {
-    "id": "dustinthewind",
-    "code": "DustInTheWind",
-    "autoAdded": "2026-09-09",
-    "reward": {
-      "pt": "5,000 Sprite Dust",
-      "en": "5,000 Sprite Dust"
+      "pt": "9th Birthday Sprite Spray",
+      "en": "9th Birthday Sprite Spray"
     },
     "untranslated": true,
     "isNew": true
@@ -92,12 +76,13 @@ const AUTO_CHEAT_CODES = [
 ];
 
 const AUTO_EXPIRED_CODES = [
-  "brb"
+  "brb",
+  "noprollama"
 ];
 
-AUTO_CHEAT_CODES.forEach((c) => {
-  if (!CHEAT_CODES.some((x) => x.id === c.id)) CHEAT_CODES.push(c);
-});
+CHEAT_CODES.unshift(
+  ...AUTO_CHEAT_CODES.filter((c) => !CHEAT_CODES.some((x) => x.id === c.id))
+);
 
 // Reatribui sempre (e não só marca): um código que reaparecer na página sai
 // da lista de expirados e volta a valer.

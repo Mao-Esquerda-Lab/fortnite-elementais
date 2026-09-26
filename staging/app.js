@@ -39,6 +39,7 @@ const TRANSLATIONS = {
     sharePasteLabel: "Cole aqui o código ou link de um amigo",
     sharePasteButton: "Comparar",
     compareTitle: "Comparação de coleção",
+    compareTitleWithName: (name) => `Comparação com ${name}`,
     compareYou: "Você",
     compareThem: "Amigo(a)",
     compareOnlyYou: "Só você tem",
@@ -85,6 +86,13 @@ const TRANSLATIONS = {
     backupMerge: "Juntar as duas",
     backupCancel: "Cancelar",
     backupDone: (total) => `Pronto — ${total} marcação(ões) neste aparelho agora.`,
+    clearLabel: "Limpar tudo",
+    clearTitle: "Apaga tenho/dominado/favoritos de todos os Sprites deste aparelho",
+    clearConfirmText: (total) =>
+      total > 0
+        ? `Isso vai apagar ${total} marcação(ões) deste aparelho — não dá para desfazer. Se quiser guardar antes, use o Backup.`
+        : "Este aparelho não tem nenhuma marcação para apagar.",
+    clearConfirmYes: "Sim, limpar tudo",
     accountLabelSignedOut: "Fazer login",
     accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
@@ -155,6 +163,20 @@ const TRANSLATIONS = {
     codesRemove: "Remover este código",
     codesSource:
       'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, atualizada todo dia. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
+    viewMastery: "Domínio",
+    masteryIntro:
+      "A cada Sprite Dominado (Base ou variante) você desbloqueia uma recompensa sozinho — não precisa resgatar nada aqui, é só acompanhar.",
+    masteryThDone: "Desbloqueado",
+    masteryThLevel: "Nível",
+    masteryThReward: "Recompensa",
+    masteryProgress: (unlocked, total) => `${unlocked} / ${total} desbloqueados`,
+    masteryNext: (remaining) =>
+      remaining === 1
+        ? "Falta 1 Sprite Dominado para a próxima recompensa."
+        : `Faltam ${remaining} Sprites Dominados para a próxima recompensa.`,
+    masteryDone: "Concluído — todas as recompensas reveladas até agora foram desbloqueadas.",
+    masterySource:
+      'Lista do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, seção "Sprite Mastery Rewards" — a Epic ainda não revelou os níveis depois do 28º. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -189,7 +211,7 @@ const TRANSLATIONS = {
     installOffline:
       "Depois de instalado, o app abre offline: seu progresso e os ícones já vistos ficam salvos no aparelho.",
     footer:
-      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
+      'Elementais, arte e códigos do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>; raridades da <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. Projeto de fã, sem vínculo com a Epic Games. Seu progresso fica salvo só neste navegador — use o Backup para levá-lo a outro aparelho.',
     costUnknown: "ainda não revelado",
     rarities: {
       Rare: "Raro",
@@ -223,6 +245,7 @@ const TRANSLATIONS = {
     sharePasteLabel: "Paste a friend's code or link here",
     sharePasteButton: "Compare",
     compareTitle: "Collection comparison",
+    compareTitleWithName: (name) => `Comparison with ${name}`,
     compareYou: "You",
     compareThem: "Friend",
     compareOnlyYou: "Only you have",
@@ -269,6 +292,13 @@ const TRANSLATIONS = {
     backupMerge: "Merge both",
     backupCancel: "Cancel",
     backupDone: (total) => `Done — ${total} mark(s) on this device now.`,
+    clearLabel: "Clear all",
+    clearTitle: "Wipes owned/mastered/favourites for every Sprite on this device",
+    clearConfirmText: (total) =>
+      total > 0
+        ? `This will erase ${total} mark(s) on this device — it can't be undone. Use Backup first if you want to keep a copy.`
+        : "This device has no marks to clear.",
+    clearConfirmYes: "Yes, clear everything",
     accountLabelSignedOut: "Log in",
     accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
@@ -337,6 +367,20 @@ const TRANSLATIONS = {
     codesRemove: "Remove this code",
     codesSource:
       'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>, refreshed daily. Reward wording is our own translation, not the game\'s official text.',
+    viewMastery: "Mastery",
+    masteryIntro:
+      "Every Mastered Sprite (Base or variant) unlocks a reward on its own — nothing to redeem here, just track it.",
+    masteryThDone: "Unlocked",
+    masteryThLevel: "Level",
+    masteryThReward: "Reward",
+    masteryProgress: (unlocked, total) => `${unlocked} / ${total} unlocked`,
+    masteryNext: (remaining) =>
+      remaining === 1
+        ? "1 more Mastered Sprite until the next reward."
+        : `${remaining} more Mastered Sprites until the next reward.`,
+    masteryDone: "Done — every reward revealed so far is unlocked.",
+    masterySource:
+      'List from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>, "Sprite Mastery Rewards" section — Epic hasn\'t revealed levels past 28 yet. Reward wording is our own translation, not the game\'s official text.',
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -370,7 +414,7 @@ const TRANSLATIONS = {
     installOffline:
       "Once installed, the app opens offline: your progress and previously viewed icons stay saved on your device.",
     footer:
-      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
+      'Sprites, art and codes from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>; rarities from the <a href="https://fortnite.fandom.com/wiki/Sprites" target="_blank" rel="noopener noreferrer">Fortnite Wiki</a>. A fan project, not affiliated with Epic Games. Your progress is saved in this browser only — use Backup to move it to another device.',
     costUnknown: "not revealed yet",
     rarities: {
       Rare: "Rare",
@@ -701,14 +745,16 @@ function diffCollections(mine, theirs) {
     const mineEntry = getEntry(e.id, mine);
     const theirEntry = getEntry(e.id, theirs);
     const tileList = [
-      { name: s.baseVariant, mineState: mineEntry, theirState: theirEntry },
+      { name: s.baseVariant, image: e.image, mineState: mineEntry, theirState: theirEntry },
       ...e.variants.map((v) => ({
         name: v.name[lang],
+        image: v.image,
         mineState: getVariantEntry(mineEntry, v.id),
         theirState: getVariantEntry(theirEntry, v.id),
       })),
     ].map((tile) => ({
       name: tile.name,
+      image: tile.image,
       status: tile.mineState.owned && tile.theirState.owned
         ? "both"
         : tile.mineState.owned
@@ -830,7 +876,12 @@ function applyLanguage() {
   document.getElementById("compare-title").textContent = s.compareTitle;
   document.getElementById("compare-close").textContent = s.close;
 
-  const viewTabLabels = { sprites: s.viewSprites, friends: s.viewCompareTab, codes: s.viewCodes };
+  const viewTabLabels = {
+    sprites: s.viewSprites,
+    friends: s.viewCompareTab,
+    codes: s.viewCodes,
+    mastery: s.viewMastery,
+  };
   [...viewTabs.children].forEach((tab) => {
     tab.textContent = viewTabLabels[tab.dataset.view];
   });
@@ -840,6 +891,11 @@ function applyLanguage() {
   document.getElementById("codes-th-reward").textContent = s.codesThReward;
   // Tem link para a página de origem, então precisa de innerHTML.
   document.getElementById("codes-source").innerHTML = s.codesSource;
+  document.getElementById("mastery-intro").textContent = s.masteryIntro;
+  document.getElementById("mastery-th-done").textContent = s.masteryThDone;
+  document.getElementById("mastery-th-level").textContent = s.masteryThLevel;
+  document.getElementById("mastery-th-reward").textContent = s.masteryThReward;
+  document.getElementById("mastery-source").innerHTML = s.masterySource;
   const codesAddBtn = document.getElementById("codes-add-toggle");
   codesAddBtn.textContent = `+ ${s.codesAdd}`;
   codesAddBtn.title = s.codesAddTitle;
@@ -864,6 +920,12 @@ function applyLanguage() {
   document.getElementById("backup-replace-btn").textContent = s.backupReplace;
   document.getElementById("backup-cancel-btn").textContent = s.backupCancel;
   document.getElementById("backup-close").textContent = s.close;
+
+  const clearBtn = document.getElementById("clear-btn");
+  clearBtn.title = s.clearTitle;
+  document.getElementById("clear-label").textContent = s.clearLabel;
+  document.getElementById("clear-confirm-btn").textContent = s.clearConfirmYes;
+  document.getElementById("clear-cancel-btn").textContent = s.backupCancel;
 
   const accountBtn = document.getElementById("account-btn");
   accountBtn.title = s.accountTitle;
@@ -1574,10 +1636,15 @@ const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
 const viewFriends = document.getElementById("view-friends");
 const viewCodes = document.getElementById("view-codes");
+const viewMastery = document.getElementById("view-mastery");
 const friendsTabBtn = document.querySelector('#view-tabs [data-view="friends"]');
 const codesBody = document.getElementById("codes-body");
 const codesProgressBar = document.getElementById("codes-progress-bar");
 const codesProgressLabel = document.getElementById("codes-progress-label");
+const masteryBody = document.getElementById("mastery-body");
+const masteryProgressBar = document.getElementById("mastery-progress-bar");
+const masteryProgressLabel = document.getElementById("mastery-progress-label");
+const masteryNextEl = document.getElementById("mastery-next");
 
 // O que o usuário digitou entra na tabela com a mesma cara das entradas do
 // robô. A recompensa vale nos dois idiomas: é o texto dele, não tem tradução
@@ -1664,16 +1731,56 @@ function renderCodes() {
   codesProgressLabel.textContent = s.codesProgress(done, total);
 }
 
+// Desbloqueia sozinho pela contagem total de Sprites Dominados (mesma
+// definição da barra "Dominados" da aba de Sprites — Base + cada variante
+// conta separado): nada para o usuário marcar aqui, ao contrário dos
+// códigos do lobby.
+function renderMastery() {
+  const s = t();
+  const masteredCount = computeTotals(collection).mastered;
+
+  masteryBody.innerHTML = MASTERY_REWARDS.map((m) => {
+    const unlocked = masteredCount >= m.level;
+    return `
+      <tr class="mastery-row${unlocked ? "" : " locked"}">
+        <td class="code-check-cell">
+          <span class="mastery-check" aria-hidden="true">${unlocked ? "✓" : ""}</span>
+        </td>
+        <td>${m.level}</td>
+        <td><span class="code-reward">${escapeHtml(m.reward[lang])}</span></td>
+      </tr>`;
+  }).join("");
+
+  const unlockedCount = MASTERY_REWARDS.filter((m) => masteredCount >= m.level).length;
+  const total = MASTERY_REWARDS.length;
+  const width = total === 0 ? 0 : (unlockedCount / total) * 100;
+  masteryProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
+  masteryProgressLabel.textContent = s.masteryProgress(unlockedCount, total);
+
+  const next = MASTERY_REWARDS.find((m) => masteredCount < m.level);
+  if (next) {
+    masteryNextEl.textContent = s.masteryNext(next.level - masteredCount);
+    masteryNextEl.hidden = false;
+  } else if (total > 0) {
+    masteryNextEl.textContent = s.masteryDone;
+    masteryNextEl.hidden = false;
+  } else {
+    masteryNextEl.hidden = true;
+  }
+}
+
 function applyView() {
   viewSprites.hidden = activeView !== "sprites";
   viewFriends.hidden = activeView !== "friends";
   viewCodes.hidden = activeView !== "codes";
+  viewMastery.hidden = activeView !== "mastery";
   [...viewTabs.children].forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.view === activeView)
   );
   // O menu de navegação rápida é grudento e só faz sentido com a grade.
   spriteNav.hidden = activeView !== "sprites";
   if (activeView === "codes") renderCodes();
+  if (activeView === "mastery") renderMastery();
   if (activeView === "friends") refreshShareLink();
 }
 
@@ -1996,19 +2103,33 @@ function statTile(label, totals) {
     </div>`;
 }
 
-function compareListColumn(title, labels) {
+// Cada item leva o ícone do Sprite/variante, como nos quadradinhos da coleção.
+function compareListColumn(title, items) {
   const s = t();
-  const body = labels.length
-    ? `<ul class="compare-list">${labels.map((l) => `<li>${l}</li>`).join("")}</ul>`
+  const body = items.length
+    ? `<ul class="compare-list">${items
+        .map(
+          (i) => `
+      <li style="--rarity-color:${i.color}">
+        <img class="compare-list-img" src="${i.image}" alt="" width="28" height="28"
+             loading="lazy" onerror="variantImgFallback(this)" />
+        <span>${i.label}</span>
+      </li>`
+        )
+        .join("")}</ul>`
     : `<p class="compare-list-empty">${s.compareNone}</p>`;
   return `<h3>${title}</h3>${body}`;
 }
 
 // Nunca mexe em collection/localStorage: theirCollection só existe como
 // variável local, passada por parâmetro para os helpers somente-leitura.
-function openCompareModal(theirCollection) {
+function openCompareModal(theirCollection, theirName) {
   const s = t();
   const rows = diffCollections(collection, theirCollection);
+
+  document.getElementById("compare-title").textContent = theirName
+    ? s.compareTitleWithName(theirName)
+    : s.compareTitle;
 
   compareStats.innerHTML =
     statTile(s.compareYou, computeTotals(collection)) +
@@ -2018,9 +2139,13 @@ function openCompareModal(theirCollection) {
   const onlyTheirs = [];
   rows.forEach((row) => {
     row.tiles.forEach((tile) => {
-      const label = `${row.elemental.name[lang]} — ${tile.name}`;
-      if (tile.status === "mine") onlyMine.push(label);
-      if (tile.status === "theirs") onlyTheirs.push(label);
+      const item = {
+        label: `${row.elemental.name[lang]} — ${tile.name}`,
+        image: tile.image,
+        color: RARITY_COLORS[row.elemental.rarity],
+      };
+      if (tile.status === "mine") onlyMine.push(item);
+      if (tile.status === "theirs") onlyTheirs.push(item);
     });
   });
 
@@ -2240,6 +2365,26 @@ document.getElementById("backup-cancel-btn").addEventListener("click", () => {
   backupConfirm.hidden = true;
 });
 
+// ---- Limpar tudo (zera tenho/dominado/favoritos de todos os Sprites) ----
+const clearConfirmBox = document.getElementById("clear-confirm");
+const clearConfirmText = document.getElementById("clear-confirm-text");
+
+document.getElementById("clear-btn").addEventListener("click", () => {
+  clearConfirmText.textContent = t().clearConfirmText(countMarks(collection));
+  clearConfirmBox.hidden = false;
+});
+
+document.getElementById("clear-cancel-btn").addEventListener("click", () => {
+  clearConfirmBox.hidden = true;
+});
+
+document.getElementById("clear-confirm-btn").addEventListener("click", () => {
+  collection = {};
+  saveCollection(collection);
+  clearConfirmBox.hidden = true;
+  render();
+});
+
 // Botão flutuante de voltar ao topo: aparece depois de rolar um pouco.
 window.addEventListener(
   "scroll",
@@ -2316,7 +2461,7 @@ window.SpritesLockerBridge = {
   },
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
   // modal somente-leitura já usado pelo código de compartilhamento.
-  openCompareModal: (theirCollection) => openCompareModal(theirCollection),
+  openCompareModal: (theirCollection, theirName) => openCompareModal(theirCollection, theirName),
   // Mostra/esconde a aba "Comparar" conforme o login (cloud-sync.js, opcional
   // — sem ele a aba fica sempre visível, igual sempre foi). Se a aba some
   // enquanto ela era a atual (ex.: usuário saiu da conta com "Comparar"
