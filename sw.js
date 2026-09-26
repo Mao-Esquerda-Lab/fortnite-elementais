@@ -106,7 +106,9 @@ self.addEventListener("fetch", (event) => {
     url.hostname.endsWith("ignimgs.com") ||
     url.hostname.endsWith("fandom.com") ||
     url.hostname.endsWith("wikia.nocookie.net") ||
-    url.hostname.endsWith("fortnite.gg")
+    url.hostname.endsWith("fortnite.gg") ||
+    // Mesmas imagens via proxy com CORS, usadas na imagem de resumo.
+    url.hostname === "images.weserv.nl"
   ) {
     event.respondWith(cacheFirstImage(request));
   }
