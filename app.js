@@ -2130,29 +2130,40 @@ function parseSharePaste(text) {
 }
 
 // A comparação só olha para "tenho": "dominado" não entra na conta.
-function statTile(label, totals) {
-  const s = t();
+// Número grande com o rótulo embaixo, como no topo da imagem de resumo.
+function statTile(label, totals, color) {
   return `
-    <div class="compare-stat">
-      <span class="compare-stat-label">${label}</span>
-      <span class="compare-stat-value">${s.progressOwned(totals.owned, totals.total)}</span>
+    <div class="compare-stat" style="--stat-color:${color}">
+      <span class="compare-stat-value">${totals.owned}<small> / ${totals.total}</small></span>
+      <span class="compare-stat-label">✓ ${label}</span>
     </div>`;
 }
 
-// Cada item leva o ícone do Sprite/variante, como nos quadradinhos da coleção.
-function compareListColumn(title, items) {
+// Uma linha por Sprite, como na imagem de resumo: ícone, nome e um chip
+// (com o ícone da variante) para cada quadradinho exclusivo daquele lado.
+function compareSection(title, groups) {
   const s = t();
-  const body = items.length
-    ? `<ul class="compare-list">${items
+  const body = groups.length
+    ? groups
         .map(
-          (i) => `
-      <li style="--rarity-color:${i.color}">
-        <img class="compare-list-img" src="${i.image}" alt="" width="28" height="28"
+          ({ elemental, tiles }) => `
+      <div class="compare-row" style="--rarity-color:${RARITY_COLORS[elemental.rarity]}">
+        <img class="compare-row-img" src="${elemental.image}" alt="" width="34" height="34"
              loading="lazy" onerror="variantImgFallback(this)" />
-        <span>${i.label}</span>
-      </li>`
+        <span class="compare-row-name">${elemental.name[lang]}</span>
+        <div class="compare-chips">${tiles
+          .map(
+            (tile) => `
+          <span class="compare-chip">
+            <img src="${tile.image}" alt="" width="22" height="22"
+                 loading="lazy" onerror="variantImgFallback(this)" />
+            ${tile.name}
+          </span>`
+          )
+          .join("")}</div>
+      </div>`
         )
-        .join("")}</ul>`
+        .join("")
     : `<p class="compare-list-empty">${s.compareNone}</p>`;
   return `<h3>${title}</h3>${body}`;
 }
@@ -2168,25 +2179,20 @@ function openCompareModal(theirCollection, theirName) {
     : s.compareTitle;
 
   compareStats.innerHTML =
-    statTile(s.compareYou, computeTotals(collection)) +
-    statTile(s.compareThem, computeTotals(theirCollection));
+    statTile(s.compareYou, computeTotals(collection), "var(--accent)") +
+    statTile(s.compareThem, computeTotals(theirCollection), "var(--epic)");
 
-  const onlyMine = [];
-  const onlyTheirs = [];
-  rows.forEach((row) => {
-    row.tiles.forEach((tile) => {
-      const item = {
-        label: `${row.elemental.name[lang]} ${tile.name}`,
-        image: tile.image,
-        color: RARITY_COLORS[row.elemental.rarity],
-      };
-      if (tile.status === "mine") onlyMine.push(item);
-      if (tile.status === "theirs") onlyTheirs.push(item);
-    });
-  });
+  // Só os Sprites com algum quadradinho exclusivo de cada lado.
+  const groupsWith = (status) =>
+    rows
+      .map((row) => ({
+        elemental: row.elemental,
+        tiles: row.tiles.filter((tile) => tile.status === status),
+      }))
+      .filter((group) => group.tiles.length);
 
-  compareOnlyYou.innerHTML = compareListColumn(s.compareOnlyYou, onlyMine);
-  compareOnlyThem.innerHTML = compareListColumn(s.compareOnlyThem, onlyTheirs);
+  compareOnlyYou.innerHTML = compareSection(s.compareOnlyYou, groupsWith("mine"));
+  compareOnlyThem.innerHTML = compareSection(s.compareOnlyThem, groupsWith("theirs"));
 
   compareOverlay.hidden = false;
 }
