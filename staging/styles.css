@@ -1103,13 +1103,14 @@ textarea {
   height: 34px;
 }
 
+/* Nome nunca é cortado: se não couber na largura, quebra em duas linhas
+   (ex.: "Crash Bandicoot"). */
 .compare-row-name {
   width: 7.5rem;
   font-weight: 700;
   font-size: 0.95rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
 .compare-chips {
