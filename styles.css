@@ -475,7 +475,13 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  /* Com o app instalado no iPhone a página vai até atrás do relógio/notch
+     (viewport-fit=cover): sem a área segura, o topo da caixa (e o botão de
+     fechar) ficava escondido lá. */
+  padding: calc(1rem + env(safe-area-inset-top, 0px))
+    calc(1rem + env(safe-area-inset-right, 0px))
+    calc(1rem + env(safe-area-inset-bottom, 0px))
+    calc(1rem + env(safe-area-inset-left, 0px));
 }
 
 /* Tamanho FIXO: a caixa não muda quando o rótulo dos botões muda
@@ -998,11 +1004,22 @@ textarea {
 
 .compare-box {
   height: auto;
-  max-height: min(88vh, 900px);
+  /* 100% da área útil do overlay (já sem a área segura), e não 88vh: no
+     iOS o vh conta a tela inteira e a caixa passava da parte visível. */
+  max-height: min(100%, 900px);
   overflow-y: auto;
 }
 
+/* Título e "Fechar" ficam grudados no topo da caixa enquanto a lista rola,
+   pra dar pra fechar sem precisar voltar lá pra cima. As margens negativas
+   cobrem o padding da caixa, pra nada da lista aparecer por cima. */
 .compare-header {
+  position: sticky;
+  top: -0.9rem;
+  z-index: 1;
+  margin: -0.9rem -0.9rem 0;
+  padding: 0.9rem 0.9rem 0.5rem;
+  background: var(--surface);
   display: flex;
   align-items: center;
   justify-content: space-between;
