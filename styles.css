@@ -1082,6 +1082,13 @@ textarea {
   min-width: 0;
 }
 
+/* Linha fininha entre um Sprite e outro, pra separar cada grupo (Sprite +
+   seus chips). A primeira linha já fica logo abaixo da borda do título. */
+.compare-row + .compare-row {
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+}
+
 /* O modal reaproveita .export-box, cujo "img" estica (flex: 1) pra caber a
    imagem do resumo — aqui os ícones precisam ficar do tamanho fixo. */
 .export-box .compare-row-img,
@@ -1096,13 +1103,14 @@ textarea {
   height: 34px;
 }
 
+/* Nome nunca é cortado: se não couber na largura, quebra em duas linhas
+   (ex.: "Crash Bandicoot"). */
 .compare-row-name {
   width: 7.5rem;
   font-weight: 700;
   font-size: 0.95rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.2;
+  overflow-wrap: break-word;
 }
 
 .compare-chips {
