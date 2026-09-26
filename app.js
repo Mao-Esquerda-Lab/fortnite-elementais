@@ -745,14 +745,16 @@ function diffCollections(mine, theirs) {
     const mineEntry = getEntry(e.id, mine);
     const theirEntry = getEntry(e.id, theirs);
     const tileList = [
-      { name: s.baseVariant, mineState: mineEntry, theirState: theirEntry },
+      { name: s.baseVariant, image: e.image, mineState: mineEntry, theirState: theirEntry },
       ...e.variants.map((v) => ({
         name: v.name[lang],
+        image: v.image,
         mineState: getVariantEntry(mineEntry, v.id),
         theirState: getVariantEntry(theirEntry, v.id),
       })),
     ].map((tile) => ({
       name: tile.name,
+      image: tile.image,
       status: tile.mineState.owned && tile.theirState.owned
         ? "both"
         : tile.mineState.owned
@@ -2101,10 +2103,20 @@ function statTile(label, totals) {
     </div>`;
 }
 
-function compareListColumn(title, labels) {
+// Cada item leva o ícone do Sprite/variante, como nos quadradinhos da coleção.
+function compareListColumn(title, items) {
   const s = t();
-  const body = labels.length
-    ? `<ul class="compare-list">${labels.map((l) => `<li>${l}</li>`).join("")}</ul>`
+  const body = items.length
+    ? `<ul class="compare-list">${items
+        .map(
+          (i) => `
+      <li style="--rarity-color:${i.color}">
+        <img class="compare-list-img" src="${i.image}" alt="" width="28" height="28"
+             loading="lazy" onerror="variantImgFallback(this)" />
+        <span>${i.label}</span>
+      </li>`
+        )
+        .join("")}</ul>`
     : `<p class="compare-list-empty">${s.compareNone}</p>`;
   return `<h3>${title}</h3>${body}`;
 }
@@ -2127,9 +2139,13 @@ function openCompareModal(theirCollection, theirName) {
   const onlyTheirs = [];
   rows.forEach((row) => {
     row.tiles.forEach((tile) => {
-      const label = `${row.elemental.name[lang]} — ${tile.name}`;
-      if (tile.status === "mine") onlyMine.push(label);
-      if (tile.status === "theirs") onlyTheirs.push(label);
+      const item = {
+        label: `${row.elemental.name[lang]} ${tile.name}`,
+        image: tile.image,
+        color: RARITY_COLORS[row.elemental.rarity],
+      };
+      if (tile.status === "mine") onlyMine.push(item);
+      if (tile.status === "theirs") onlyTheirs.push(item);
     });
   });
 
