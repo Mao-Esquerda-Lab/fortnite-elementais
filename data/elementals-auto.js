@@ -8,32 +8,7 @@
 // variantes especiais etc.), MOVA a entrada para data/elementals.js: o
 // gerador pula Sprites que já estão na lista manual e a cópia daqui some na
 // próxima execução.
-const AUTO_ELEMENTALS = [
-  {
-    "id": "birthday",
-    "name": {
-      "pt": "Birthday",
-      "en": "Birthday"
-    },
-    "wikiName": "Birthday Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-09-17",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "upcoming": true,
-    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/f/fe/Fortnite_birthday_sprite.png",
-    "variantImages": {
-      "gold": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/d/da/Fortnite_gold_birthday_sprite.png",
-      "cheat-master": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/2/2c/Fortnite_cheat_master_birthday_sprite.png"
-    }
-  }
-];
+const AUTO_ELEMENTALS = [];
 
 // Anexa à lista principal os que ainda não existem lá, montando imagem e
 // variantes com os mesmos helpers de data/elementals.js.
