@@ -90,7 +90,7 @@ const TRANSLATIONS = {
     clearTitle: "Apaga tenho/dominado/favoritos de todos os Sprites deste aparelho",
     clearConfirmText: (total) =>
       total > 0
-        ? `Isso vai apagar ${total} marcação(ões) deste aparelho — não dá para desfazer. Se quiser guardar antes, use o Backup.`
+        ? `Isso vai apagar ${total} marcação(ões) deste aparelho. Dá para desfazer logo em seguida, mas se quiser guardar uma cópia, use o Backup antes.`
         : "Este aparelho não tem nenhuma marcação para apagar.",
     clearConfirmYes: "Sim, limpar tudo",
     accountLabelSignedOut: "Fazer login",
@@ -202,6 +202,12 @@ const TRANSLATIONS = {
     baseVariant: "Base",
     upcoming: "Em breve",
     empty: "Nenhum Elemental encontrado.",
+    emptySearch: (q) => `Nenhum Elemental encontrado para "${q}".`,
+    searchOpen: "Buscar Sprite",
+    searchPlaceholder: "Buscar Sprite ou habilidade…",
+    undoButton: "Desfazer",
+    undoToggle: (name) => `Alterado: ${name}`,
+    undoClear: (total) => `${total} marcação(ões) apagada(s)`,
     installTitle: "📱 Instale como aplicativo",
     installButton: "Instalar aplicativo",
     installGeneric:
@@ -296,7 +302,7 @@ const TRANSLATIONS = {
     clearTitle: "Wipes owned/mastered/favourites for every Sprite on this device",
     clearConfirmText: (total) =>
       total > 0
-        ? `This will erase ${total} mark(s) on this device — it can't be undone. Use Backup first if you want to keep a copy.`
+        ? `This will erase ${total} mark(s) on this device. You can undo right after, but use Backup first if you want to keep a copy.`
         : "This device has no marks to clear.",
     clearConfirmYes: "Yes, clear everything",
     accountLabelSignedOut: "Log in",
@@ -405,6 +411,12 @@ const TRANSLATIONS = {
     baseVariant: "Base",
     upcoming: "Upcoming",
     empty: "No Elementals found.",
+    emptySearch: (q) => `No Elementals found for "${q}".`,
+    searchOpen: "Search Sprite",
+    searchPlaceholder: "Search Sprite or ability…",
+    undoButton: "Undo",
+    undoToggle: (name) => `Changed: ${name}`,
+    undoClear: (total) => `${total} mark(s) erased`,
     installTitle: "📱 Install as an app",
     installButton: "Install app",
     installGeneric:
@@ -559,12 +571,20 @@ if (JSON.stringify(customCodes) !== storage.get(CUSTOM_CODES_KEY)) {
 let activeView = "sprites";
 let lang = loadLang();
 let activeFilter = "all";
+// Texto da busca (lupa do cabeçalho). Não é salvo: a busca é passageira.
+let searchQuery = "";
 let sortMode = ["default", "rarity", "alpha"].includes(storage.get(SORT_KEY))
   ? storage.get(SORT_KEY)
   : "default";
 
 const grid = document.getElementById("elemental-grid");
 const emptyState = document.getElementById("empty-state");
+const searchBtn = document.getElementById("search-btn");
+const searchBar = document.getElementById("search-bar");
+const searchInput = document.getElementById("sprite-search");
+const undoToast = document.getElementById("undo-toast");
+const undoToastText = document.getElementById("undo-toast-text");
+const undoBtn = document.getElementById("undo-btn");
 const progressBarOwned = document.getElementById("progress-bar-owned");
 const progressBarMastered = document.getElementById("progress-bar-mastered");
 const progressLabelOwned = document.getElementById("progress-label-owned");
@@ -798,6 +818,31 @@ function matchesFilter(elemental) {
   return elemental.rarity === activeFilter;
 }
 
+// Minúsculas e sem acento, para "agua" achar "Água".
+function normalizeSearch(text) {
+  return String(text)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+// Busca nos nomes (PT e EN, independente do idioma atual), no nome da wiki,
+// na habilidade e nos nomes das variantes.
+function matchesSearch(elemental) {
+  const q = normalizeSearch(searchQuery);
+  if (!q) return true;
+  const texts = [
+    elemental.name.pt,
+    elemental.name.en,
+    elemental.wikiName,
+    elemental.ability?.pt,
+    elemental.ability?.en,
+    ...elemental.variants.flatMap((v) => [v.name.pt, v.name.en]),
+  ];
+  return texts.some((text) => text && normalizeSearch(text).includes(q));
+}
+
 function sortElementals(list) {
   if (sortMode === "alpha") {
     return [...list].sort((a, b) =>
@@ -828,6 +873,11 @@ function applyLanguage() {
   document.getElementById("app-subtitle").textContent = s.subtitle;
   document.getElementById("app-footer").innerHTML = s.footer;
   emptyState.textContent = s.empty;
+  searchBtn.title = s.searchOpen;
+  searchBtn.setAttribute("aria-label", s.searchOpen);
+  searchInput.placeholder = s.searchPlaceholder;
+  searchInput.setAttribute("aria-label", s.searchPlaceholder);
+  undoBtn.textContent = s.undoButton;
   backToTop.title = s.backToTop;
   backToTop.setAttribute("aria-label", s.backToTop);
 
@@ -1177,8 +1227,11 @@ spriteNav.addEventListener("click", (e) => {
   const id = btn.dataset.nav;
   let card = document.getElementById(`card-${id}`);
   if (!card) {
-    // O card está oculto pelo filtro atual — limpa o filtro para navegar.
+    // O card está oculto pelo filtro atual (ou pela busca) — limpa os dois
+    // para navegar.
     activeFilter = "all";
+    searchQuery = "";
+    searchInput.value = "";
     [...filterTabs.children].forEach((el) =>
       el.classList.toggle("active", el.dataset.rarity === "all")
     );
@@ -1302,12 +1355,16 @@ function createCard(elemental) {
 }
 
 function render() {
-  const visible = sortElementals(ELEMENTALS.filter((e) => matchesFilter(e)));
+  const visible = sortElementals(
+    ELEMENTALS.filter((e) => matchesFilter(e) && matchesSearch(e))
+  );
 
   grid.innerHTML = "";
   visible.forEach((elemental) => grid.appendChild(createCard(elemental)));
 
   emptyState.hidden = visible.length > 0;
+  const q = searchQuery.trim();
+  emptyState.textContent = q ? t().emptySearch(q) : t().empty;
   renderProgress();
 }
 
@@ -1318,7 +1375,11 @@ grid.addEventListener("click", (e) => {
   const id = target.dataset.id;
   const action = target.dataset.action;
 
+  const elemental = ELEMENTALS.find((el) => el.id === id);
+  const undoLabel = elemental ? elemental.name[lang] : id;
+
   if (action === "own" || action === "master") {
+    const snapshot = snapshotCollection();
     const variantId = target.dataset.variant;
     const checked = target.checked;
     const entry = getEntry(id);
@@ -1339,9 +1400,12 @@ grid.addEventListener("click", (e) => {
       setEntry(id, { variants });
     }
     render();
+    offerUndo(snapshot, t().undoToggle(undoLabel));
   } else if (action === "favorite") {
+    const snapshot = snapshotCollection();
     setEntry(id, { favorite: !getEntry(id).favorite });
     render();
+    offerUndo(snapshot, t().undoToggle(undoLabel));
   }
 });
 
@@ -2328,6 +2392,9 @@ function proposeBackup(text) {
 }
 
 function applyBackup(merge) {
+  // Dados vindos de fora (backup ou nuvem): um Desfazer pendente apagaria
+  // o que acabou de chegar.
+  hideUndo();
   if (!pendingBackup) return;
   collection = merge
     ? mergeCollections(collection, pendingBackup.collection)
@@ -2421,10 +2488,92 @@ document.getElementById("clear-cancel-btn").addEventListener("click", () => {
 });
 
 document.getElementById("clear-confirm-btn").addEventListener("click", () => {
+  const total = countMarks(collection);
+  const snapshot = snapshotCollection();
   collection = {};
   saveCollection(collection);
   clearConfirmBox.hidden = true;
   render();
+  if (total > 0) offerUndo(snapshot, t().undoClear(total));
+});
+
+// ---- Desfazer a última alteração da coleção ----
+// Guarda uma cópia da coleção de ANTES da última ação (marcar/desmarcar,
+// favoritar ou limpar tudo) por alguns segundos. Só a última ação volta:
+// cada ação nova substitui a cópia anterior.
+const UNDO_MS = 6000;
+let undoSnapshot = null;
+let undoTimer = null;
+
+function snapshotCollection() {
+  return JSON.parse(JSON.stringify(collection));
+}
+
+function offerUndo(snapshot, message) {
+  undoSnapshot = snapshot;
+  undoToastText.textContent = message;
+  undoToast.classList.add("visible");
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(hideUndo, UNDO_MS);
+}
+
+function hideUndo() {
+  clearTimeout(undoTimer);
+  undoTimer = null;
+  undoSnapshot = null;
+  undoToast.classList.remove("visible");
+}
+
+undoBtn.addEventListener("click", () => {
+  if (!undoSnapshot) return;
+  collection = undoSnapshot;
+  saveCollection(collection);
+  hideUndo();
+  render();
+});
+
+// ---- Busca de Sprites (lupa no cabeçalho) ----
+// A barra fica dentro do cabeçalho fixo; --search-bar-h empurra o conteúdo
+// e o menu grudento de ícones para baixo enquanto ela está aberta.
+function setSearchOpen(open) {
+  searchBar.hidden = !open;
+  searchBtn.classList.toggle("active", open);
+  searchBtn.setAttribute("aria-expanded", String(open));
+  document.documentElement.style.setProperty(
+    "--search-bar-h",
+    open ? `${searchBar.offsetHeight}px` : "0px"
+  );
+  updateCardScrollOffset();
+
+  if (open) {
+    // A busca filtra a grade de Elementais: sai de outras abas.
+    if (activeView !== "sprites") {
+      activeView = "sprites";
+      applyView();
+    }
+    searchInput.focus();
+  } else if (searchQuery) {
+    searchQuery = "";
+    searchInput.value = "";
+    render();
+  }
+}
+
+searchBtn.addEventListener("click", () => setSearchOpen(searchBar.hidden));
+
+searchInput.addEventListener("input", () => {
+  searchQuery = searchInput.value;
+  render();
+});
+
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    setSearchOpen(false);
+    searchBtn.focus();
+  } else if (e.key === "Enter") {
+    // No celular, "buscar" no teclado fecha o teclado para ver os cards.
+    searchInput.blur();
+  }
 });
 
 // Botão flutuante de voltar ao topo: aparece depois de rolar um pouco.

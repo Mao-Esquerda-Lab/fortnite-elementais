@@ -604,7 +604,7 @@ const ELEMENTALS = [
     // (ver código 9YEARS em data/cheat-codes-auto.js). Raridade e habilidade
     // vêm direto da tabela do IGN.
     id: "birthday",
-    name: { pt: "Aniversário", en: "Birthday" },
+    name: { pt: "Aniversariante", en: "Birthday" },
     wikiName: "Birthday Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],

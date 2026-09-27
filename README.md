@@ -11,6 +11,8 @@ Escopo atual: **Chapter 7, Temporada 4 "Override"**.
 ## Funcionalidades
 
 - **Coleção de Sprites** — marque cada Elemental como possuído e/ou dominado, com suas variantes (Base, Dourada, especial).
+- **Busca** — lupa ao lado do código de amigo, para achar um Sprite pelo nome (PT/EN), pela habilidade ou pelo nome de uma variante.
+- **Desfazer** — depois de marcar/desmarcar ou de limpar a coleção, um aviso com "Desfazer" aparece por alguns segundos.
 - **Filtros e ordenação** — por raridade, possuído/não possuído, dominado/não dominado, favoritos; ordenar por raridade ou ordem alfabética.
 - **Códigos do lobby** — lista dos códigos do Painel de Admin, com checklist de resgatados e opção de cadastrar à mão um código novo antes de ele ser publicado pelo robô.
 - **Exportar resumo** — gera uma imagem (PNG) com o resumo da coleção para compartilhar.
