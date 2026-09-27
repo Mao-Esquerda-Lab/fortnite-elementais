@@ -28,6 +28,13 @@
     <span id="welcome-toast-text"></span>
   </div>
 
+  <!-- Aviso com "Desfazer" depois de marcar/desmarcar ou limpar a coleção.
+       Mesmo esquema do welcome-toast: sempre no DOM, alterna só .visible. -->
+  <div class="undo-toast" id="undo-toast" role="status">
+    <span id="undo-toast-text"></span>
+    <button class="undo-btn" id="undo-btn" type="button"></button>
+  </div>
+
   <div class="app-header">
     <div class="app-header-row">
       <!-- O rótulo já vem preenchido para não depender do JavaScript. -->
@@ -46,6 +53,11 @@
         </div>
       </div>
     </div>
+    <!-- Fica dentro do cabeçalho fixo, então acompanha a rolagem. -->
+    <div class="search-bar" id="search-bar" hidden>
+      <input class="sprite-search" id="sprite-search" type="search"
+             autocomplete="off" enterkeyhint="search" />
+    </div>
   </div>
 
   <header class="topbar">
@@ -53,10 +65,21 @@
     <p class="subtitle" id="app-subtitle"></p>
     <!-- Só aparece logado (cloud-sync.js) — atalho pro código de amigo sem
          precisar abrir o modal de Comparar. -->
-    <div class="friend-code-banner" id="friend-code-banner" hidden>
-      <span id="friend-code-banner-label"></span>
-      <strong id="friend-code-banner-value"></strong>
-      <button class="export-copy" id="friend-code-banner-copy" type="button"></button>
+    <div class="topbar-tools">
+      <div class="friend-code-banner" id="friend-code-banner" hidden>
+        <span id="friend-code-banner-label"></span>
+        <strong id="friend-code-banner-value"></strong>
+        <button class="export-copy" id="friend-code-banner-copy" type="button"></button>
+      </div>
+      <!-- Abre/fecha a barra de busca de Sprites (fica no cabeçalho fixo). -->
+      <button class="refresh-btn search-btn" id="search-btn" type="button"
+              aria-expanded="false" aria-controls="search-bar">
+        <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"
+             fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="M15.5 15.5 21 21" />
+        </svg>
+      </button>
     </div>
   </header>
 
