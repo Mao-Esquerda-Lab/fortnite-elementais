@@ -9,7 +9,7 @@
 // Aumente VERSION ao mudar a lista de arquivos do shell, ou pra forçar todo
 // mundo a descartar o cache antigo (ex.: PWA instalada no iOS que não estava
 // pegando um fix novo).
-const VERSION = "v25";
+const VERSION = "v26";
 const SHELL_CACHE = `elementais-shell-${VERSION}`;
 const IMAGE_CACHE = "elementais-images-v1";
 
