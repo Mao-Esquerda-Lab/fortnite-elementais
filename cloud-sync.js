@@ -720,6 +720,25 @@ async function main() {
     }
   }
 
+  async function fetchFriendAvatar(friendUid) {
+    try {
+      const snap = await dbApi.getDoc(dbApi.doc(db, "users", friendUid));
+      const avatar = snap.exists() ? snap.data().avatar : null;
+      return avatar && bridge.isValidAvatar(avatar) ? avatar : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Imagem de perfil (ou 👤) + nome, na coluna do nome.
+  function friendNameCell(f) {
+    const avatar = (f.avatar && bridge.avatarHTML(f.avatar)) || "👤";
+    return `<span class="friend-row-name">
+      <span class="profile-avatar friend-avatar" aria-hidden="true">${avatar}</span>
+      <span class="friend-row-name-text">${escapeHtml(f.username || "")}</span>
+    </span>`;
+  }
+
   function renderFriendsList() {
     const s = bridge.t();
     els.friendListLoading.hidden = true;
@@ -736,7 +755,7 @@ async function main() {
         // um amigo direto no clique do ✕.
         if (f.uid === pendingRemoveUid) {
           return `<li class="friend-row">
-            <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
+            ${friendNameCell(f)}
             <span class="${codeClass}">${escapeHtml(f.code)}</span>
             <span class="friend-row-status">${escapeHtml(s.friendRemoveConfirm)}</span>
             <div class="friend-row-actions">
@@ -751,7 +770,7 @@ async function main() {
           ? `<button class="export-copy" data-compare-uid="${escapeHtml(f.uid)}" type="button">${escapeHtml(s.sharePasteButton)}</button>`
           : "";
         return `<li class="friend-row">
-          <span class="friend-row-name">${escapeHtml(f.username || "")}</span>
+          ${friendNameCell(f)}
           <span class="${codeClass}">${escapeHtml(f.code)}</span>
           <span class="friend-row-status">${status}</span>
           <div class="friend-row-actions">
@@ -786,9 +805,16 @@ async function main() {
 
     const list = await loadFriends();
     const mutuals = await Promise.allSettled(list.map((f) => checkMutual(f.uid)));
+    const isMutual = (i) => mutuals[i].status === "fulfilled" && mutuals[i].value;
+    // Imagem de perfil só dos mútuos: é só a amizade dos dois lados que
+    // libera a leitura de users/{amigo} (a mesma leitura da comparação).
+    const avatars = await Promise.allSettled(
+      list.map((f, i) => (isMutual(i) ? fetchFriendAvatar(f.uid) : null))
+    );
     friendsCache = list.map((f, i) => ({
       ...f,
-      mutual: mutuals[i].status === "fulfilled" && mutuals[i].value,
+      mutual: isMutual(i),
+      avatar: avatars[i].status === "fulfilled" ? avatars[i].value : null,
     }));
     renderFriendsList();
   }
