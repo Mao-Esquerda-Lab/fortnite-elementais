@@ -107,6 +107,15 @@ const TRANSLATIONS = {
     avatarClose: "Fechar",
     avatarNone: "Sem imagem",
     avatarSaveError: "Não foi possível salvar a imagem agora. Tente de novo.",
+    newsTitle: "Novidades no Sprites Locker",
+    newsItems: [
+      ["🔍", "Busca", "Toque na lupa, abaixo do título, para achar um Sprite pelo nome, pela habilidade ou pela variante."],
+      ["↩️", "Desfazer", "Marcou sem querer? Toque em “Desfazer” no aviso que aparece embaixo da tela."],
+      ["🎨", "Temas", "Em “Aparência”, no botão de conta, escolha entre Noite, Dia, Tempestade, Lendário, Mítico e Selva."],
+      ["🖼️", "Imagem de perfil", "Com conta, escolha um Sprite como sua imagem no “Meu perfil”."],
+    ],
+    newsTheme: "Escolher tema",
+    newsOk: "Entendi",
     accountLabelSignedOut: "Fazer login",
     accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
@@ -333,6 +342,15 @@ const TRANSLATIONS = {
     avatarClose: "Close",
     avatarNone: "No picture",
     avatarSaveError: "Couldn't save the picture right now. Please try again.",
+    newsTitle: "What's new in Sprites Locker",
+    newsItems: [
+      ["🔍", "Search", "Tap the magnifier below the title to find a Sprite by name, ability or variant."],
+      ["↩️", "Undo", "Marked something by mistake? Tap “Undo” on the notice at the bottom of the screen."],
+      ["🎨", "Themes", "Under “Appearance”, on the account button, pick Night, Day, Storm, Legendary, Mythic or Jungle."],
+      ["🖼️", "Profile picture", "With an account, pick a Sprite as your picture in “My profile”."],
+    ],
+    newsTheme: "Choose theme",
+    newsOk: "Got it",
     accountLabelSignedOut: "Log in",
     accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
@@ -2717,6 +2735,63 @@ applyLanguage();
 render();
 applyView();
 readShareHashOnLoad();
+
+// ---- Novidades (popup de uma vez só) ----
+// Aparece uma vez por aparelho: ao ser mostrado, grava NEWS_VERSION. Para
+// anunciar novidades futuras, troque NEWS_VERSION e os textos (newsItems).
+// Quem nunca usou o app (nada salvo ainda) não vê: pra essa pessoa tudo já
+// é "o app", não novidade.
+const NEWS_KEY = "fortnite-sprites-news-seen";
+const NEWS_VERSION = "2026-09-temas-perfil";
+const newsOverlay = document.getElementById("news-overlay");
+
+function renderNews() {
+  const s = t();
+  document.getElementById("news-title").textContent = s.newsTitle;
+  document.getElementById("news-list").innerHTML = s.newsItems
+    .map(
+      ([icon, title, text]) => `
+        <li><span class="news-icon" aria-hidden="true">${icon}</span>
+          <span><strong>${title}</strong> — ${text}</span></li>`
+    )
+    .join("");
+  document.getElementById("news-theme-btn").textContent = s.newsTheme;
+  document.getElementById("news-ok-btn").textContent = s.newsOk;
+}
+
+function closeNews() {
+  newsOverlay.hidden = true;
+}
+
+function showNewsIfUnseen() {
+  if (storage.get(NEWS_KEY) === NEWS_VERSION) return;
+  if (storage.get(STORAGE_KEY) === null) {
+    storage.set(NEWS_KEY, NEWS_VERSION);
+    return;
+  }
+  // Não empilha em cima de uma comparação aberta por link: fica pra próxima.
+  if (!compareOverlay.hidden) return;
+  storage.set(NEWS_KEY, NEWS_VERSION);
+  renderNews();
+  newsOverlay.hidden = false;
+}
+
+document.getElementById("news-ok-btn").addEventListener("click", closeNews);
+document.getElementById("news-close").addEventListener("click", closeNews);
+newsOverlay.addEventListener("click", (e) => {
+  if (e.target === newsOverlay) closeNews();
+});
+// Leva direto para "Aparência", no modal de conta.
+document.getElementById("news-theme-btn").addEventListener("click", () => {
+  closeNews();
+  document.getElementById("account-overlay").hidden = false;
+  document.querySelector(".theme-section").scrollIntoView({ block: "nearest" });
+});
+window.addEventListener("spriteslocker:lang-changed", () => {
+  if (!newsOverlay.hidden) renderNews();
+});
+
+setTimeout(showNewsIfUnseen, 600);
 
 // ---- Imagem de perfil (um Sprite, escolhido no "Meu perfil") ----
 // Só Sprites já lançados (os "Em breve" podem nem ter arte ainda).

@@ -486,6 +486,21 @@
     </div>
   </div>
 
+  <!-- Novidades: aparece uma vez por aparelho (ver NEWS_KEY no app.js). -->
+  <div class="export-overlay" id="news-overlay" hidden>
+    <div class="export-box share-box news-box" role="dialog" aria-modal="true" aria-labelledby="news-title">
+      <div class="compare-header">
+        <h2 id="news-title"></h2>
+        <button class="modal-close-x" id="news-close" type="button" aria-label="×">×</button>
+      </div>
+      <ul class="news-list" id="news-list"></ul>
+      <div class="export-actions">
+        <button class="export-close" id="news-theme-btn" type="button"></button>
+        <button class="export-copy" id="news-ok-btn" type="button"></button>
+      </div>
+    </div>
+  </div>
+
   <script src="data/cheat-codes.js"></script>
   <script src="data/cheat-codes-auto.js"></script>
   <script src="data/mastery-rewards.js"></script>
