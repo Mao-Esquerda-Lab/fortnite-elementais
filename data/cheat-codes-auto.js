@@ -19,6 +19,17 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "bonerattler",
+    "code": "Bonerattler",
+    "autoAdded": "2026-09-28",
+    "reward": {
+      "pt": "4x Spicy Taco",
+      "en": "4x Spicy Taco"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "whocrackedthecode",
     "code": "WhoCrackedTheCode",
     "autoAdded": "2026-09-26",
