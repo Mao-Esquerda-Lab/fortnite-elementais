@@ -40,6 +40,28 @@ function isFirebaseConfigured() {
   );
 }
 
+// Cache da imagem de perfil ({ uid, avatar }), só para mostrar o Sprite na
+// hora ao abrir o app — o valor lido do Firestore sempre tem prioridade.
+const AVATAR_CACHE_KEY = "fortnite-sprites-avatar";
+const avatarCache = {
+  get(uid) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(AVATAR_CACHE_KEY));
+      return cached && cached.uid === uid ? cached.avatar || null : null;
+    } catch {
+      return null;
+    }
+  },
+  set(uid, avatar) {
+    try {
+      if (uid) localStorage.setItem(AVATAR_CACHE_KEY, JSON.stringify({ uid, avatar }));
+      else localStorage.removeItem(AVATAR_CACHE_KEY);
+    } catch {
+      /* sem persistência */
+    }
+  },
+};
+
 const lastSyncedUid = {
   get() {
     try {
@@ -153,6 +175,11 @@ async function main() {
     overlay: document.getElementById("account-overlay"),
     btn: document.getElementById("account-btn"),
     label: document.getElementById("account-label"),
+    icon: document.getElementById("account-icon"),
+    avatar: document.getElementById("account-avatar"),
+    avatarChangeBtn: document.getElementById("account-avatar-change"),
+    avatarPicker: document.getElementById("account-avatar-picker"),
+    avatarError: document.getElementById("account-avatar-error"),
     modalTitle: document.getElementById("account-title"),
     close: document.getElementById("account-close"),
     unconfiguredText: document.getElementById("account-unconfigured-text"),
@@ -315,6 +342,7 @@ async function main() {
   let pushTimer = null;
   let friendCode = null;
   let myUsername = null;
+  let myAvatar = null; // id do Elemental escolhido como imagem de perfil
   // Definido só entre o submit do cadastro e o primeiro onAuthStateChanged
   // da conta nova — handleAuthChange() grava e limpa em seguida.
   let pendingUsername = null;
@@ -377,11 +405,72 @@ async function main() {
       : bridge.t().accountModalTitleSignedOut;
   }
 
+  // ---- Imagem de perfil ----
+  // Só o id do Elemental é guardado (users/{uid}.avatar); o HTML e a
+  // validação vêm do app.js pela ponte. Id inválido/sumido vira 👤.
+  function renderAvatar() {
+    const html = signedInUid && myAvatar ? bridge.avatarHTML(myAvatar) : null;
+    els.icon.innerHTML = html || "👤";
+    els.avatar.innerHTML = html || "👤";
+    els.btn.classList.toggle("has-avatar", !!html);
+  }
+
+  function setAvatarError(message) {
+    els.avatarError.textContent = message || "";
+    els.avatarError.hidden = !message;
+  }
+
+  function setAvatarPickerOpen(open) {
+    els.avatarPicker.hidden = !open;
+    els.avatarChangeBtn.setAttribute("aria-expanded", String(open));
+    els.avatarChangeBtn.textContent = open
+      ? bridge.t().avatarClose
+      : bridge.t().avatarChange;
+    if (open) els.avatarPicker.innerHTML = bridge.avatarPickerHTML(myAvatar);
+  }
+
+  els.avatarChangeBtn.addEventListener("click", () => {
+    setAvatarError("");
+    setAvatarPickerOpen(els.avatarPicker.hidden);
+  });
+
+  els.avatarPicker.addEventListener("click", async (e) => {
+    const option = e.target.closest("[data-avatar]");
+    if (!option || !signedInUid) return;
+    const chosen = option.dataset.avatar || null;
+    if (chosen && !bridge.isValidAvatar(chosen)) return;
+
+    // Mostra na hora; se a gravação falhar, volta para a anterior.
+    const targetUid = signedInUid;
+    const previous = myAvatar;
+    myAvatar = chosen;
+    setAvatarError("");
+    renderAvatar();
+    setAvatarPickerOpen(false);
+    try {
+      await dbApi.setDoc(
+        dbApi.doc(db, "users", targetUid),
+        { avatar: chosen },
+        { mergeFields: ["avatar"] }
+      );
+      if (signedInUid === targetUid) avatarCache.set(targetUid, chosen);
+    } catch (err) {
+      console.warn("[cloud-sync] falha ao salvar a imagem de perfil:", err);
+      if (signedInUid !== targetUid) return;
+      myAvatar = previous;
+      renderAvatar();
+      setAvatarError(bridge.t().avatarSaveError);
+    }
+  });
+
   function renderSignedIn(user, statusKey) {
     els.signedInEmail.textContent = bridge.t().accountSignedInAs(user.email);
     if (statusKey) els.syncStatus.textContent = bridge.t()[statusKey];
     els.btn.classList.add("signed-in");
     setAccountLabel(true);
+    if (!myAvatar) myAvatar = avatarCache.get(user.uid);
+    renderAvatar();
+    setAvatarPickerOpen(false);
     showPanel("signed-in");
     bridge.setCompareAvailable(true);
     // Gera/busca o código de amigo e recarrega a lista de amigos já ao
@@ -405,6 +494,8 @@ async function main() {
       }
     }
     setAccountLabel(!!signedInUid);
+    renderAvatar();
+    setAvatarPickerOpen(!els.avatarPicker.hidden);
     renderPasswordHint();
     if (!els.friendsSection.hidden) renderFriendsList();
   });
@@ -425,6 +516,11 @@ async function main() {
       signedInUid = null;
       friendCode = null;
       myUsername = null;
+      myAvatar = null;
+      avatarCache.set(null);
+      setAvatarError("");
+      setAvatarPickerOpen(false);
+      renderAvatar();
       friendsCache = [];
       els.friendsSection.hidden = true;
       els.friendsSignedOutHint.hidden = false;
@@ -531,6 +627,11 @@ async function main() {
       const snap = await dbApi.getDoc(dbApi.doc(db, "users", signedInUid));
       if (snap.exists()) {
         myUsername = snap.data().username || null;
+        // Imagem de perfil: mesma leitura, e o Firestore vence o cache.
+        const remoteAvatar = snap.data().avatar || null;
+        myAvatar = remoteAvatar && bridge.isValidAvatar(remoteAvatar) ? remoteAvatar : null;
+        avatarCache.set(signedInUid, myAvatar);
+        renderAvatar();
         // O valor lido agora do Firestore sempre tem prioridade sobre o
         // cache local — o cache só serve de fallback (abaixo, e no catch)
         // pra quando não dá pra confirmar o valor atual.
@@ -745,7 +846,11 @@ async function main() {
         return setFriendError(bridge.t().friendCompareUnavailable);
       }
       const friend = friendsCache.find((f) => f.uid === friendUid);
-      bridge.openCompareModal(snap.data().collection, friend && friend.username);
+      bridge.openCompareModal(
+        snap.data().collection,
+        friend && friend.username,
+        snap.data().avatar || null
+      );
     } catch {
       setFriendError(bridge.t().friendCompareUnavailable);
     }

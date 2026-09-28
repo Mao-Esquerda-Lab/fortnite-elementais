@@ -93,6 +93,29 @@ const TRANSLATIONS = {
         ? `Isso vai apagar ${total} marcação(ões) deste aparelho. Dá para desfazer logo em seguida, mas se quiser guardar uma cópia, use o Backup antes.`
         : "Este aparelho não tem nenhuma marcação para apagar.",
     clearConfirmYes: "Sim, limpar tudo",
+    themeTitle: "Aparência",
+    themeNames: {
+      auto: "Automático",
+      dark: "Noite",
+      light: "Dia",
+      storm: "Tempestade",
+      legendary: "Lendário",
+      mythic: "Mítico",
+      jungle: "Selva",
+    },
+    avatarChange: "Trocar imagem",
+    avatarClose: "Fechar",
+    avatarNone: "Sem imagem",
+    avatarSaveError: "Não foi possível salvar a imagem agora. Tente de novo.",
+    newsTitle: "Novidades no Sprites Locker",
+    newsItems: [
+      ["🔍", "Busca", "Toque na lupa, abaixo do título, para achar um Sprite pelo nome, pela habilidade ou pela variante."],
+      ["↩️", "Desfazer", "Marcou sem querer? Toque em “Desfazer” no aviso que aparece embaixo da tela."],
+      ["🎨", "Temas", "Em “Aparência”, no botão de conta, escolha entre Noite, Dia, Tempestade, Lendário, Mítico e Selva."],
+      ["🖼️", "Imagem de perfil", "Com conta, escolha um Sprite como sua imagem no “Meu perfil”."],
+    ],
+    newsTheme: "Escolher tema",
+    newsOk: "Entendi",
     accountLabelSignedOut: "Fazer login",
     accountLabelSignedIn: "Meu perfil",
     accountTitle: "Sincronize sua coleção entre aparelhos com uma conta",
@@ -305,6 +328,29 @@ const TRANSLATIONS = {
         ? `This will erase ${total} mark(s) on this device. You can undo right after, but use Backup first if you want to keep a copy.`
         : "This device has no marks to clear.",
     clearConfirmYes: "Yes, clear everything",
+    themeTitle: "Appearance",
+    themeNames: {
+      auto: "Automatic",
+      dark: "Night",
+      light: "Day",
+      storm: "Storm",
+      legendary: "Legendary",
+      mythic: "Mythic",
+      jungle: "Jungle",
+    },
+    avatarChange: "Change picture",
+    avatarClose: "Close",
+    avatarNone: "No picture",
+    avatarSaveError: "Couldn't save the picture right now. Please try again.",
+    newsTitle: "What's new in Sprites Locker",
+    newsItems: [
+      ["🔍", "Search", "Tap the magnifier below the title to find a Sprite by name, ability or variant."],
+      ["↩️", "Undo", "Marked something by mistake? Tap “Undo” on the notice at the bottom of the screen."],
+      ["🎨", "Themes", "Under “Appearance”, on the account button, pick Night, Day, Storm, Legendary, Mythic or Jungle."],
+      ["🖼️", "Profile picture", "With an account, pick a Sprite as your picture in “My profile”."],
+    ],
+    newsTheme: "Choose theme",
+    newsOk: "Got it",
     accountLabelSignedOut: "Log in",
     accountLabelSignedIn: "My profile",
     accountTitle: "Sync your collection across devices with an account",
@@ -975,6 +1021,8 @@ function applyLanguage() {
   clearBtn.title = s.clearTitle;
   document.getElementById("clear-label").textContent = s.clearLabel;
   document.getElementById("clear-confirm-btn").textContent = s.clearConfirmYes;
+  document.getElementById("theme-title").textContent = s.themeTitle;
+  renderThemePicker();
   document.getElementById("clear-cancel-btn").textContent = s.backupCancel;
 
   const accountBtn = document.getElementById("account-btn");
@@ -2234,8 +2282,12 @@ function compareSection(title, groups) {
 
 // Nunca mexe em collection/localStorage: theirCollection só existe como
 // variável local, passada por parâmetro para os helpers somente-leitura.
-function openCompareModal(theirCollection, theirName) {
+function openCompareModal(theirCollection, theirName, theirAvatar) {
   const s = t();
+  const compareAvatar = document.getElementById("compare-avatar");
+  const avatar = avatarHTML(theirAvatar);
+  compareAvatar.hidden = !avatar;
+  compareAvatar.innerHTML = avatar || "";
   const rows = diffCollections(collection, theirCollection);
 
   document.getElementById("compare-title").textContent = theirName
@@ -2612,6 +2664,62 @@ document.getElementById("sort-select").addEventListener("change", (e) => {
   render();
 });
 
+// ---- Temas (Aparência) ----
+// O tema é deste aparelho, não da conta. "auto" (padrão) tira o atributo e
+// deixa o CSS seguir o claro/escuro do sistema. As cores de cada tema ficam
+// em styles.css (:root[data-theme="..."]); aqui só as das bolinhas do
+// seletor. Ao mudar a lista, atualize também o script inline do index.html.
+const THEME_KEY = "fortnite-sprites-theme";
+const THEMES = [
+  { id: "auto", bg: "linear-gradient(135deg, #0f1115 50%, #f4f5f7 50%)", accent: "#7dd3fc" },
+  { id: "dark", bg: "#0f1115", accent: "#7dd3fc" },
+  { id: "light", bg: "#f4f5f7", accent: "#7dd3fc" },
+  { id: "storm", bg: "#140f24", accent: "#c79af0" },
+  { id: "legendary", bg: "#17120b", accent: "#f2a33d" },
+  { id: "mythic", bg: "#1a0e13", accent: "#f47a95" },
+  { id: "jungle", bg: "#0d1612", accent: "#5fd49a" },
+];
+const themePicker = document.getElementById("theme-picker");
+const themeColorMeta = document.getElementById("theme-color-meta");
+
+function currentTheme() {
+  const saved = storage.get(THEME_KEY);
+  return THEMES.some((th) => th.id === saved) ? saved : "auto";
+}
+
+function applyTheme(id) {
+  if (id === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", id);
+  // Barra do navegador/status no celular com a mesma cor do fundo.
+  const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+  if (themeColorMeta && bg) themeColorMeta.setAttribute("content", bg);
+}
+
+function renderThemePicker() {
+  const s = t();
+  const active = currentTheme();
+  themePicker.innerHTML = THEMES.map(
+    (th) => `
+      <button class="theme-option${th.id === active ? " active" : ""}" type="button"
+              role="radio" aria-checked="${th.id === active}" data-theme-id="${th.id}">
+        <span class="theme-swatch" style="background:${th.bg}">
+          <span class="theme-swatch-dot" style="background:${th.accent}"></span>
+        </span>
+        <span class="theme-name">${s.themeNames[th.id]}</span>
+      </button>`
+  ).join("");
+}
+
+themePicker.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-theme-id]");
+  if (!btn) return;
+  storage.set(THEME_KEY, btn.dataset.themeId);
+  applyTheme(btn.dataset.themeId);
+  renderThemePicker();
+});
+
+applyTheme(currentTheme());
+
 langSwitch.addEventListener("click", (e) => {
   const btn = e.target.closest(".lang-btn");
   if (!btn || btn.dataset.lang === lang) return;
@@ -2627,6 +2735,103 @@ applyLanguage();
 render();
 applyView();
 readShareHashOnLoad();
+
+// ---- Novidades (popup de uma vez só) ----
+// Aparece uma vez por aparelho: ao ser mostrado, grava NEWS_VERSION. Para
+// anunciar novidades futuras, troque NEWS_VERSION e os textos (newsItems).
+// Quem nunca usou o app (nada salvo ainda) não vê: pra essa pessoa tudo já
+// é "o app", não novidade.
+const NEWS_KEY = "fortnite-sprites-news-seen";
+const NEWS_VERSION = "2026-09-temas-perfil";
+const newsOverlay = document.getElementById("news-overlay");
+
+function renderNews() {
+  const s = t();
+  document.getElementById("news-title").textContent = s.newsTitle;
+  document.getElementById("news-list").innerHTML = s.newsItems
+    .map(
+      ([icon, title, text]) => `
+        <li><span class="news-icon" aria-hidden="true">${icon}</span>
+          <span><strong>${title}</strong> — ${text}</span></li>`
+    )
+    .join("");
+  document.getElementById("news-theme-btn").textContent = s.newsTheme;
+  document.getElementById("news-ok-btn").textContent = s.newsOk;
+}
+
+function closeNews() {
+  newsOverlay.hidden = true;
+}
+
+function showNewsIfUnseen() {
+  if (storage.get(NEWS_KEY) === NEWS_VERSION) return;
+  if (storage.get(STORAGE_KEY) === null) {
+    storage.set(NEWS_KEY, NEWS_VERSION);
+    return;
+  }
+  // Não empilha em cima de uma comparação aberta por link: fica pra próxima.
+  if (!compareOverlay.hidden) return;
+  storage.set(NEWS_KEY, NEWS_VERSION);
+  renderNews();
+  newsOverlay.hidden = false;
+}
+
+document.getElementById("news-ok-btn").addEventListener("click", closeNews);
+document.getElementById("news-close").addEventListener("click", closeNews);
+newsOverlay.addEventListener("click", (e) => {
+  if (e.target === newsOverlay) closeNews();
+});
+// Leva direto para "Aparência", no modal de conta.
+document.getElementById("news-theme-btn").addEventListener("click", () => {
+  closeNews();
+  document.getElementById("account-overlay").hidden = false;
+  document.querySelector(".theme-section").scrollIntoView({ block: "nearest" });
+});
+window.addEventListener("spriteslocker:lang-changed", () => {
+  if (!newsOverlay.hidden) renderNews();
+});
+
+setTimeout(showNewsIfUnseen, 600);
+
+// ---- Imagem de perfil (um Sprite, escolhido no "Meu perfil") ----
+// Só Sprites já lançados (os "Em breve" podem nem ter arte ainda).
+function avatarChoice(id) {
+  return ELEMENTALS.find((e) => e.id === id && !e.upcoming) || null;
+}
+
+// Sem imagem (ou falhou ao carregar), mostra a inicial do nome.
+function avatarFallback(img) {
+  const span = document.createElement("span");
+  span.className = "nav-letter";
+  span.textContent = img.alt ? img.alt[0] : "?";
+  img.replaceWith(span);
+}
+window.avatarFallback = avatarFallback;
+
+function avatarHTML(id) {
+  const e = avatarChoice(id);
+  if (!e) return null;
+  return `<img src="${e.image}" alt="${e.name[lang]}" onerror="avatarFallback(this)" />`;
+}
+
+function avatarPickerHTML(selectedId) {
+  const s = t();
+  const none = `
+    <button class="avatar-option${selectedId ? "" : " active"}" type="button"
+            data-avatar="" title="${s.avatarNone}" aria-label="${s.avatarNone}">
+      <span class="profile-avatar profile-avatar-sm">👤</span>
+    </button>`;
+  const sprites = ELEMENTALS.filter((e) => !e.upcoming)
+    .map(
+      (e) => `
+    <button class="avatar-option${e.id === selectedId ? " active" : ""}" type="button"
+            data-avatar="${e.id}" title="${e.name[lang]}" aria-label="${e.name[lang]}">
+      <span class="profile-avatar profile-avatar-sm">${avatarHTML(e.id)}</span>
+    </button>`
+    )
+    .join("");
+  return none + sprites;
+}
 
 // ---- Ponte para o cloud-sync.js (opcional, login/sincronização por conta) ----
 // Este arquivo não sabe se cloud-sync.js existe ou está configurado; toda a
@@ -2652,7 +2857,13 @@ window.SpritesLockerBridge = {
   },
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
   // modal somente-leitura já usado pelo código de compartilhamento.
-  openCompareModal: (theirCollection, theirName) => openCompareModal(theirCollection, theirName),
+  openCompareModal: (theirCollection, theirName, theirAvatar) =>
+    openCompareModal(theirCollection, theirName, theirAvatar),
+  // Imagem de perfil (cloud-sync.js): só o id do Elemental vai para a nuvem;
+  // a validação e o HTML ficam aqui, onde ELEMENTALS existe.
+  isValidAvatar: (id) => !!avatarChoice(id),
+  avatarHTML: (id) => avatarHTML(id),
+  avatarPickerHTML: (selectedId) => avatarPickerHTML(selectedId),
   // Mostra/esconde a aba "Comparar" conforme o login (cloud-sync.js, opcional
   // — sem ele a aba fica sempre visível, igual sempre foi). Se a aba some
   // enquanto ela era a atual (ex.: usuário saiu da conta com "Comparar"

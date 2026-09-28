@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f1115" />
+  <meta name="theme-color" content="#0f1115" id="theme-color-meta" />
+  <!-- Aplica o tema salvo antes do CSS pintar a página, para não piscar o
+       tema padrão ao abrir. A lista de temas válidos é THEMES, no app.js. -->
+  <script>
+    try {
+      var savedTheme = localStorage.getItem("fortnite-sprites-theme");
+      if (/^(dark|light|storm|legendary|mythic|jungle)$/.test(savedTheme)) {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
+    } catch (e) {}
+  </script>
   <title>Fortnite Sprites Locker</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -45,7 +55,7 @@
            width="38" height="38" />
       <div class="header-right">
         <button class="refresh-btn account-btn" id="account-btn" type="button" title="Conta">
-          <span aria-hidden="true">👤</span><span id="account-label">Fazer login</span>
+          <span class="account-icon" id="account-icon" aria-hidden="true">👤</span><span id="account-label">Fazer login</span>
         </button>
         <div class="lang-switch" id="lang-switch">
           <button class="lang-btn" data-lang="pt">PT</button>
@@ -362,7 +372,11 @@
   <div class="export-overlay" id="compare-overlay" hidden>
     <div class="export-box compare-box">
       <div class="compare-header">
-        <h2 id="compare-title"></h2>
+        <div class="compare-title-row">
+          <!-- Imagem de perfil do amigo (comparação pela conta). -->
+          <span class="profile-avatar profile-avatar-sm" id="compare-avatar" hidden></span>
+          <h2 id="compare-title"></h2>
+        </div>
         <button class="export-close" id="compare-close" type="button"></button>
       </div>
       <div class="compare-stats" id="compare-stats"></div>
@@ -435,10 +449,21 @@
       <p class="share-error" id="account-auth-error" hidden></p>
 
       <div class="share-section" id="account-signed-in" hidden>
-        <p id="account-signed-in-email"></p>
-        <!-- Definido só na criação da conta, nunca editável depois (ver
-             cloud-sync.js) — por isso é texto simples, não um campo. -->
-        <p id="account-username-display"></p>
+        <!-- Imagem de perfil: um Sprite escolhido na grade abaixo (sem upload).
+             Fica salva em users/{uid}.avatar (ver cloud-sync.js). -->
+        <div class="profile-head">
+          <span class="profile-avatar" id="account-avatar" aria-hidden="true">👤</span>
+          <div class="profile-head-text">
+            <!-- Definido só na criação da conta, nunca editável depois (ver
+                 cloud-sync.js) — por isso é texto simples, não um campo. -->
+            <p id="account-username-display"></p>
+            <p id="account-signed-in-email"></p>
+            <button class="export-close" id="account-avatar-change" type="button"
+                    aria-expanded="false" aria-controls="account-avatar-picker"></button>
+          </div>
+        </div>
+        <div class="avatar-picker" id="account-avatar-picker" hidden></div>
+        <p class="share-error" id="account-avatar-error" hidden></p>
         <p class="backup-done" id="account-sync-status"></p>
 
         <label class="share-field-label" id="account-friend-code-label" for="account-friend-code-input"></label>
@@ -451,6 +476,27 @@
           <button class="export-copy" id="account-resync-btn" type="button"></button>
           <button class="export-copy backup-danger" id="account-logout-btn" type="button"></button>
         </div>
+      </div>
+
+      <!-- Aparência: vale com ou sem conta (o tema é deste aparelho). -->
+      <div class="share-section theme-section">
+        <span class="share-field-label" id="theme-title"></span>
+        <div class="theme-picker" id="theme-picker" role="radiogroup"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Novidades: aparece uma vez por aparelho (ver NEWS_KEY no app.js). -->
+  <div class="export-overlay" id="news-overlay" hidden>
+    <div class="export-box share-box news-box" role="dialog" aria-modal="true" aria-labelledby="news-title">
+      <div class="compare-header">
+        <h2 id="news-title"></h2>
+        <button class="modal-close-x" id="news-close" type="button" aria-label="×">×</button>
+      </div>
+      <ul class="news-list" id="news-list"></ul>
+      <div class="export-actions">
+        <button class="export-close" id="news-theme-btn" type="button"></button>
+        <button class="export-copy" id="news-ok-btn" type="button"></button>
       </div>
     </div>
   </div>
