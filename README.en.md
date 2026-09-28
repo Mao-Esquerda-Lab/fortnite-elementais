@@ -13,6 +13,8 @@ Current scope: **Chapter 7, Season 4 "Override"**.
 - **Sprite collection** — mark each Elemental as owned and/or mastered, including its variants (Base, Gold, special).
 - **Search** — magnifier button next to the friend code, to find a Sprite by name (PT/EN), ability or variant name.
 - **Undo** — after marking/unmarking or clearing the collection, a toast with "Undo" shows up for a few seconds.
+- **Themes** — under "Appearance" (account button): Automatic, Night, Day, Storm, Legendary, Mythic and Jungle. Per device, with or without an account.
+- **Profile picture** — with an account, pick a Sprite as your picture; it shows on the account button, in "My profile" and when friends compare with you.
 - **Filters and sorting** — by rarity, owned/not owned, mastered/not mastered, favorites; sort by rarity or alphabetically.
 - **Lobby codes** — list of Admin Panel codes, with a checklist of redeemed ones and the option to manually add a new code before the bot publishes it.
 - **Export summary** — generates an image (PNG) with a summary of your collection to share.
