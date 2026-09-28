@@ -1362,10 +1362,26 @@ textarea {
 }
 
 .friend-row-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
   font-weight: 700;
+}
+
+.friend-row-name-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Imagem de perfil do amigo (base em .profile-avatar, mais abaixo). */
+.profile-avatar.friend-avatar {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-width: 1px;
+  border-color: var(--border);
+  font-size: 1rem;
 }
 
 .friend-row-code {
@@ -2012,12 +2028,12 @@ textarea {
     font-size: 0.78rem;
   }
 
-  /* A coluna do nome (fixa em 9.5rem no desktop) não cabe inteira ao lado
+  /* A coluna do nome (imagem + nome; fixa em 9.5rem no desktop) não cabe inteira ao lado
      do código + "Comparar" + o ✕ de remover numa tela estreita — aperta pra
      caber sem estourar a largura da tela; o nome longo já trunca com "…" de
      qualquer forma. */
   .friend-row {
-    grid-template-columns: 6rem auto minmax(0, 1fr) auto;
+    grid-template-columns: 7.5rem auto minmax(0, 1fr) auto;
     gap: 0.35rem;
     padding: 0.5rem;
   }
