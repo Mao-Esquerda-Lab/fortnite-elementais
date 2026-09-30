@@ -19,6 +19,17 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "powerout",
+    "code": "POWEROUT",
+    "autoAdded": "2026-09-29",
+    "reward": {
+      "pt": "Five Nights at Freddy's lobby jumpscare",
+      "en": "Five Nights at Freddy's lobby jumpscare"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "bonerattler",
     "code": "Bonerattler",
     "autoAdded": "2026-09-28",
