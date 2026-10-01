@@ -19,6 +19,39 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "pumpkinspicelife",
+    "code": "PumpkinSpiceLife",
+    "autoAdded": "2026-10-01",
+    "reward": {
+      "pt": "Transforms you into a pumpkin temporarily",
+      "en": "Transforms you into a pumpkin temporarily"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "crowsareafraid",
+    "code": "CrowsAreAfraid",
+    "autoAdded": "2026-10-01",
+    "reward": {
+      "pt": "Transforms you into a scarecrow temporarily",
+      "en": "Transforms you into a scarecrow temporarily"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "ithinkthekeyfoundmechat",
+    "code": "IThinkTheKeyFoundMeChat",
+    "autoAdded": "2026-10-01",
+    "reward": {
+      "pt": "1x Extraction Accelerator",
+      "en": "1x Extraction Accelerator"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "powerout",
     "code": "POWEROUT",
     "autoAdded": "2026-09-29",
