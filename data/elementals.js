@@ -185,6 +185,13 @@ const IGN_ART = {
     "loot-hacker": "0/09/Fortnite_loot_hacker_birthday_sprite_CORRECT",
     "bounty-hunter": "9/96/Fortnite_bounty_hunter_birthday_sprite_CORRECT",
   },
+  "dumpster-dive": {
+    base: "a/ae/Fortnite_dumpster_dive_sprite",
+    gold: "7/74/Fortnite_gold_dumpster_dive_sprite",
+    "cheat-master": "0/0f/Fortnite_cheat_master_dumpster_dive_sprite",
+    "loot-hacker": "5/53/Fortnite_loot_hacker_dumpster_dive_sprite",
+    "bounty-hunter": "b/b0/Fortnite_bounty_hunter_dumpster_dive_sprite",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -518,7 +525,7 @@ const ELEMENTALS = [
   },
   {
     id: "klombo",
-    name: { pt: "Klombo", en: "Klombo" },
+    name: { pt: "Klimbo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
@@ -615,18 +622,29 @@ const ELEMENTALS = [
     dust: 100,
     variantCost: 2700,
   },
+  {
+    // Vencedor do concurso Design-A-Sprite (por StinkyPrincessGoose),
+    // lançado em 01/out/2026 — saiu da seção "Unreleased Sprites List" do
+    // IGN e entrou na tabela principal, com raridade e habilidade
+    // publicadas. Raridade e habilidade vêm direto da tabela do IGN.
+    id: "dumpster-dive",
+    name: { pt: "Mergulho na Lixeira", en: "Dumpster Dive" },
+    wikiName: "Dumpster Dive Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Aumenta a cura de alimentos e dá uma chance de encontrar comida ao pular para fora de lixeiras e banheiros químicos, ou ao abrir recipientes; a chance de comida aumenta a cada nível.",
+      en: "Buffs heals from food and gives you a chance to find food when jumping out of dumpsters and porta potties and opening containers, with better food chance with each level.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
-  // com nome e autor. O Lago (Pine & Kiri) já foi lançado — ver entrada
-  // própria acima.
+  // com nome e autor. O Lago (Pine & Kiri) e o Mergulho na Lixeira já foram
+  // lançados — ver entradas próprias acima.
   ...[
     { id: "bullet", pt: "Bala", en: "Bullet", author: "Enorull" },
-    {
-      id: "dumpster-dive",
-      pt: "Mergulho na Lixeira",
-      en: "Dumpster Dive",
-      author: "StinkyPrincessGoose",
-    },
     { id: "honey", pt: "Mel", en: "Honey", author: "Conejito_sam" },
   ].map((c) => ({
     id: c.id,
