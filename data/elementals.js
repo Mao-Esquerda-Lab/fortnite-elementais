@@ -110,6 +110,7 @@ const IGN_ART = {
     // Único que já saiu "..._CORRECT.png" de cara — provavelmente por causa
     // do bug que a Epic confirmou nele (ver comentário no EXTRA_VARIANTS).
     "bounty-hunter": "9/95/Fortnite_bounty_hunter_crown_sprite_CORRECT",
+    "trick-or-treat": "0/04/Fortnite_trick_or_treat_crown_sprite",
   },
   "klombo": {
     base: "8/8e/Fortnite_klombo_sprite",
@@ -274,6 +275,21 @@ const EXTRA_VARIANTS = {
   "bounty-hunter": {
     id: "bounty-hunter",
     name: { pt: "Caçador de Recompensas", en: "Bounty Hunter" },
+    effect: {
+      pt: "Efeito ainda não revelado.",
+      en: "Effect not yet revealed.",
+    },
+  },
+  // Variante nova, detectada em 01/out/2026 — tema de Halloween. Só a da
+  // Coroa está lançada de verdade (linha própria na tabela principal do
+  // IGN, com checklist-task-id em sequência com os Sprites lançados hoje).
+  // As outras 23 (todos os Sprites lançados exceto Mega Man) aparecem numa
+  // mini-tabela separada "Unreleased Sprites List" — são só prévia, por
+  // isso não entram no `onlyVariants` de nenhum Sprite além da Coroa ainda.
+  // IGN não descreve o efeito; nome em PT é tradução nossa provisória.
+  "trick-or-treat": {
+    id: "trick-or-treat",
+    name: { pt: "Doce ou Travessura", en: "Trick or Treat" },
     effect: {
       pt: "Efeito ainda não revelado.",
       en: "Effect not yet revealed.",
@@ -531,12 +547,20 @@ const ELEMENTALS = [
   {
     // Foi a primeira com a variante Loot Hacker liberada (03/set/2026); os
     // outros Sprites da temporada ganharam a deles na "New Sprites Day" de
-    // 10/set/2026 (ver EXTRA_VARIANTS) — só o Mega Man ficou de fora.
+    // 10/set/2026 (ver EXTRA_VARIANTS) — só o Mega Man ficou de fora. Em
+    // 01/out/2026 foi também a primeira (e por ora única) com a variante
+    // Doce ou Travessura (ver comentário em EXTRA_VARIANTS).
     id: "crown",
     name: { pt: "Coroa", en: "Crown" },
     wikiName: "Crown Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    onlyVariants: [
+      "gold",
+      "cheat-master",
+      "loot-hacker",
+      "bounty-hunter",
+      "trick-or-treat",
+    ],
     ability: {
       pt: "Ganha Coroas extras (Crown Wins) depois de uma Vitória Royale.",
       en: "Gain extra Crown Wins after getting a Victory Royale.",
