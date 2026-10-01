@@ -192,6 +192,27 @@ const IGN_ART = {
     "loot-hacker": "5/53/Fortnite_loot_hacker_dumpster_dive_sprite",
     "bounty-hunter": "b/b0/Fortnite_bounty_hunter_dumpster_dive_sprite",
   },
+  "vampire": {
+    base: "5/5a/Fortnite_vampire_sprite",
+    gold: "7/7e/Fortnite_gold_vampire_sprite",
+    "cheat-master": "6/6d/Fortnite_cheat_master_vampire_sprite",
+    "loot-hacker": "2/2b/Fortnite_loot_hacker_vampire_sprite",
+    "bounty-hunter": "f/f6/Fortnite_bounty_hunter_vampire_sprite",
+  },
+  "the-deer": {
+    base: "6/6d/Fortnite_the_deer_sprite",
+    gold: "9/97/Fortnite_gold_the_deer_sprite",
+    "cheat-master": "e/ee/Fortnite_cheat_master_the_deer_sprite",
+    "loot-hacker": "a/a5/Fortnite_loot_hacker_the_deer_sprite",
+    "bounty-hunter": "6/69/Fortnite_bounty_hunter_the_deer_sprite",
+  },
+  "spooky-dash": {
+    base: "d/d1/Fortnite_spooky_dash_sprite",
+    gold: "2/2f/Fortnite_gold_spooky_dash_sprite",
+    "cheat-master": "0/07/Fortnite_cheat_master_spooky_dash_sprite",
+    "loot-hacker": "d/dc/Fortnite_loot_hacker_spooky_dash_sprite",
+    "bounty-hunter": "5/52/Fortnite_bounty_hunter_spooky_dash_sprite",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -638,6 +659,53 @@ const ELEMENTALS = [
     },
     dust: 2700,
     variantCost: 4000,
+  },
+  {
+    // Detectado em 01/out/2026, já com raridade e habilidade publicadas na
+    // tabela do IGN — entra direto curado, sem passar por elementals-auto.js.
+    id: "vampire",
+    name: { pt: "Vampiro", en: "Vampire" },
+    wikiName: "Vampire Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Cura você ao causar dano aos inimigos. A quantidade curada aumenta a cada nível.",
+      en: "Heals you when you damage enemies. Amount healed increases per level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
+    // Mesmo lançamento do Vampiro (ver comentário acima). PT "O Cervo" é
+    // tradução nossa provisória — ainda não conferida no cliente em
+    // português.
+    id: "the-deer",
+    name: { pt: "O Cervo", en: "The Deer" },
+    wikiName: "The Deer Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Concede bônus de dano corpo a corpo, que aumenta a cada nível.",
+      en: "Buffs melee damage, which increases per level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
+    // Mesmo lançamento do Vampiro (ver comentário acima). PT "Investida
+    // Assombrada" é tradução nossa provisória — ainda não conferida no
+    // cliente em português.
+    id: "spooky-dash",
+    name: { pt: "Investida Assombrada", en: "Spooky Dash" },
+    wikiName: "Spooky Dash Sprite",
+    rarity: "Mythic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    ability: {
+      pt: "Concede uma investida que atravessa objetos e paredes. Cada nível reduz o tempo de recarga.",
+      en: "Grants you a dash that lets you phase through objects and walls. Each level reduces cooldown.",
+    },
+    dust: 6750,
+    variantCost: 10000,
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
