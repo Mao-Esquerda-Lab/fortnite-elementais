@@ -525,7 +525,7 @@ const ELEMENTALS = [
   },
   {
     id: "klombo",
-    name: { pt: "Klombo", en: "Klombo" },
+    name: { pt: "Klimbo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
