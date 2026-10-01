@@ -8,77 +8,7 @@
 // variantes especiais etc.), MOVA a entrada para data/elementals.js: o
 // gerador pula Sprites que já estão na lista manual e a cópia daqui some na
 // próxima execução.
-const AUTO_ELEMENTALS = [
-  {
-    "id": "vampire",
-    "name": {
-      "pt": "Vampire",
-      "en": "Vampire"
-    },
-    "wikiName": "Vampire Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-10-01",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/5/5a/Fortnite_vampire_sprite.png",
-    "variantImages": {
-      "cheat-master": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/6/6d/Fortnite_cheat_master_vampire_sprite.png",
-      "gold": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/7/7e/Fortnite_gold_vampire_sprite.png"
-    }
-  },
-  {
-    "id": "the-deer",
-    "name": {
-      "pt": "The Deer",
-      "en": "The Deer"
-    },
-    "wikiName": "The Deer Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-10-01",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/6/6d/Fortnite_the_deer_sprite.png",
-    "variantImages": {
-      "cheat-master": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/e/ee/Fortnite_cheat_master_the_deer_sprite.png",
-      "gold": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/9/97/Fortnite_gold_the_deer_sprite.png"
-    }
-  },
-  {
-    "id": "spooky-dash",
-    "name": {
-      "pt": "Spooky Dash",
-      "en": "Spooky Dash"
-    },
-    "wikiName": "Spooky Dash Sprite",
-    "rarity": "Unknown",
-    "autoAdded": "2026-10-01",
-    "ability": {
-      "pt": "Habilidade ainda não revelada.",
-      "en": "Ability not yet revealed."
-    },
-    "onlyVariants": [
-      "gold",
-      "cheat-master"
-    ],
-    "image": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/d/d1/Fortnite_spooky_dash_sprite.png",
-    "variantImages": {
-      "cheat-master": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/0/07/Fortnite_cheat_master_spooky_dash_sprite.png",
-      "gold": "https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/2/2f/Fortnite_gold_spooky_dash_sprite.png"
-    }
-  }
-];
+const AUTO_ELEMENTALS = [];
 
 // Anexa à lista principal os que ainda não existem lá, montando imagem e
 // variantes com os mesmos helpers de data/elementals.js.
