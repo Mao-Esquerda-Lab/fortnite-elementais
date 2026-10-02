@@ -699,6 +699,7 @@ const VARIANT_CODES = {
   quack: "q",
   "cheat-master": "m",
   "loot-hacker": "l",
+  "trick-or-treat": "t",
 };
 const VARIANT_CODES_REV = Object.fromEntries(
   Object.entries(VARIANT_CODES).map(([id, code]) => [code, id])
@@ -2277,7 +2278,8 @@ function compareSection(title, groups) {
         )
         .join("")
     : `<p class="compare-list-empty">${s.compareNone}</p>`;
-  return `<h3>${title}</h3>${body}`;
+  const count = groups.reduce((sum, group) => sum + group.tiles.length, 0);
+  return `<h3>${title}<span class="compare-count">${count}</span></h3>${body}`;
 }
 
 // Nunca mexe em collection/localStorage: theirCollection só existe como
