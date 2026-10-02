@@ -45,6 +45,7 @@ const IGN_ART = {
     "cheat-master": "8/84/Fortnite_cheat_master_8bit_sprite",
     "loot-hacker": "b/be/Fortnite_loot_hacker_8-bit_sprite",
     "bounty-hunter": "8/8b/Fortnite_bounty_hunter_8-bit_sprite",
+    "trick-or-treat": "e/e1/Fortnite_trick_or_treat_8-bit_sprite",
   },
   "adventure": {
     base: "d/db/Fortnite_adventure_sprite",
@@ -52,6 +53,7 @@ const IGN_ART = {
     "cheat-master": "1/19/Fortnite_cheat_master_adventure_sprite",
     "loot-hacker": "5/55/Fortnite_loot_hacker_adventure_sprite",
     "bounty-hunter": "0/01/Fortnite_bounty_hunter_adventure_sprite",
+    "trick-or-treat": "a/a8/Fortnite_trick_or_treat_adventure_sprite",
   },
   "bush": {
     base: "2/28/Fortnite_bush_sprite",
@@ -59,6 +61,7 @@ const IGN_ART = {
     "cheat-master": "6/6d/Fortnite_cheat_master_bush_sprite",
     "loot-hacker": "0/00/Fortnite_loot_hacker_bush_sprite",
     "bounty-hunter": "3/3c/Fortnite_bounty_hunter_bush_sprite",
+    "trick-or-treat": "1/1c/Fortnite_trick_or_treat_bush_sprite",
   },
   "jonesy": {
     base: "e/ed/Fortnite_jonesy_sprite",
@@ -66,6 +69,7 @@ const IGN_ART = {
     "cheat-master": "2/2a/Fortnite_cheat_master_jonesy_sprite",
     "loot-hacker": "8/87/Fortnite_loot_hacker_jonesy_sprite",
     "bounty-hunter": "8/8f/Fortnite_bounty_hunter_jonesy_sprite",
+    "trick-or-treat": "9/91/Fortnite_trick_or_treat_jonesy_sprite",
   },
   "sonic": {
     base: "a/ab/Fortnite_sonic_sprite",
@@ -73,6 +77,7 @@ const IGN_ART = {
     "cheat-master": "7/7b/Fortnite_cheat_master_sonic_sprite",
     "loot-hacker": "f/ff/Fortnite_loot_hacker_sonic_sprite",
     "bounty-hunter": "8/80/Fortnite_bounty_hunter_sonic_sprite",
+    "trick-or-treat": "a/a5/Fortnite_trick_or_treat_sonic_sprite",
   },
   "tails": {
     base: "8/8a/Fortnite_tails_sprite",
@@ -80,6 +85,7 @@ const IGN_ART = {
     "cheat-master": "d/d8/Fortnite_cheat_master_tails_sprite",
     "loot-hacker": "a/a4/Fortnite_loot_hacker_tails_sprite",
     "bounty-hunter": "6/62/Fortnite_bounty_hunter_tails_sprite",
+    "trick-or-treat": "5/5c/Fortnite_trick_or_treat_tails_sprite",
   },
   "shadow": {
     base: "6/64/Fortnite_shadow_sprite",
@@ -87,6 +93,7 @@ const IGN_ART = {
     "cheat-master": "6/6d/Fortnite_cheat_master_shadow_sprite",
     "loot-hacker": "c/c6/Fortnite_loot_hacker_shadow_sprite",
     "bounty-hunter": "b/bb/Fortnite_bounty_hunter_shadow_sprite",
+    "trick-or-treat": "5/50/Fortnite_trick_or_treat_shadow_sprite",
   },
   "killswitch": {
     base: "a/a0/Fortnite_killswitch_sprite",
@@ -94,6 +101,7 @@ const IGN_ART = {
     "cheat-master": "1/18/Fortnite_cheat_master_killswitch_sprite",
     "loot-hacker": "1/17/Fortnite_loot_hacker_killswitch_sprite",
     "bounty-hunter": "4/4d/Fortnite_bounty_hunter_killswitch_sprite",
+    "trick-or-treat": "7/7d/Fortnite_trick_or_treat_killswitch_sprite",
   },
   "jackrabbit": {
     base: "1/18/Fortnite_jackrabbit_sprite",
@@ -101,6 +109,7 @@ const IGN_ART = {
     "cheat-master": "1/1f/Fortnite_cheat_master_jackrabbit_sprite",
     "loot-hacker": "e/e6/Fortnite_loot_hacker_jackrabbit_sprite",
     "bounty-hunter": "7/77/Fortnite_bounty_hunter_jackrabbit_sprite",
+    "trick-or-treat": "7/7d/Fortnite_trick_or_treat_jackrabbit_sprite",
   },
   "crown": {
     base: "b/b2/Fortnite_crown_sprite",
@@ -118,6 +127,7 @@ const IGN_ART = {
     "cheat-master": "1/1e/Fortnite_cheat_master_klombo_sprite",
     "loot-hacker": "1/14/Fortnite_loot_hacker_klombo_sprite",
     "bounty-hunter": "e/e9/Fortnite_bounty_hunter_klombo_sprite",
+    "trick-or-treat": "0/09/Fortnite_trick_or_treat_klombo_sprite",
   },
   "storm-scout": {
     base: "a/a3/Fortnite_storm_scout_sprite",
@@ -125,6 +135,7 @@ const IGN_ART = {
     "cheat-master": "3/31/Fortnite_cheat_master_storm_scout_sprite",
     "loot-hacker": "d/df/Fortnite_loot_hacker_storm_scout_sprite",
     "bounty-hunter": "b/bf/Fortnite_bounty_hunter_storm_scout_sprite",
+    "trick-or-treat": "c/c5/Fortnite_trick_or_treat_storm_scout_sprite",
   },
   "x-ray": {
     base: "0/09/Fortnite_x-ray_sprite",
@@ -132,6 +143,7 @@ const IGN_ART = {
     "cheat-master": "5/54/Fortnite_cheat_master_x-ray_sprite",
     "loot-hacker": "a/ae/Fortnite_loot_hacker_x-ray_sprite",
     "bounty-hunter": "9/98/Fortnite_bounty_hunter_x-ray_sprite",
+    "trick-or-treat": "b/bc/Fortnite_trick_or_treat_x-ray_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (corrigiram uma arte errada
   // publicada antes) — foge do padrão "Fortnite_{slug}_sprite.png" das
@@ -142,6 +154,7 @@ const IGN_ART = {
     "cheat-master": "0/0d/Fortnite_cheat_master_onigiri_sprite",
     "loot-hacker": "b/b2/Fortnite_loot_hacker_onigiri_sprite",
     "bounty-hunter": "a/ad/Fortnite_bounty_hunter_onigiri_sprite",
+    "trick-or-treat": "c/c1/Fortnite_trick_or_treat_onigiri_sprite",
   },
   "overshield": {
     base: "1/10/Fortnite_overshield_sprite",
@@ -149,6 +162,7 @@ const IGN_ART = {
     "cheat-master": "b/bf/Fortnite_cheat_master_overshield_sprite",
     "loot-hacker": "8/88/Fortnite_loot_hacker_overshield_sprite",
     "bounty-hunter": "7/74/Fortnite_bounty_hunter_overshield_sprite",
+    "trick-or-treat": "f/f9/Fortnite_trick_or_treat_overshield_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (mesmo caso do Onigiri acima).
   "blinky": {
@@ -157,6 +171,7 @@ const IGN_ART = {
     "cheat-master": "4/41/Fortnite_cheat_master_blinky_sprite_CORRECT",
     "loot-hacker": "d/d7/Fortnite_loot_hacker_blinky_sprite_CORRECT",
     "bounty-hunter": "6/66/Fortnite_bounty_hunter_blinky_sprite",
+    "trick-or-treat": "e/e1/Fortnite_trick_or_treat_blinky_sprite",
   },
   "crash-bandicoot": {
     base: "f/f9/Fortnite_crash_bandicoot_sprite_CORRECT",
@@ -164,6 +179,7 @@ const IGN_ART = {
     "cheat-master": "f/ff/Fortnite_cheat_master_crash_bandicoot_sprite_CORRECT",
     "loot-hacker": "8/84/Fortnite_loot_hacker_crash_bandicoot_sprite_CORRECT",
     "bounty-hunter": "a/a7/Fortnite_bounty_hunter_crash_bandicoot_sprite",
+    "trick-or-treat": "c/c8/Fortnite_trick_or_treat_crash_bandicoot_sprite",
   },
   "pond": {
     base: "7/71/Fortnite_pond_sprite_CORRECT",
@@ -171,6 +187,7 @@ const IGN_ART = {
     "cheat-master": "2/20/Fortnite_cheat_master_pond_sprite_CORRECT",
     "loot-hacker": "2/20/Fortnite_loot_hacker_pond_sprite_CORRECT",
     "bounty-hunter": "e/ee/Fortnite_bounty_hunter_pond_sprite",
+    "trick-or-treat": "e/e6/Fortnite_trick_or_treat_pond_sprite",
   },
   "morgana": {
     base: "d/d2/Fortnite_morgana_sprite_CORRECT",
@@ -178,6 +195,7 @@ const IGN_ART = {
     "cheat-master": "8/89/Fortnite_cheat_master_morgana_sprite_CORRECT",
     "loot-hacker": "c/c5/Fortnite_loot_hacker_morgana_sprite_CORRECT",
     "bounty-hunter": "9/99/Fortnite_bounty_hunter_morgana_sprite_CORRECT",
+    "trick-or-treat": "2/20/Fortnite_trick_or_treat_morgana_sprite",
   },
   "birthday": {
     base: "c/cc/Fortnite_birthday_sprite_CORRECT",
@@ -185,6 +203,7 @@ const IGN_ART = {
     "cheat-master": "5/5c/Fortnite_cheat_master_birthday_sprite_CORRECT",
     "loot-hacker": "0/09/Fortnite_loot_hacker_birthday_sprite_CORRECT",
     "bounty-hunter": "9/96/Fortnite_bounty_hunter_birthday_sprite_CORRECT",
+    "trick-or-treat": "4/48/Fortnite_trick_or_treat_birthday_sprite",
   },
   "dumpster-dive": {
     base: "a/ae/Fortnite_dumpster_dive_sprite",
@@ -192,6 +211,7 @@ const IGN_ART = {
     "cheat-master": "0/0f/Fortnite_cheat_master_dumpster_dive_sprite",
     "loot-hacker": "5/53/Fortnite_loot_hacker_dumpster_dive_sprite",
     "bounty-hunter": "b/b0/Fortnite_bounty_hunter_dumpster_dive_sprite",
+    "trick-or-treat": "d/de/Fortnite_trick_or_treat_dumpster_dive_sprite",
   },
   "vampire": {
     base: "5/5a/Fortnite_vampire_sprite",
@@ -199,6 +219,7 @@ const IGN_ART = {
     "cheat-master": "6/6d/Fortnite_cheat_master_vampire_sprite",
     "loot-hacker": "2/2b/Fortnite_loot_hacker_vampire_sprite",
     "bounty-hunter": "f/f6/Fortnite_bounty_hunter_vampire_sprite",
+    "trick-or-treat": "c/c3/Fortnite_trick_or_treat_vampire_sprite",
   },
   "the-deer": {
     base: "6/6d/Fortnite_the_deer_sprite",
@@ -206,6 +227,7 @@ const IGN_ART = {
     "cheat-master": "e/ee/Fortnite_cheat_master_the_deer_sprite",
     "loot-hacker": "a/a5/Fortnite_loot_hacker_the_deer_sprite",
     "bounty-hunter": "6/69/Fortnite_bounty_hunter_the_deer_sprite",
+    "trick-or-treat": "c/c7/Fortnite_trick_or_treat_the_deer_sprite",
   },
   "spooky-dash": {
     base: "d/d1/Fortnite_spooky_dash_sprite",
@@ -213,6 +235,7 @@ const IGN_ART = {
     "cheat-master": "0/07/Fortnite_cheat_master_spooky_dash_sprite",
     "loot-hacker": "d/dc/Fortnite_loot_hacker_spooky_dash_sprite",
     "bounty-hunter": "5/52/Fortnite_bounty_hunter_spooky_dash_sprite",
+    "trick-or-treat": "4/4b/Fortnite_trick_or_treat_spooky_dash_sprite",
   },
 };
 
