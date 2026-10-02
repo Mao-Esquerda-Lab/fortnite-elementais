@@ -224,6 +224,7 @@ const TRANSLATIONS = {
     collectionLabel: "Coleção",
     baseVariant: "Base",
     upcoming: "Em breve",
+    lockedVariant: "Ainda não lançada — só a arte já foi divulgada",
     empty: "Nenhum Elemental encontrado.",
     emptySearch: (q) => `Nenhum Elemental encontrado para "${q}".`,
     searchOpen: "Buscar Sprite",
@@ -456,6 +457,7 @@ const TRANSLATIONS = {
     collectionLabel: "Collection",
     baseVariant: "Base",
     upcoming: "Upcoming",
+    lockedVariant: "Not released yet — only the art has been revealed so far",
     empty: "No Elementals found.",
     emptySearch: (q) => `No Elementals found for "${q}".`,
     searchOpen: "Search Sprite",
@@ -722,6 +724,7 @@ function encodeCollectionCode(source = collection) {
     const baseBits = tileBits(entry);
     if (baseBits) seg += String(baseBits);
     e.variants.forEach((v) => {
+      if (v.locked) return; // ainda não colecionável — nunca tem estado pra codificar
       const bits = tileBits(getVariantEntry(entry, v.id));
       if (bits) seg += `,${VARIANT_CODES[v.id] || v.id}${bits}`;
     });
@@ -792,7 +795,10 @@ function computeTotals(source) {
   ELEMENTALS.forEach((e) => {
     if (e.upcoming) return;
     const entry = getEntry(e.id, source);
-    const states = [entry, ...e.variants.map((v) => getVariantEntry(entry, v.id))];
+    const states = [
+      entry,
+      ...e.variants.filter((v) => !v.locked).map((v) => getVariantEntry(entry, v.id)),
+    ];
     total += states.length;
     states.forEach((st) => {
       if (st.owned) owned += 1;
@@ -813,12 +819,14 @@ function diffCollections(mine, theirs) {
     const theirEntry = getEntry(e.id, theirs);
     const tileList = [
       { name: s.baseVariant, image: e.image, mineState: mineEntry, theirState: theirEntry },
-      ...e.variants.map((v) => ({
-        name: v.name[lang],
-        image: v.image,
-        mineState: getVariantEntry(mineEntry, v.id),
-        theirState: getVariantEntry(theirEntry, v.id),
-      })),
+      ...e.variants
+        .filter((v) => !v.locked)
+        .map((v) => ({
+          name: v.name[lang],
+          image: v.image,
+          mineState: getVariantEntry(mineEntry, v.id),
+          theirState: getVariantEntry(theirEntry, v.id),
+        })),
     ].map((tile) => ({
       name: tile.name,
       image: tile.image,
@@ -1178,10 +1186,11 @@ function renderProgress() {
   ELEMENTALS.forEach((e) => {
     if (e.upcoming) return; // não lançados não contam no progresso
     const entry = getEntry(e.id);
-    total += 1 + e.variants.length;
+    const countable = e.variants.filter((v) => !v.locked);
+    total += 1 + countable.length;
     tally(owned, e.rarity, entry.owned);
     tally(mastered, e.rarity, entry.mastered);
-    e.variants.forEach((v) => {
+    countable.forEach((v) => {
       const state = getVariantEntry(entry, v.id);
       tally(owned, e.rarity, state.owned);
       tally(mastered, e.rarity, state.mastered);
@@ -1301,11 +1310,12 @@ function variantImgFallback(img) {
 }
 window.variantImgFallback = variantImgFallback;
 
-function spriteTile(elemental, s, { variantId, name, image, title, state }) {
+function spriteTile(elemental, s, { variantId, name, image, title, state, locked }) {
+  const disabled = elemental.upcoming || locked;
   const checkbox = (action, checked, label) => `
     <label class="tile-check">
       <input type="checkbox" ${checked ? "checked" : ""}
-             ${elemental.upcoming ? "disabled" : ""}
+             ${disabled ? "disabled" : ""}
              data-action="${action}" data-id="${elemental.id}"
              data-variant="${variantId}" />
       ${label}
@@ -1313,10 +1323,10 @@ function spriteTile(elemental, s, { variantId, name, image, title, state }) {
 
   return `
     <div class="sprite-tile${state.owned ? " owned" : ""}${state.mastered ? " mastered" : ""}"
-         title="${title}">
+         title="${locked ? `${title} — ${s.lockedVariant}` : title}">
       <img class="tile-img" src="${image}" alt="" width="36" height="36"
            loading="lazy" onerror="variantImgFallback(this)" />
-      <span class="tile-name">${name}</span>
+      <span class="tile-name">${name}${locked ? ` <span class="locked-badge">🔒</span>` : ""}</span>
       <div class="tile-checks">
         ${checkbox("own", state.owned, s.owned)}
         ${checkbox("master", state.mastered, s.mastered)}
@@ -1350,7 +1360,7 @@ function collectionTiles(elemental, entry, s) {
         image: v.image,
         title: `${v.name[lang]} — ${v.effect[lang]}`,
         state: getVariantEntry(entry, v.id),
-        isBase: false,
+        locked: v.locked,
       })
     )
     .join("");
@@ -1553,7 +1563,9 @@ async function exportSummary() {
   const [icons, variantIcons] = await Promise.all([
     Promise.all(list.map((e) => loadCorsImage(e.image))),
     Promise.all(
-      list.map((e) => Promise.all(e.variants.map((v) => loadCorsImage(v.image))))
+      list.map((e) =>
+        Promise.all(e.variants.filter((v) => !v.locked).map((v) => loadCorsImage(v.image)))
+      )
     ),
   ]);
 
@@ -1646,11 +1658,13 @@ async function exportSummary() {
 
     const items = [
       { label: s.baseVariant, state: entry, icon: icons[i] },
-      ...e.variants.map((v, k) => ({
-        label: v.name[lang],
-        state: getVariantEntry(entry, v.id),
-        icon: variantIcons[i][k],
-      })),
+      ...e.variants
+        .filter((v) => !v.locked)
+        .map((v, k) => ({
+          label: v.name[lang],
+          state: getVariantEntry(entry, v.id),
+          icon: variantIcons[i][k],
+        })),
     ];
 
     items.forEach((item, j) => {
