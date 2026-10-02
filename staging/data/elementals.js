@@ -45,6 +45,7 @@ const IGN_ART = {
     "cheat-master": "8/84/Fortnite_cheat_master_8bit_sprite",
     "loot-hacker": "b/be/Fortnite_loot_hacker_8-bit_sprite",
     "bounty-hunter": "8/8b/Fortnite_bounty_hunter_8-bit_sprite",
+    "trick-or-treat": "e/e1/Fortnite_trick_or_treat_8-bit_sprite",
   },
   "adventure": {
     base: "d/db/Fortnite_adventure_sprite",
@@ -52,6 +53,7 @@ const IGN_ART = {
     "cheat-master": "1/19/Fortnite_cheat_master_adventure_sprite",
     "loot-hacker": "5/55/Fortnite_loot_hacker_adventure_sprite",
     "bounty-hunter": "0/01/Fortnite_bounty_hunter_adventure_sprite",
+    "trick-or-treat": "a/a8/Fortnite_trick_or_treat_adventure_sprite",
   },
   "bush": {
     base: "2/28/Fortnite_bush_sprite",
@@ -59,6 +61,7 @@ const IGN_ART = {
     "cheat-master": "6/6d/Fortnite_cheat_master_bush_sprite",
     "loot-hacker": "0/00/Fortnite_loot_hacker_bush_sprite",
     "bounty-hunter": "3/3c/Fortnite_bounty_hunter_bush_sprite",
+    "trick-or-treat": "1/1c/Fortnite_trick_or_treat_bush_sprite",
   },
   "jonesy": {
     base: "e/ed/Fortnite_jonesy_sprite",
@@ -66,6 +69,7 @@ const IGN_ART = {
     "cheat-master": "2/2a/Fortnite_cheat_master_jonesy_sprite",
     "loot-hacker": "8/87/Fortnite_loot_hacker_jonesy_sprite",
     "bounty-hunter": "8/8f/Fortnite_bounty_hunter_jonesy_sprite",
+    "trick-or-treat": "9/91/Fortnite_trick_or_treat_jonesy_sprite",
   },
   "sonic": {
     base: "a/ab/Fortnite_sonic_sprite",
@@ -73,6 +77,7 @@ const IGN_ART = {
     "cheat-master": "7/7b/Fortnite_cheat_master_sonic_sprite",
     "loot-hacker": "f/ff/Fortnite_loot_hacker_sonic_sprite",
     "bounty-hunter": "8/80/Fortnite_bounty_hunter_sonic_sprite",
+    "trick-or-treat": "a/a5/Fortnite_trick_or_treat_sonic_sprite",
   },
   "tails": {
     base: "8/8a/Fortnite_tails_sprite",
@@ -80,6 +85,7 @@ const IGN_ART = {
     "cheat-master": "d/d8/Fortnite_cheat_master_tails_sprite",
     "loot-hacker": "a/a4/Fortnite_loot_hacker_tails_sprite",
     "bounty-hunter": "6/62/Fortnite_bounty_hunter_tails_sprite",
+    "trick-or-treat": "5/5c/Fortnite_trick_or_treat_tails_sprite",
   },
   "shadow": {
     base: "6/64/Fortnite_shadow_sprite",
@@ -87,6 +93,7 @@ const IGN_ART = {
     "cheat-master": "6/6d/Fortnite_cheat_master_shadow_sprite",
     "loot-hacker": "c/c6/Fortnite_loot_hacker_shadow_sprite",
     "bounty-hunter": "b/bb/Fortnite_bounty_hunter_shadow_sprite",
+    "trick-or-treat": "5/50/Fortnite_trick_or_treat_shadow_sprite",
   },
   "killswitch": {
     base: "a/a0/Fortnite_killswitch_sprite",
@@ -94,6 +101,7 @@ const IGN_ART = {
     "cheat-master": "1/18/Fortnite_cheat_master_killswitch_sprite",
     "loot-hacker": "1/17/Fortnite_loot_hacker_killswitch_sprite",
     "bounty-hunter": "4/4d/Fortnite_bounty_hunter_killswitch_sprite",
+    "trick-or-treat": "7/7d/Fortnite_trick_or_treat_killswitch_sprite",
   },
   "jackrabbit": {
     base: "1/18/Fortnite_jackrabbit_sprite",
@@ -101,6 +109,7 @@ const IGN_ART = {
     "cheat-master": "1/1f/Fortnite_cheat_master_jackrabbit_sprite",
     "loot-hacker": "e/e6/Fortnite_loot_hacker_jackrabbit_sprite",
     "bounty-hunter": "7/77/Fortnite_bounty_hunter_jackrabbit_sprite",
+    "trick-or-treat": "7/7d/Fortnite_trick_or_treat_jackrabbit_sprite",
   },
   "crown": {
     base: "b/b2/Fortnite_crown_sprite",
@@ -110,6 +119,7 @@ const IGN_ART = {
     // Único que já saiu "..._CORRECT.png" de cara — provavelmente por causa
     // do bug que a Epic confirmou nele (ver comentário no EXTRA_VARIANTS).
     "bounty-hunter": "9/95/Fortnite_bounty_hunter_crown_sprite_CORRECT",
+    "trick-or-treat": "0/04/Fortnite_trick_or_treat_crown_sprite",
   },
   "klombo": {
     base: "8/8e/Fortnite_klombo_sprite",
@@ -117,6 +127,7 @@ const IGN_ART = {
     "cheat-master": "1/1e/Fortnite_cheat_master_klombo_sprite",
     "loot-hacker": "1/14/Fortnite_loot_hacker_klombo_sprite",
     "bounty-hunter": "e/e9/Fortnite_bounty_hunter_klombo_sprite",
+    "trick-or-treat": "0/09/Fortnite_trick_or_treat_klombo_sprite",
   },
   "storm-scout": {
     base: "a/a3/Fortnite_storm_scout_sprite",
@@ -124,6 +135,7 @@ const IGN_ART = {
     "cheat-master": "3/31/Fortnite_cheat_master_storm_scout_sprite",
     "loot-hacker": "d/df/Fortnite_loot_hacker_storm_scout_sprite",
     "bounty-hunter": "b/bf/Fortnite_bounty_hunter_storm_scout_sprite",
+    "trick-or-treat": "c/c5/Fortnite_trick_or_treat_storm_scout_sprite",
   },
   "x-ray": {
     base: "0/09/Fortnite_x-ray_sprite",
@@ -131,6 +143,7 @@ const IGN_ART = {
     "cheat-master": "5/54/Fortnite_cheat_master_x-ray_sprite",
     "loot-hacker": "a/ae/Fortnite_loot_hacker_x-ray_sprite",
     "bounty-hunter": "9/98/Fortnite_bounty_hunter_x-ray_sprite",
+    "trick-or-treat": "b/bc/Fortnite_trick_or_treat_x-ray_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (corrigiram uma arte errada
   // publicada antes) — foge do padrão "Fortnite_{slug}_sprite.png" das
@@ -141,6 +154,7 @@ const IGN_ART = {
     "cheat-master": "0/0d/Fortnite_cheat_master_onigiri_sprite",
     "loot-hacker": "b/b2/Fortnite_loot_hacker_onigiri_sprite",
     "bounty-hunter": "a/ad/Fortnite_bounty_hunter_onigiri_sprite",
+    "trick-or-treat": "c/c1/Fortnite_trick_or_treat_onigiri_sprite",
   },
   "overshield": {
     base: "1/10/Fortnite_overshield_sprite",
@@ -148,6 +162,7 @@ const IGN_ART = {
     "cheat-master": "b/bf/Fortnite_cheat_master_overshield_sprite",
     "loot-hacker": "8/88/Fortnite_loot_hacker_overshield_sprite",
     "bounty-hunter": "7/74/Fortnite_bounty_hunter_overshield_sprite",
+    "trick-or-treat": "f/f9/Fortnite_trick_or_treat_overshield_sprite",
   },
   // O arquivo base no IGN é "..._CORRECT.png" (mesmo caso do Onigiri acima).
   "blinky": {
@@ -156,6 +171,7 @@ const IGN_ART = {
     "cheat-master": "4/41/Fortnite_cheat_master_blinky_sprite_CORRECT",
     "loot-hacker": "d/d7/Fortnite_loot_hacker_blinky_sprite_CORRECT",
     "bounty-hunter": "6/66/Fortnite_bounty_hunter_blinky_sprite",
+    "trick-or-treat": "e/e1/Fortnite_trick_or_treat_blinky_sprite",
   },
   "crash-bandicoot": {
     base: "f/f9/Fortnite_crash_bandicoot_sprite_CORRECT",
@@ -163,6 +179,7 @@ const IGN_ART = {
     "cheat-master": "f/ff/Fortnite_cheat_master_crash_bandicoot_sprite_CORRECT",
     "loot-hacker": "8/84/Fortnite_loot_hacker_crash_bandicoot_sprite_CORRECT",
     "bounty-hunter": "a/a7/Fortnite_bounty_hunter_crash_bandicoot_sprite",
+    "trick-or-treat": "c/c8/Fortnite_trick_or_treat_crash_bandicoot_sprite",
   },
   "pond": {
     base: "7/71/Fortnite_pond_sprite_CORRECT",
@@ -170,6 +187,7 @@ const IGN_ART = {
     "cheat-master": "2/20/Fortnite_cheat_master_pond_sprite_CORRECT",
     "loot-hacker": "2/20/Fortnite_loot_hacker_pond_sprite_CORRECT",
     "bounty-hunter": "e/ee/Fortnite_bounty_hunter_pond_sprite",
+    "trick-or-treat": "e/e6/Fortnite_trick_or_treat_pond_sprite",
   },
   "morgana": {
     base: "d/d2/Fortnite_morgana_sprite_CORRECT",
@@ -177,6 +195,7 @@ const IGN_ART = {
     "cheat-master": "8/89/Fortnite_cheat_master_morgana_sprite_CORRECT",
     "loot-hacker": "c/c5/Fortnite_loot_hacker_morgana_sprite_CORRECT",
     "bounty-hunter": "9/99/Fortnite_bounty_hunter_morgana_sprite_CORRECT",
+    "trick-or-treat": "2/20/Fortnite_trick_or_treat_morgana_sprite",
   },
   "birthday": {
     base: "c/cc/Fortnite_birthday_sprite_CORRECT",
@@ -184,6 +203,39 @@ const IGN_ART = {
     "cheat-master": "5/5c/Fortnite_cheat_master_birthday_sprite_CORRECT",
     "loot-hacker": "0/09/Fortnite_loot_hacker_birthday_sprite_CORRECT",
     "bounty-hunter": "9/96/Fortnite_bounty_hunter_birthday_sprite_CORRECT",
+    "trick-or-treat": "4/48/Fortnite_trick_or_treat_birthday_sprite",
+  },
+  "dumpster-dive": {
+    base: "a/ae/Fortnite_dumpster_dive_sprite",
+    gold: "7/74/Fortnite_gold_dumpster_dive_sprite",
+    "cheat-master": "0/0f/Fortnite_cheat_master_dumpster_dive_sprite",
+    "loot-hacker": "5/53/Fortnite_loot_hacker_dumpster_dive_sprite",
+    "bounty-hunter": "b/b0/Fortnite_bounty_hunter_dumpster_dive_sprite",
+    "trick-or-treat": "d/de/Fortnite_trick_or_treat_dumpster_dive_sprite",
+  },
+  "vampire": {
+    base: "5/5a/Fortnite_vampire_sprite",
+    gold: "7/7e/Fortnite_gold_vampire_sprite",
+    "cheat-master": "6/6d/Fortnite_cheat_master_vampire_sprite",
+    "loot-hacker": "2/2b/Fortnite_loot_hacker_vampire_sprite",
+    "bounty-hunter": "f/f6/Fortnite_bounty_hunter_vampire_sprite",
+    "trick-or-treat": "c/c3/Fortnite_trick_or_treat_vampire_sprite",
+  },
+  "the-deer": {
+    base: "6/6d/Fortnite_the_deer_sprite",
+    gold: "9/97/Fortnite_gold_the_deer_sprite",
+    "cheat-master": "e/ee/Fortnite_cheat_master_the_deer_sprite",
+    "loot-hacker": "a/a5/Fortnite_loot_hacker_the_deer_sprite",
+    "bounty-hunter": "6/69/Fortnite_bounty_hunter_the_deer_sprite",
+    "trick-or-treat": "c/c7/Fortnite_trick_or_treat_the_deer_sprite",
+  },
+  "spooky-dash": {
+    base: "d/d1/Fortnite_spooky_dash_sprite",
+    gold: "2/2f/Fortnite_gold_spooky_dash_sprite",
+    "cheat-master": "0/07/Fortnite_cheat_master_spooky_dash_sprite",
+    "loot-hacker": "d/dc/Fortnite_loot_hacker_spooky_dash_sprite",
+    "bounty-hunter": "5/52/Fortnite_bounty_hunter_spooky_dash_sprite",
+    "trick-or-treat": "4/4b/Fortnite_trick_or_treat_spooky_dash_sprite",
   },
 };
 
@@ -251,6 +303,24 @@ const EXTRA_VARIANTS = {
       en: "Effect not yet revealed.",
     },
   },
+  // Variante nova, detectada em 01/out/2026 — tema de Halloween. Só a da
+  // Coroa está lançada de verdade (linha própria na tabela principal do
+  // IGN, com checklist-task-id em sequência com os Sprites lançados hoje) —
+  // por isso só ela entra no `onlyVariants` da Coroa. As outras 23 (todos os
+  // Sprites lançados exceto Mega Man) aparecem numa mini-tabela separada
+  // "Unreleased Sprites List" — a arte já foi divulgada, mas não é
+  // colecionável ainda, então entram no `lockedVariants` desses Sprites:
+  // aparecem no app com o quadradinho e o cadeado, mas sem caixinha
+  // marcável (ver `makeVariants` abaixo). IGN não descreve o efeito; nome em
+  // PT é tradução nossa provisória.
+  "trick-or-treat": {
+    id: "trick-or-treat",
+    name: { pt: "Doce ou Travessura", en: "Trick or Treat" },
+    effect: {
+      pt: "Efeito ainda não revelado.",
+      en: "Effect not yet revealed.",
+    },
+  },
 };
 
 // Ordem de preferência da arte de uma variante: link explícito na entrada
@@ -261,20 +331,30 @@ const variantImage = (elemental, v) =>
   ignArt(elemental.id, v.id) ||
   WIKI_ITEM(`${v.name.en} ${elemental.wikiName}`);
 
+const resolveVariant = (id) =>
+  SPRITE_VARIANTS.find((v) => v.id === id) || EXTRA_VARIANTS[id];
+
 const makeVariants = (elemental) => {
   // `onlyVariants`: lista explícita de variantes (substitui a regra padrão
   // Dourado/Gelatinoso/Galáctico/Gema/Metalizado + extras) — usada pelos
   // Sprites da Temporada 4, que só têm Dourado + Cheat Master.
-  if (elemental.onlyVariants) {
-    return elemental.onlyVariants
-      .map((id) => SPRITE_VARIANTS.find((v) => v.id === id) || EXTRA_VARIANTS[id])
-      .map((v) => ({ ...v, image: variantImage(elemental, v) }));
-  }
-  const base = SPRITE_VARIANTS.filter(
-    (v) => !(elemental.noHolofoil && v.id === "holofoil")
-  );
-  const extras = (elemental.extraVariants || []).map((id) => EXTRA_VARIANTS[id]);
-  return [...base, ...extras].map((v) => ({
+  const unlocked = elemental.onlyVariants
+    ? elemental.onlyVariants.map(resolveVariant)
+    : [
+        ...SPRITE_VARIANTS.filter(
+          (v) => !(elemental.noHolofoil && v.id === "holofoil")
+        ),
+        ...(elemental.extraVariants || []).map((id) => EXTRA_VARIANTS[id]),
+      ];
+  // `lockedVariants`: variante já com arte divulgada pela Epic mas ainda não
+  // colecionável no jogo — aparece no app com o quadradinho e um cadeado,
+  // sem caixinha marcável (ver spriteTile em app.js), em vez de ficar
+  // escondida até ser liberada de verdade.
+  const locked = (elemental.lockedVariants || []).map((id) => ({
+    ...resolveVariant(id),
+    locked: true,
+  }));
+  return [...unlocked, ...locked].map((v) => ({
     ...v,
     image: variantImage(elemental, v),
   }));
@@ -304,6 +384,7 @@ const ELEMENTALS = [
     wikiName: "8-Bit Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Garante uma Espingarda 8-Bit no primeiro baú que você abrir, com multiplicador de pontuação.",
       en: "Find an 8-Bit Shotgun in your first Chest and gain a score multiplier for it.",
@@ -317,6 +398,7 @@ const ELEMENTALS = [
     wikiName: "Adventure Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Melhora um item aleatório do seu inventário a cada nível.",
       en: "Upgrade a random item in your inventory at each Level.",
@@ -330,6 +412,7 @@ const ELEMENTALS = [
     wikiName: "Bush Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Cria um Arbusto em você depois de um tempo. No nível máximo, ganha outro a cada eliminação.",
       en: "Spawns a Bush on you after a duration. At max Level, gain a Bush on elimination.",
@@ -343,6 +426,7 @@ const ELEMENTALS = [
     wikiName: "Jonesy Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
       en: "After a short duration, recover some Health or Shield after being damaged.",
@@ -358,6 +442,7 @@ const ELEMENTALS = [
     wikiName: "Onigiri Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Concede Sobrecarga depois de usar um item consumível, com duração maior a cada nível.",
       en: "Grants Overdrive after using a Consumable item, lasting longer per level.",
@@ -375,6 +460,7 @@ const ELEMENTALS = [
     wikiName: "Storm Scout Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Concede Sobrecarga e Energia infinita depois que você toma 10 de dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
       en: "Grants Overdrive and unlimited Energy after you take 10 Storm damage, and at max level reveals where future circles will land.",
@@ -391,6 +477,7 @@ const ELEMENTALS = [
     wikiName: "Overshield Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Concede Sobrescudo, com a quantidade aumentando a cada nível.",
       en: "Grants Overshield, with the amount increasing at higher Levels.",
@@ -424,6 +511,7 @@ const ELEMENTALS = [
     wikiName: "Sonic Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Aumenta a velocidade de corrida.",
       en: "Sprint faster.",
@@ -437,6 +525,7 @@ const ELEMENTALS = [
     wikiName: "Tails Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Permite pairar no ar com a ajuda da cauda, anulando todo o dano de queda.",
       en: "Hover in mid-air with the help of Tails, and cancels all fall damage.",
@@ -450,6 +539,7 @@ const ELEMENTALS = [
     wikiName: "Shadow Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Recarrega as armas automaticamente com o tempo, mesmo as que não estão equipadas.",
       en: "Automatically reload weapons over time, even when unequipped.",
@@ -463,6 +553,7 @@ const ELEMENTALS = [
     wikiName: "Killswitch Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Ative a câmera lenta com precisão melhorada ao mirar enquanto pula.",
       en: "Enter Hangtime with improved accuracy.",
@@ -476,6 +567,7 @@ const ELEMENTALS = [
     wikiName: "Jackrabbit Sprite",
     rarity: "Legendary",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Permite dar mais um pulo enquanto está no ar.",
       en: "Perform another jump while mid-air.",
@@ -493,6 +585,7 @@ const ELEMENTALS = [
     wikiName: "X-Ray Sprite",
     rarity: "Legendary",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Marca periodicamente os inimigos próximos. A frequência e o raio de detecção aumentam a cada nível.",
       en: "Periodically marks nearby enemies. Frequency and radius increases with each level.",
@@ -503,12 +596,20 @@ const ELEMENTALS = [
   {
     // Foi a primeira com a variante Loot Hacker liberada (03/set/2026); os
     // outros Sprites da temporada ganharam a deles na "New Sprites Day" de
-    // 10/set/2026 (ver EXTRA_VARIANTS) — só o Mega Man ficou de fora.
+    // 10/set/2026 (ver EXTRA_VARIANTS) — só o Mega Man ficou de fora. Em
+    // 01/out/2026 foi também a primeira (e por ora única) com a variante
+    // Doce ou Travessura (ver comentário em EXTRA_VARIANTS).
     id: "crown",
     name: { pt: "Coroa", en: "Crown" },
     wikiName: "Crown Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    onlyVariants: [
+      "gold",
+      "cheat-master",
+      "loot-hacker",
+      "bounty-hunter",
+      "trick-or-treat",
+    ],
     ability: {
       pt: "Ganha Coroas extras (Crown Wins) depois de uma Vitória Royale.",
       en: "Gain extra Crown Wins after getting a Victory Royale.",
@@ -518,10 +619,11 @@ const ELEMENTALS = [
   },
   {
     id: "klombo",
-    name: { pt: "Klombo", en: "Klombo" },
+    name: { pt: "Klimbo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Concede itens aleatórios a cada nível. Só sobe de nível usando itens consumíveis que dão vida ou escudo.",
       en: "Grants random items at each level. You can only level it up by using consumable items that give Health or Shield.",
@@ -541,6 +643,7 @@ const ELEMENTALS = [
     wikiName: "Blinky Sprite",
     rarity: "Legendary",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Concede Camuflagem ao levar dano, que aumenta a cada nível.",
       en: "Grants you Cloak when you take damage, which increases with each level.",
@@ -555,6 +658,7 @@ const ELEMENTALS = [
     wikiName: "Crash Bandicoot Sprite",
     rarity: "Legendary",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Pule para ativar um ataque giratório que causa dano e arremessa os inimigos para trás. O dano aumenta a cada nível.",
       en: "Jump to trigger a whirlwind attack, which damages and knocks back enemies. Damage increases with each level.",
@@ -572,6 +676,7 @@ const ELEMENTALS = [
     wikiName: "Pond Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Concede um Super Pulo depois de pular, ganhando mais cargas com o tempo. A força do Super Pulo aumenta a cada nível.",
       en: "Grants you a Super Jump after jumping, with more charges gained over time. Super Jump strength increases with each level.",
@@ -590,6 +695,7 @@ const ELEMENTALS = [
     wikiName: "Morgana Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Aumenta a eficácia dos itens de cura, que aumenta a cada nível.",
       en: "Increases effectiveness of healing items, which increases with each level.",
@@ -608,6 +714,7 @@ const ELEMENTALS = [
     wikiName: "Birthday Sprite",
     rarity: "Rare",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
     ability: {
       pt: "Dá uma chance de receber um pedaço de bolo ao abrir baús.",
       en: "Gives you a chance to receive a piece of cake when opening chests.",
@@ -615,18 +722,80 @@ const ELEMENTALS = [
     dust: 100,
     variantCost: 2700,
   },
+  {
+    // Vencedor do concurso Design-A-Sprite (por StinkyPrincessGoose),
+    // lançado em 01/out/2026 — saiu da seção "Unreleased Sprites List" do
+    // IGN e entrou na tabela principal, com raridade e habilidade
+    // publicadas. Raridade e habilidade vêm direto da tabela do IGN.
+    id: "dumpster-dive",
+    name: { pt: "Mergulho na Lixeira", en: "Dumpster Dive" },
+    wikiName: "Dumpster Dive Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
+    ability: {
+      pt: "Aumenta a cura de alimentos e dá uma chance de encontrar comida ao pular para fora de lixeiras e banheiros químicos, ou ao abrir recipientes; a chance de comida aumenta a cada nível.",
+      en: "Buffs heals from food and gives you a chance to find food when jumping out of dumpsters and porta potties and opening containers, with better food chance with each level.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    // Detectado em 01/out/2026, já com raridade e habilidade publicadas na
+    // tabela do IGN — entra direto curado, sem passar por elementals-auto.js.
+    id: "vampire",
+    name: { pt: "Vampiro", en: "Vampire" },
+    wikiName: "Vampire Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
+    ability: {
+      pt: "Cura você ao causar dano aos inimigos. A quantidade curada aumenta a cada nível.",
+      en: "Heals you when you damage enemies. Amount healed increases per level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
+    // Mesmo lançamento do Vampiro (ver comentário acima). PT "O Cervo" é
+    // tradução nossa provisória — ainda não conferida no cliente em
+    // português.
+    id: "the-deer",
+    name: { pt: "O Cervo", en: "The Deer" },
+    wikiName: "The Deer Sprite",
+    rarity: "Legendary",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
+    ability: {
+      pt: "Concede bônus de dano corpo a corpo, que aumenta a cada nível.",
+      en: "Buffs melee damage, which increases per level.",
+    },
+    dust: 4500,
+    variantCost: 6750,
+  },
+  {
+    // Mesmo lançamento do Vampiro (ver comentário acima). PT "Investida
+    // Assombrada" é tradução nossa provisória — ainda não conferida no
+    // cliente em português.
+    id: "spooky-dash",
+    name: { pt: "Investida Assombrada", en: "Spooky Dash" },
+    wikiName: "Spooky Dash Sprite",
+    rarity: "Mythic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
+    lockedVariants: ["trick-or-treat"],
+    ability: {
+      pt: "Concede uma investida que atravessa objetos e paredes. Cada nível reduz o tempo de recarga.",
+      en: "Grants you a dash that lets you phase through objects and walls. Each level reduces cooldown.",
+    },
+    dust: 6750,
+    variantCost: 10000,
+  },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
-  // com nome e autor. O Lago (Pine & Kiri) já foi lançado — ver entrada
-  // própria acima.
+  // com nome e autor. O Lago (Pine & Kiri) e o Mergulho na Lixeira já foram
+  // lançados — ver entradas próprias acima.
   ...[
     { id: "bullet", pt: "Bala", en: "Bullet", author: "Enorull" },
-    {
-      id: "dumpster-dive",
-      pt: "Mergulho na Lixeira",
-      en: "Dumpster Dive",
-      author: "StinkyPrincessGoose",
-    },
     { id: "honey", pt: "Mel", en: "Honey", author: "Conejito_sam" },
   ].map((c) => ({
     id: c.id,
