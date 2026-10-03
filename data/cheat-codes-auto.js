@@ -19,6 +19,28 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "runsystemoverride",
+    "code": "runSystemOverride",
+    "autoAdded": "2026-10-03",
+    "reward": {
+      "pt": "5,000 Sprite Dust e (Must complete Part 2 of Geno's Story Quest first)",
+      "en": "5,000 Sprite Dust e (Must complete Part 2 of Geno's Story Quest first)"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "imtherealedgelord",
+    "code": "ImTheRealEdgelord",
+    "autoAdded": "2026-10-03",
+    "reward": {
+      "pt": "5,000 Sprite Dust e (Must complete Part 2 of Wrixel (Ziggy)'s Story Quest first)",
+      "en": "5,000 Sprite Dust e (Must complete Part 2 of Wrixel (Ziggy)'s Story Quest first)"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "pumpkinspicelife",
     "code": "PumpkinSpiceLife",
     "autoAdded": "2026-10-01",
