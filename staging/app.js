@@ -1558,15 +1558,14 @@ async function exportSummary() {
   const c = EXPORT_COLORS;
   const list = ELEMENTALS.filter((e) => !e.upcoming);
 
-  // Ícones oficiais dos Sprites (os que falharem viram bolinha + inicial)
-  // e de cada variante (os que falharem deixam o chip só com o texto).
+  // Ícones oficiais dos Sprites (os que falharem viram bolinha + inicial) e
+  // de cada variante, incluindo as travadas — a arte delas já foi curada
+  // mesmo sem serem colecionáveis ainda (ver lockedVariants/makeVariants em
+  // data/elementals.js), e o resumo deve mostrar o quadradinho junto com os
+  // outros, só marcado com 🔒 em vez de ficar de fora.
   const [icons, variantIcons] = await Promise.all([
     Promise.all(list.map((e) => loadCorsImage(e.image))),
-    Promise.all(
-      list.map((e) =>
-        Promise.all(e.variants.filter((v) => !v.locked).map((v) => loadCorsImage(v.image)))
-      )
-    ),
+    Promise.all(list.map((e) => Promise.all(e.variants.map((v) => loadCorsImage(v.image))))),
   ]);
 
   const W = 840;
@@ -1664,12 +1663,11 @@ async function exportSummary() {
 
     const items = [
       { state: entry, icon: icons[i] },
-      ...e.variants
-        .filter((v) => !v.locked)
-        .map((v, k) => ({
-          state: getVariantEntry(entry, v.id),
-          icon: variantIcons[i][k],
-        })),
+      ...e.variants.map((v, k) => ({
+        state: getVariantEntry(entry, v.id),
+        icon: variantIcons[i][k],
+        locked: v.locked,
+      })),
     ];
 
     items.forEach((item, j) => {
@@ -1696,7 +1694,15 @@ async function exportSummary() {
         );
         ctx.globalAlpha = 1;
       }
-      if (item.state.mastered) {
+      if (item.locked) {
+        // Travada (arte já publicada, ainda não colecionável — ver
+        // lockedVariants): cadeado no canto, nunca junto com a estrelinha,
+        // já que uma variante travada nunca está dominada.
+        ctx.font = `700 18px ${FONT}`;
+        ctx.textAlign = "right";
+        ctx.fillText("🔒", x + CHIP_W - 2, y - CHIP_H / 2 + 17);
+        ctx.textAlign = "left";
+      } else if (item.state.mastered) {
         // Única coisa escrita no chip: uma estrelinha no canto, pequena
         // demais pra ler errado com o ícone, mas suficiente pra distinguir
         // "tenho" de "dominado" sem precisar de texto.
