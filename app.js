@@ -1571,7 +1571,7 @@ async function exportSummary() {
 
   const W = 840;
   const HEADER = 196;
-  const ROW = 46;
+  const ROW = 92;
   const FOOTER = 44;
   const H = HEADER + list.length * ROW + FOOTER;
 
@@ -1623,15 +1623,21 @@ async function exportSummary() {
   ctx.lineTo(W - 24, HEADER - 14);
   ctx.stroke();
 
-  // Uma linha por Elemental: bolinha na cor da raridade com a inicial,
-  // nome e um chip por quadradinho (Base + variantes), cada um com o ícone
-  // do Sprite/variante. Cabem 5 chips (Base + 4 variantes) na largura.
-  const NAME_X = 62;
-  const CHIPS_X = 218;
-  const CHIP_W = 114;
-  const CHIP_H = 30;
-  const CHIP_GAP = 4;
-  const CHIP_ICON = 22;
+  // Uma linha por Elemental: ícone grande na cor da raridade com a inicial,
+  // nome e um chip quadrado grande por quadradinho (Base + variantes), só
+  // com o ícone do Sprite/variante — sem texto, pra imagem ficar mais
+  // visual (pedido do usuário, baseado num print de referência de outro
+  // tracker). Fundo preenchido (na cor da raridade) = tenho; contorno = não
+  // tenho; estrelinha no canto = dominado (único texto que sobra, pequeno
+  // demais pra ler errado com o ícone).
+  const ICON_SIZE = 48;
+  const NAME_X = 82;
+  const CHIPS_X = 240;
+  const CHIP_ICON = 56;
+  const CHIP_PAD = 8;
+  const CHIP_W = CHIP_ICON + CHIP_PAD * 2;
+  const CHIP_H = CHIP_W;
+  const CHIP_GAP = 8;
 
   list.forEach((e, i) => {
     const y = HEADER + i * ROW + ROW / 2;
@@ -1639,29 +1645,28 @@ async function exportSummary() {
     const color = c.rarity[e.rarity];
 
     if (icons[i]) {
-      ctx.drawImage(icons[i], 21, y - 17, 34, 34);
+      ctx.drawImage(icons[i], 24, y - ICON_SIZE / 2, ICON_SIZE, ICON_SIZE);
     } else {
       ctx.beginPath();
-      ctx.arc(38, y, 13, 0, Math.PI * 2);
+      ctx.arc(24 + ICON_SIZE / 2, y, ICON_SIZE / 2, 0, Math.PI * 2);
       ctx.fillStyle = color;
       ctx.fill();
       ctx.fillStyle = c.bg;
-      ctx.font = `700 13px ${FONT}`;
+      ctx.font = `700 20px ${FONT}`;
       ctx.textAlign = "center";
-      ctx.fillText(e.name[lang][0].toUpperCase(), 38, y + 1);
+      ctx.fillText(e.name[lang][0].toUpperCase(), 24 + ICON_SIZE / 2, y + 1);
       ctx.textAlign = "left";
     }
 
     ctx.fillStyle = c.text;
-    const name = fitText(ctx, e.name[lang], CHIPS_X - NAME_X - 12, 15, 700, FONT);
+    const name = fitText(ctx, e.name[lang], CHIPS_X - NAME_X - 12, 17, 700, FONT);
     ctx.fillText(name, NAME_X, y);
 
     const items = [
-      { label: s.baseVariant, state: entry, icon: icons[i] },
+      { state: entry, icon: icons[i] },
       ...e.variants
         .filter((v) => !v.locked)
         .map((v, k) => ({
-          label: v.name[lang],
           state: getVariantEntry(entry, v.id),
           icon: variantIcons[i][k],
         })),
@@ -1673,25 +1678,34 @@ async function exportSummary() {
       if (item.state.owned) {
         ctx.fillStyle = color;
         ctx.fill();
-        ctx.fillStyle = c.bg;
       } else {
         ctx.fillStyle = c.surface;
         ctx.fill();
         ctx.strokeStyle = c.border;
         ctx.stroke();
-        ctx.fillStyle = c.muted;
       }
-      let textX = x + 8;
       if (item.icon) {
         // Apagado quando não tem, como os quadradinhos não marcados.
         ctx.globalAlpha = item.state.owned ? 1 : 0.45;
-        ctx.drawImage(item.icon, x + 4, y - CHIP_ICON / 2, CHIP_ICON, CHIP_ICON);
+        ctx.drawImage(
+          item.icon,
+          x + CHIP_PAD,
+          y - CHIP_ICON / 2,
+          CHIP_ICON,
+          CHIP_ICON
+        );
         ctx.globalAlpha = 1;
-        textX = x + 4 + CHIP_ICON + 4;
       }
-      const mark = item.state.mastered ? "★ " : item.state.owned ? "✓ " : "";
-      const label = fitText(ctx, `${mark}${item.label}`, x + CHIP_W - 6 - textX, 11, 600, FONT);
-      ctx.fillText(label, textX, y + 1);
+      if (item.state.mastered) {
+        // Única coisa escrita no chip: uma estrelinha no canto, pequena
+        // demais pra ler errado com o ícone, mas suficiente pra distinguir
+        // "tenho" de "dominado" sem precisar de texto.
+        ctx.fillStyle = c.star;
+        ctx.font = `700 20px ${FONT}`;
+        ctx.textAlign = "right";
+        ctx.fillText("★", x + CHIP_W - 2, y - CHIP_H / 2 + 17);
+        ctx.textAlign = "left";
+      }
     });
   });
 
