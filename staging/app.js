@@ -1575,7 +1575,12 @@ async function exportSummary() {
   const H = HEADER + list.length * ROW + FOOTER;
 
   const canvas = document.createElement("canvas");
-  const scale = 2; // nitidez em telas retina e no zoom
+  // Nitidez em telas retina e no zoom. 3x (não 2x) porque apps como o
+  // WhatsApp recomprimem a imagem ao enviar como "Foto" — começar de uma
+  // resolução mais alta sobra mais qualidade depois dessa recompressão
+  // (não evita, mas atenua; copiar e colar ou enviar como "Documento" no
+  // próprio WhatsApp continua sendo o jeito de não perder nada).
+  const scale = 3;
   canvas.width = W * scale;
   canvas.height = H * scale;
   const ctx = canvas.getContext("2d");
