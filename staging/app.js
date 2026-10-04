@@ -1571,7 +1571,7 @@ async function exportSummary() {
 
   const W = 840;
   const HEADER = 196;
-  const ROW = 46;
+  const ROW = 92;
   const FOOTER = 44;
   const H = HEADER + list.length * ROW + FOOTER;
 
@@ -1623,19 +1623,21 @@ async function exportSummary() {
   ctx.lineTo(W - 24, HEADER - 14);
   ctx.stroke();
 
-  // Uma linha por Elemental: bolinha na cor da raridade com a inicial,
-  // nome e um chip quadrado por quadradinho (Base + variantes), só com o
-  // ícone do Sprite/variante — sem texto, pra caber mais chips e ficar mais
-  // visual. Fundo preenchido (na cor da raridade) = tenho; contorno = não
+  // Uma linha por Elemental: ícone grande na cor da raridade com a inicial,
+  // nome e um chip quadrado grande por quadradinho (Base + variantes), só
+  // com o ícone do Sprite/variante — sem texto, pra imagem ficar mais
+  // visual (pedido do usuário, baseado num print de referência de outro
+  // tracker). Fundo preenchido (na cor da raridade) = tenho; contorno = não
   // tenho; estrelinha no canto = dominado (único texto que sobra, pequeno
   // demais pra ler errado com o ícone).
-  const NAME_X = 62;
-  const CHIPS_X = 218;
-  const CHIP_ICON = 26;
-  const CHIP_PAD = 5;
+  const ICON_SIZE = 48;
+  const NAME_X = 82;
+  const CHIPS_X = 240;
+  const CHIP_ICON = 56;
+  const CHIP_PAD = 8;
   const CHIP_W = CHIP_ICON + CHIP_PAD * 2;
   const CHIP_H = CHIP_W;
-  const CHIP_GAP = 5;
+  const CHIP_GAP = 8;
 
   list.forEach((e, i) => {
     const y = HEADER + i * ROW + ROW / 2;
@@ -1643,21 +1645,21 @@ async function exportSummary() {
     const color = c.rarity[e.rarity];
 
     if (icons[i]) {
-      ctx.drawImage(icons[i], 21, y - 17, 34, 34);
+      ctx.drawImage(icons[i], 24, y - ICON_SIZE / 2, ICON_SIZE, ICON_SIZE);
     } else {
       ctx.beginPath();
-      ctx.arc(38, y, 13, 0, Math.PI * 2);
+      ctx.arc(24 + ICON_SIZE / 2, y, ICON_SIZE / 2, 0, Math.PI * 2);
       ctx.fillStyle = color;
       ctx.fill();
       ctx.fillStyle = c.bg;
-      ctx.font = `700 13px ${FONT}`;
+      ctx.font = `700 20px ${FONT}`;
       ctx.textAlign = "center";
-      ctx.fillText(e.name[lang][0].toUpperCase(), 38, y + 1);
+      ctx.fillText(e.name[lang][0].toUpperCase(), 24 + ICON_SIZE / 2, y + 1);
       ctx.textAlign = "left";
     }
 
     ctx.fillStyle = c.text;
-    const name = fitText(ctx, e.name[lang], CHIPS_X - NAME_X - 12, 15, 700, FONT);
+    const name = fitText(ctx, e.name[lang], CHIPS_X - NAME_X - 12, 17, 700, FONT);
     ctx.fillText(name, NAME_X, y);
 
     const items = [
@@ -1699,9 +1701,9 @@ async function exportSummary() {
         // demais pra ler errado com o ícone, mas suficiente pra distinguir
         // "tenho" de "dominado" sem precisar de texto.
         ctx.fillStyle = c.star;
-        ctx.font = `700 13px ${FONT}`;
+        ctx.font = `700 20px ${FONT}`;
         ctx.textAlign = "right";
-        ctx.fillText("★", x + CHIP_W - 1, y - CHIP_H / 2 + 11);
+        ctx.fillText("★", x + CHIP_W - 2, y - CHIP_H / 2 + 17);
         ctx.textAlign = "left";
       }
     });
