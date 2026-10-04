@@ -262,6 +262,34 @@ function parseIgnSprites(rawHtml) {
   return found;
 }
 
+const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Variantes marcadas como `locked: true` em data/elementals.js (ver
+// `lockedVariants`/`makeVariants` lá) têm a arte já publicada pela Epic mas
+// ainda não são colecionáveis — a tabela do IGN só confirma isso quando a
+// linha da variante ganha `<checkbox data-checklist-task-id=…>` de verdade,
+// em vez de aparecer como texto solto na mini-tabela "Unreleased Sprites
+// List". Nunca edita elementals.js: só avisa, pra curadoria manual mover o
+// id de `lockedVariants` pra `onlyVariants` (mesmo tratamento que a Coroa já
+// recebeu com o Doce ou Travessura).
+function findReleasedLockedVariants(rawHtml, known) {
+  const html = unescapeIgn(rawHtml);
+  const released = [];
+  for (const elemental of known) {
+    for (const variant of elemental.variants || []) {
+      if (!variant.locked) continue;
+      const needle = `${variant.name.en} ${elemental.wikiName}`;
+      const pattern = new RegExp(
+        `<checkbox data-checklist-task-id="\\d+">${escapeRegex(needle)}</checkbox>`
+      );
+      if (pattern.test(html)) {
+        released.push({ elementalId: elemental.id, variantId: variant.id, needle });
+      }
+    }
+  }
+  return released;
+}
+
 // Avalia os arquivos de dados do app (JS puro e autossuficiente) para obter
 // a lista atual de Sprites conhecidos.
 function loadKnownElementals() {
@@ -666,6 +694,14 @@ async function updateSprites(fixtureHtml, today) {
   console.log(`Sprites citados no IGN: ${parsed.size}`);
   for (const [name, info] of parsed) {
     console.log(`  - ${name}${info.upcoming ? " (não lançado)" : ""}`);
+  }
+
+  const releasedLocked = findReleasedLockedVariants(ignHtml, known);
+  if (releasedLocked.length > 0) {
+    console.log("Variantes travadas liberadas pela Epic (curadoria manual):");
+    for (const { elementalId, variantId, needle } of releasedLocked) {
+      console.log(`  - ${needle} → mover "${variantId}" de lockedVariants pra onlyVariants em "${elementalId}"`);
+    }
   }
 
   // Fail-closed: todos os Sprites já lançados precisam continuar aparecendo

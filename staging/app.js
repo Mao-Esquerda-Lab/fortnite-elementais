@@ -1624,14 +1624,18 @@ async function exportSummary() {
   ctx.stroke();
 
   // Uma linha por Elemental: bolinha na cor da raridade com a inicial,
-  // nome e um chip por quadradinho (Base + variantes), cada um com o ícone
-  // do Sprite/variante. Cabem 5 chips (Base + 4 variantes) na largura.
+  // nome e um chip quadrado por quadradinho (Base + variantes), só com o
+  // ícone do Sprite/variante — sem texto, pra caber mais chips e ficar mais
+  // visual. Fundo preenchido (na cor da raridade) = tenho; contorno = não
+  // tenho; estrelinha no canto = dominado (único texto que sobra, pequeno
+  // demais pra ler errado com o ícone).
   const NAME_X = 62;
   const CHIPS_X = 218;
-  const CHIP_W = 114;
-  const CHIP_H = 30;
-  const CHIP_GAP = 4;
-  const CHIP_ICON = 22;
+  const CHIP_ICON = 26;
+  const CHIP_PAD = 5;
+  const CHIP_W = CHIP_ICON + CHIP_PAD * 2;
+  const CHIP_H = CHIP_W;
+  const CHIP_GAP = 5;
 
   list.forEach((e, i) => {
     const y = HEADER + i * ROW + ROW / 2;
@@ -1657,11 +1661,10 @@ async function exportSummary() {
     ctx.fillText(name, NAME_X, y);
 
     const items = [
-      { label: s.baseVariant, state: entry, icon: icons[i] },
+      { state: entry, icon: icons[i] },
       ...e.variants
         .filter((v) => !v.locked)
         .map((v, k) => ({
-          label: v.name[lang],
           state: getVariantEntry(entry, v.id),
           icon: variantIcons[i][k],
         })),
@@ -1673,25 +1676,34 @@ async function exportSummary() {
       if (item.state.owned) {
         ctx.fillStyle = color;
         ctx.fill();
-        ctx.fillStyle = c.bg;
       } else {
         ctx.fillStyle = c.surface;
         ctx.fill();
         ctx.strokeStyle = c.border;
         ctx.stroke();
-        ctx.fillStyle = c.muted;
       }
-      let textX = x + 8;
       if (item.icon) {
         // Apagado quando não tem, como os quadradinhos não marcados.
         ctx.globalAlpha = item.state.owned ? 1 : 0.45;
-        ctx.drawImage(item.icon, x + 4, y - CHIP_ICON / 2, CHIP_ICON, CHIP_ICON);
+        ctx.drawImage(
+          item.icon,
+          x + CHIP_PAD,
+          y - CHIP_ICON / 2,
+          CHIP_ICON,
+          CHIP_ICON
+        );
         ctx.globalAlpha = 1;
-        textX = x + 4 + CHIP_ICON + 4;
       }
-      const mark = item.state.mastered ? "★ " : item.state.owned ? "✓ " : "";
-      const label = fitText(ctx, `${mark}${item.label}`, x + CHIP_W - 6 - textX, 11, 600, FONT);
-      ctx.fillText(label, textX, y + 1);
+      if (item.state.mastered) {
+        // Única coisa escrita no chip: uma estrelinha no canto, pequena
+        // demais pra ler errado com o ícone, mas suficiente pra distinguir
+        // "tenho" de "dominado" sem precisar de texto.
+        ctx.fillStyle = c.star;
+        ctx.font = `700 13px ${FONT}`;
+        ctx.textAlign = "right";
+        ctx.fillText("★", x + CHIP_W - 1, y - CHIP_H / 2 + 11);
+        ctx.textAlign = "left";
+      }
     });
   });
 
