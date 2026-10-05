@@ -774,11 +774,9 @@ const ELEMENTALS = [
     variantCost: 6750,
   },
   {
-    // Mesmo lançamento do Vampiro (ver comentário acima). PT "Investida
-    // Assombrada" é tradução nossa provisória — ainda não conferida no
-    // cliente em português.
+    // Mesmo lançamento do Vampiro (ver comentário acima).
     id: "spooky-dash",
-    name: { pt: "Investida Assombrada", en: "Spooky Dash" },
+    name: { pt: "Disparada Assustadora", en: "Spooky Dash" },
     wikiName: "Spooky Dash Sprite",
     rarity: "Mythic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
