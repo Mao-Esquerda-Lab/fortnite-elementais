@@ -1276,18 +1276,27 @@ textarea {
 }
 
 /* Chip preenchido na cor da raridade, com texto escuro, igual aos chips
-   "tenho" da imagem de resumo. */
+   "tenho" da imagem de resumo. É um <button>: clicar abre a edição rápida
+   (tile-edit-overlay) pra marcar tenho/dominado sem sair da comparação. */
 .compare-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
   padding: 0.2rem 0.55rem 0.2rem 0.25rem;
+  border: none;
   border-radius: 0.45rem;
   background: var(--rarity-color, var(--accent));
   color: #0f1115;
   font-size: 0.78rem;
   font-weight: 600;
+  font-family: inherit;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.compare-chip:hover,
+.compare-chip:focus-visible {
+  filter: brightness(1.1);
 }
 
 .export-box .compare-chip img {
@@ -2277,6 +2286,28 @@ textarea {
   height: 0.9rem;
   border-radius: 999px;
   border: 2px solid var(--surface);
+}
+
+/* ---- Edição rápida de um quadradinho (a partir da comparação) ---- */
+.tile-edit-box {
+  width: min(360px, 94vw);
+  height: auto;
+}
+
+/* Sobrescreve o flex:1 de ".export-box img" (pensado pra imagem grande do
+   resumo) — aqui é só o ícone do quadradinho, ao lado do título. */
+.tile-edit-img {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+#tile-edit-checks {
+  margin-left: 0;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.3rem 0;
 }
 
 /* ---- Novidades (popup de uma vez só) ---- */
