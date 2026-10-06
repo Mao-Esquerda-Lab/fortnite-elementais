@@ -109,10 +109,7 @@ const TRANSLATIONS = {
     avatarSaveError: "Não foi possível salvar a imagem agora. Tente de novo.",
     newsTitle: "Novidades no Sprites Locker",
     newsItems: [
-      ["🔍", "Busca", "Toque na lupa, abaixo do título, para achar um Sprite pelo nome, pela habilidade ou pela variante."],
-      ["↩️", "Desfazer", "Marcou sem querer? Toque em “Desfazer” no aviso que aparece embaixo da tela."],
-      ["🎨", "Temas", "Em “Aparência”, no botão de conta, escolha entre Noite, Dia, Tempestade, Lendário, Mítico e Selva."],
-      ["🖼️", "Imagem de perfil", "Com conta, escolha um Sprite como sua imagem no “Meu perfil”."],
+      ["🆚", "Marcar na comparação", "Toque num item de “Só você tem” ou “Só ele(a) tem”, na tela de Comparar, pra marcar tenho/dominado na hora, sem sair da tela."],
     ],
     newsTheme: "Escolher tema",
     newsOk: "Entendi",
@@ -345,10 +342,7 @@ const TRANSLATIONS = {
     avatarSaveError: "Couldn't save the picture right now. Please try again.",
     newsTitle: "What's new in Sprites Locker",
     newsItems: [
-      ["🔍", "Search", "Tap the magnifier below the title to find a Sprite by name, ability or variant."],
-      ["↩️", "Undo", "Marked something by mistake? Tap “Undo” on the notice at the bottom of the screen."],
-      ["🎨", "Themes", "Under “Appearance”, on the account button, pick Night, Day, Storm, Legendary, Mythic or Jungle."],
-      ["🖼️", "Profile picture", "With an account, pick a Sprite as your picture in “My profile”."],
+      ["🆚", "Mark it from Compare", "Tap an item under “Only you have” or “Only they have”, on the Compare screen, to mark owned/mastered right there, without leaving the screen."],
     ],
     newsTheme: "Choose theme",
     newsOk: "Got it",
@@ -2885,7 +2879,7 @@ readShareHashOnLoad();
 // Quem nunca usou o app (nada salvo ainda) não vê: pra essa pessoa tudo já
 // é "o app", não novidade.
 const NEWS_KEY = "fortnite-sprites-news-seen";
-const NEWS_VERSION = "2026-09-temas-perfil";
+const NEWS_VERSION = "2026-10-marcar-comparacao";
 const newsOverlay = document.getElementById("news-overlay");
 
 function renderNews() {
