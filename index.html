@@ -368,7 +368,8 @@
     </div>
   </div>
 
-  <!-- Comparação somente-leitura contra a coleção decodificada de um link. -->
+  <!-- Comparação somente-leitura contra a coleção decodificada de um link,
+       ou (com conta) buscada ao vivo da coleção de um amigo. -->
   <div class="export-overlay" id="compare-overlay" hidden>
     <div class="export-box compare-box">
       <div class="compare-header">
@@ -377,7 +378,14 @@
           <span class="profile-avatar profile-avatar-sm" id="compare-avatar" hidden></span>
           <h2 id="compare-title"></h2>
         </div>
-        <button class="export-close" id="compare-close" type="button"></button>
+        <div class="compare-header-actions">
+          <!-- Só aparece na comparação ao vivo com um amigo (pela conta):
+               busca a coleção dele de novo, pra ver mudanças recentes. A
+               comparação por link/código colado é um retrato estático, sem
+               o que atualizar. -->
+          <button class="export-close" id="compare-refresh" type="button" hidden></button>
+          <button class="export-close" id="compare-close" type="button"></button>
+        </div>
       </div>
       <div class="compare-stats" id="compare-stats"></div>
       <!-- Amigo-exclusivo primeiro, o seu-exclusivo abaixo (nessa ordem). -->
