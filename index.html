@@ -388,6 +388,23 @@
     </div>
   </div>
 
+  <!-- Edição rápida de um quadradinho (Base ou variante), aberta ao clicar
+       num chip da tela de comparação: marca/desmarca tenho/dominado sem
+       fechar a comparação nem ir até o card do Sprite. -->
+  <div class="export-overlay" id="tile-edit-overlay" hidden>
+    <div class="export-box tile-edit-box" role="dialog" aria-modal="true" aria-labelledby="tile-edit-title">
+      <div class="compare-header">
+        <div class="compare-title-row">
+          <img class="tile-edit-img" id="tile-edit-img" src="" alt="" width="40" height="40"
+               onerror="variantImgFallback(this)" />
+          <h2 id="tile-edit-title"></h2>
+        </div>
+        <button class="modal-close-x" id="tile-edit-close" type="button" aria-label="×">×</button>
+      </div>
+      <div class="tile-checks" id="tile-edit-checks"></div>
+    </div>
+  </div>
+
   <!-- Conta (opcional): login/senha para sincronizar a coleção entre
        aparelhos via Firebase. Sem cloud-sync.js configurado, mostra só o
        painel "não configurado" — o resto do app funciona igual, sem conta. -->
