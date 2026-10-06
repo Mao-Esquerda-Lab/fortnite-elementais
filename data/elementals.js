@@ -728,7 +728,7 @@ const ELEMENTALS = [
     // IGN e entrou na tabela principal, com raridade e habilidade
     // publicadas. Raridade e habilidade vêm direto da tabela do IGN.
     id: "dumpster-dive",
-    name: { pt: "Mergulho na Lixeira", en: "Dumpster Dive" },
+    name: { pt: "Catador de Lixo", en: "Dumpster Dive" },
     wikiName: "Dumpster Dive Sprite",
     rarity: "Epic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
@@ -790,7 +790,7 @@ const ELEMENTALS = [
   },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
-  // com nome e autor. O Lago (Pine & Kiri) e o Mergulho na Lixeira já foram
+  // com nome e autor. O Lago (Pine & Kiri) e o Catador de Lixo já foram
   // lançados — ver entradas próprias acima.
   ...[
     { id: "bullet", pt: "Bala", en: "Bullet", author: "Enorull" },
