@@ -818,16 +818,24 @@ function diffCollections(mine, theirs) {
     const mineEntry = getEntry(e.id, mine);
     const theirEntry = getEntry(e.id, theirs);
     const tileList = [
-      { name: s.baseVariant, image: e.image, mineState: mineEntry, theirState: theirEntry },
+      {
+        variantId: "base",
+        name: s.baseVariant,
+        image: e.image,
+        mineState: mineEntry,
+        theirState: theirEntry,
+      },
       ...e.variants
         .filter((v) => !v.locked)
         .map((v) => ({
+          variantId: v.id,
           name: v.name[lang],
           image: v.image,
           mineState: getVariantEntry(mineEntry, v.id),
           theirState: getVariantEntry(theirEntry, v.id),
         })),
     ].map((tile) => ({
+      variantId: tile.variantId,
       name: tile.name,
       image: tile.image,
       status: tile.mineState.owned && tile.theirState.owned
@@ -1427,6 +1435,35 @@ function render() {
   renderProgress();
 }
 
+// Marca/desmarca "tenho" ou "dominado" de um quadradinho (Base ou variante),
+// salva e oferece desfazer — usado pelo grid principal e pela edição rápida
+// aberta a partir da tela de comparação (tile-edit-overlay).
+function toggleTile(id, variantId, action, checked) {
+  const snapshot = snapshotCollection();
+  const entry = getEntry(id);
+
+  // "Dominado" marcado implica "Possui"; desmarcar "Possui" limpa "Dominado".
+  const apply = (state) => {
+    if (action === "master") {
+      return { owned: checked ? true : state.owned, mastered: checked };
+    }
+    return { owned: checked, mastered: checked ? state.mastered : false };
+  };
+
+  if (variantId === "base") {
+    setEntry(id, apply(entry));
+  } else {
+    const variants = { ...entry.variants };
+    variants[variantId] = apply(getVariantEntry(entry, variantId));
+    setEntry(id, { variants });
+  }
+
+  const elemental = ELEMENTALS.find((el) => el.id === id);
+  render();
+  renderCompareLists();
+  offerUndo(snapshot, t().undoToggle(elemental ? elemental.name[lang] : id));
+}
+
 grid.addEventListener("click", (e) => {
   const target = e.target.closest("[data-action]");
   if (!target) return;
@@ -1434,33 +1471,11 @@ grid.addEventListener("click", (e) => {
   const id = target.dataset.id;
   const action = target.dataset.action;
 
-  const elemental = ELEMENTALS.find((el) => el.id === id);
-  const undoLabel = elemental ? elemental.name[lang] : id;
-
   if (action === "own" || action === "master") {
-    const snapshot = snapshotCollection();
-    const variantId = target.dataset.variant;
-    const checked = target.checked;
-    const entry = getEntry(id);
-
-    // "Dominado" marcado implica "Possui"; desmarcar "Possui" limpa "Dominado".
-    const apply = (state) => {
-      if (action === "master") {
-        return { owned: checked ? true : state.owned, mastered: checked };
-      }
-      return { owned: checked, mastered: checked ? state.mastered : false };
-    };
-
-    if (variantId === "base") {
-      setEntry(id, apply(entry));
-    } else {
-      const variants = { ...entry.variants };
-      variants[variantId] = apply(getVariantEntry(entry, variantId));
-      setEntry(id, { variants });
-    }
-    render();
-    offerUndo(snapshot, t().undoToggle(undoLabel));
+    toggleTile(id, target.dataset.variant, action, target.checked);
   } else if (action === "favorite") {
+    const elemental = ELEMENTALS.find((el) => el.id === id);
+    const undoLabel = elemental ? elemental.name[lang] : id;
     const snapshot = snapshotCollection();
     setEntry(id, { favorite: !getEntry(id).favorite });
     render();
@@ -2306,11 +2321,13 @@ function compareSection(title, groups) {
         <div class="compare-chips">${tiles
           .map(
             (tile) => `
-          <span class="compare-chip">
+          <button type="button" class="compare-chip" data-action="edit-tile"
+                  data-id="${elemental.id}" data-variant="${tile.variantId}"
+                  title="${elemental.name[lang]} — ${tile.name}">
             <img src="${tile.image}" alt="" width="22" height="22"
                  loading="lazy" onerror="variantImgFallback(this)" />
             ${tile.name}
-          </span>`
+          </button>`
           )
           .join("")}</div>
       </div>`
@@ -2321,23 +2338,21 @@ function compareSection(title, groups) {
   return `<h3>${title}<span class="compare-count">${count}</span></h3>${body}`;
 }
 
-// Nunca mexe em collection/localStorage: theirCollection só existe como
-// variável local, passada por parâmetro para os helpers somente-leitura.
-function openCompareModal(theirCollection, theirName, theirAvatar) {
-  const s = t();
-  const compareAvatar = document.getElementById("compare-avatar");
-  const avatar = avatarHTML(theirAvatar);
-  compareAvatar.hidden = !avatar;
-  compareAvatar.innerHTML = avatar || "";
-  const rows = diffCollections(collection, theirCollection);
+// Coleção do outro lado atualmente aberta na comparação (null com o modal
+// fechado) — guardada só pra poder re-renderizar a lista (renderCompareLists)
+// depois de editar um quadradinho, sem fechar/reabrir o modal. Nunca é
+// escrita em collection/localStorage: é sempre a mesma referência somente-
+// leitura recebida por quem chamou openCompareModal.
+let compareTheirs = null;
 
-  document.getElementById("compare-title").textContent = theirName
-    ? s.compareTitleWithName(theirName)
-    : s.compareTitle;
+function renderCompareLists() {
+  if (!compareTheirs) return;
+  const s = t();
+  const rows = diffCollections(collection, compareTheirs);
 
   compareStats.innerHTML =
     statTile(s.compareYou, computeTotals(collection), "var(--accent)") +
-    statTile(s.compareThem, computeTotals(theirCollection), "var(--epic)");
+    statTile(s.compareThem, computeTotals(compareTheirs), "var(--epic)");
 
   // Só os Sprites com algum quadradinho exclusivo de cada lado.
   const groupsWith = (status) =>
@@ -2350,12 +2365,28 @@ function openCompareModal(theirCollection, theirName, theirAvatar) {
 
   compareOnlyYou.innerHTML = compareSection(s.compareOnlyYou, groupsWith("mine"));
   compareOnlyThem.innerHTML = compareSection(s.compareOnlyThem, groupsWith("theirs"));
+}
+
+function openCompareModal(theirCollection, theirName, theirAvatar) {
+  const s = t();
+  const compareAvatar = document.getElementById("compare-avatar");
+  const avatar = avatarHTML(theirAvatar);
+  compareAvatar.hidden = !avatar;
+  compareAvatar.innerHTML = avatar || "";
+
+  document.getElementById("compare-title").textContent = theirName
+    ? s.compareTitleWithName(theirName)
+    : s.compareTitle;
+
+  compareTheirs = theirCollection;
+  renderCompareLists();
 
   compareOverlay.hidden = false;
 }
 
 function closeCompareModal() {
   compareOverlay.hidden = true;
+  compareTheirs = null;
   // Tira o #c=... da URL para um refresh não reabrir a comparação —
   // o estado por baixo nunca foi tocado, então "normal" já está intacto.
   history.replaceState(null, "", location.pathname + location.search);
@@ -2403,6 +2434,75 @@ sharePasteBtn.addEventListener("click", () => {
 document.getElementById("compare-close").addEventListener("click", closeCompareModal);
 compareOverlay.addEventListener("click", (e) => {
   if (e.target === compareOverlay) closeCompareModal();
+});
+
+// ---- Edição rápida de um quadradinho, aberta a partir de um chip da
+// comparação (compare-chip) ----
+const tileEditOverlay = document.getElementById("tile-edit-overlay");
+const tileEditImg = document.getElementById("tile-edit-img");
+const tileEditTitle = document.getElementById("tile-edit-title");
+const tileEditChecks = document.getElementById("tile-edit-checks");
+
+// Elemental + variante (ou "base") sendo editados agora; null com o modal
+// fechado.
+let tileEditTarget = null;
+
+function renderTileEditChecks() {
+  if (!tileEditTarget) return;
+  const { id, variantId } = tileEditTarget;
+  const s = t();
+  const entry = getEntry(id);
+  const state = variantId === "base" ? entry : getVariantEntry(entry, variantId);
+  tileEditChecks.innerHTML = `
+    <label class="tile-check">
+      <input type="checkbox" ${state.owned ? "checked" : ""}
+             data-action="own" data-id="${id}" data-variant="${variantId}" />
+      ${s.owned}
+    </label>
+    <label class="tile-check">
+      <input type="checkbox" ${state.mastered ? "checked" : ""}
+             data-action="master" data-id="${id}" data-variant="${variantId}" />
+      ${s.mastered}
+    </label>`;
+}
+
+function openTileEditModal(id, variantId) {
+  const elemental = ELEMENTALS.find((el) => el.id === id);
+  if (!elemental) return;
+  const variant = variantId === "base" ? null : elemental.variants.find((v) => v.id === variantId);
+  if (variantId !== "base" && !variant) return;
+
+  tileEditTarget = { id, variantId };
+  tileEditImg.src = variant ? variant.image : elemental.image;
+  tileEditTitle.textContent = `${elemental.name[lang]} — ${variant ? variant.name[lang] : t().baseVariant}`;
+  renderTileEditChecks();
+  tileEditOverlay.hidden = false;
+}
+
+function closeTileEditModal() {
+  tileEditOverlay.hidden = true;
+  tileEditTarget = null;
+}
+
+// Delegado no overlay inteiro (não em compare-only-you/-them direto): esses
+// containers são recriados via innerHTML a cada renderCompareLists(), o que
+// perderia um listener preso neles.
+compareOverlay.addEventListener("click", (e) => {
+  const chip = e.target.closest('[data-action="edit-tile"]');
+  if (!chip) return;
+  openTileEditModal(chip.dataset.id, chip.dataset.variant);
+});
+
+tileEditChecks.addEventListener("change", (e) => {
+  const target = e.target.closest("[data-action]");
+  if (!target) return;
+  toggleTile(target.dataset.id, target.dataset.variant, target.dataset.action, target.checked);
+  renderTileEditChecks();
+});
+
+document.getElementById("tile-edit-close").addEventListener("click", closeTileEditModal);
+tileEditOverlay.addEventListener("click", (e) => {
+  if (e.target === tileEditOverlay) closeTileEditModal();
 });
 
 // ---- Modal de backup ----
@@ -2623,6 +2723,8 @@ undoBtn.addEventListener("click", () => {
   saveCollection(collection);
   hideUndo();
   render();
+  renderCompareLists();
+  renderTileEditChecks();
 });
 
 // ---- Busca de Sprites (lupa no cabeçalho) ----
