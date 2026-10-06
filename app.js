@@ -981,6 +981,7 @@ function applyLanguage() {
   document.getElementById("account-friend-code-label").textContent = s.friendCodeLabel;
   document.getElementById("account-friend-code-copy-btn").textContent = s.friendCodeCopy;
   document.getElementById("compare-title").textContent = s.compareTitle;
+  document.getElementById("compare-refresh").textContent = s.refresh;
   document.getElementById("compare-close").textContent = s.close;
 
   const viewTabLabels = {
@@ -2338,6 +2339,11 @@ function compareSection(title, groups) {
 // escrita em collection/localStorage: é sempre a mesma referência somente-
 // leitura recebida por quem chamou openCompareModal.
 let compareTheirs = null;
+// Callback pra buscar a coleção do amigo de novo (null com o modal fechado,
+// ou numa comparação por link/código colado — aí é um retrato estático, sem
+// o que atualizar). Só a comparação ao vivo por conta (cloud-sync.js) passa
+// um 4º argumento pra openCompareModal.
+let compareRefresh = null;
 
 function renderCompareLists() {
   if (!compareTheirs) return;
@@ -2361,7 +2367,7 @@ function renderCompareLists() {
   compareOnlyThem.innerHTML = compareSection(s.compareOnlyThem, groupsWith("theirs"));
 }
 
-function openCompareModal(theirCollection, theirName, theirAvatar) {
+function openCompareModal(theirCollection, theirName, theirAvatar, onRefresh) {
   const s = t();
   const compareAvatar = document.getElementById("compare-avatar");
   const avatar = avatarHTML(theirAvatar);
@@ -2373,6 +2379,8 @@ function openCompareModal(theirCollection, theirName, theirAvatar) {
     : s.compareTitle;
 
   compareTheirs = theirCollection;
+  compareRefresh = onRefresh || null;
+  document.getElementById("compare-refresh").hidden = !compareRefresh;
   renderCompareLists();
 
   compareOverlay.hidden = false;
@@ -2381,6 +2389,7 @@ function openCompareModal(theirCollection, theirName, theirAvatar) {
 function closeCompareModal() {
   compareOverlay.hidden = true;
   compareTheirs = null;
+  compareRefresh = null;
   // Tira o #c=... da URL para um refresh não reabrir a comparação —
   // o estado por baixo nunca foi tocado, então "normal" já está intacto.
   history.replaceState(null, "", location.pathname + location.search);
@@ -2426,6 +2435,9 @@ sharePasteBtn.addEventListener("click", () => {
 });
 
 document.getElementById("compare-close").addEventListener("click", closeCompareModal);
+document.getElementById("compare-refresh").addEventListener("click", () => {
+  if (compareRefresh) compareRefresh();
+});
 compareOverlay.addEventListener("click", (e) => {
   if (e.target === compareOverlay) closeCompareModal();
 });
@@ -2993,9 +3005,11 @@ window.SpritesLockerBridge = {
     proposeBackup(JSON.stringify(remoteSnapshot));
   },
   // Comparação ao vivo com um amigo (cloud-sync.js): reaproveita o mesmo
-  // modal somente-leitura já usado pelo código de compartilhamento.
-  openCompareModal: (theirCollection, theirName, theirAvatar) =>
-    openCompareModal(theirCollection, theirName, theirAvatar),
+  // modal somente-leitura já usado pelo código de compartilhamento. O 4º
+  // argumento (onRefresh), só passado aqui, mostra o botão "Atualizar" no
+  // modal — busca a coleção do amigo de novo pra ver mudanças recentes.
+  openCompareModal: (theirCollection, theirName, theirAvatar, onRefresh) =>
+    openCompareModal(theirCollection, theirName, theirAvatar, onRefresh),
   // Imagem de perfil (cloud-sync.js): só o id do Elemental vai para a nuvem;
   // a validação e o HTML ficam aqui, onde ELEMENTALS existe.
   isValidAvatar: (id) => !!avatarChoice(id),

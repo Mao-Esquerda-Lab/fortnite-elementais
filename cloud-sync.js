@@ -875,7 +875,8 @@ async function main() {
       bridge.openCompareModal(
         snap.data().collection,
         friend && friend.username,
-        snap.data().avatar || null
+        snap.data().avatar || null,
+        () => compareWithFriend(friendUid)
       );
     } catch {
       setFriendError(bridge.t().friendCompareUnavailable);
