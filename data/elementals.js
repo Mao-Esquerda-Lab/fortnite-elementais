@@ -383,8 +383,7 @@ const ELEMENTALS = [
     name: { pt: "8-Bit", en: "8-Bit" },
     wikiName: "8-Bit Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Garante uma Espingarda 8-Bit no primeiro baú que você abrir, com multiplicador de pontuação.",
       en: "Find an 8-Bit Shotgun in your first Chest and gain a score multiplier for it.",
@@ -397,8 +396,7 @@ const ELEMENTALS = [
     name: { pt: "Aventura", en: "Adventure" },
     wikiName: "Adventure Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Melhora um item aleatório do seu inventário a cada nível.",
       en: "Upgrade a random item in your inventory at each Level.",
@@ -411,8 +409,7 @@ const ELEMENTALS = [
     name: { pt: "Arbusto", en: "Bush" },
     wikiName: "Bush Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Cria um Arbusto em você depois de um tempo. No nível máximo, ganha outro a cada eliminação.",
       en: "Spawns a Bush on you after a duration. At max Level, gain a Bush on elimination.",
@@ -425,8 +422,7 @@ const ELEMENTALS = [
     name: { pt: "Jonesy", en: "Jonesy" },
     wikiName: "Jonesy Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
       en: "After a short duration, recover some Health or Shield after being damaged.",
@@ -441,8 +437,7 @@ const ELEMENTALS = [
     name: { pt: "Onigiri", en: "Onigiri" },
     wikiName: "Onigiri Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede Sobrecarga depois de usar um item consumível, com duração maior a cada nível.",
       en: "Grants Overdrive after using a Consumable item, lasting longer per level.",
@@ -459,8 +454,7 @@ const ELEMENTALS = [
     name: { pt: "Meteorológico", en: "Storm Scout" },
     wikiName: "Storm Scout Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede Sobrecarga e Energia infinita depois que você toma 10 de dano da tempestade e, no nível máximo, revela onde os próximos círculos vão fechar.",
       en: "Grants Overdrive and unlimited Energy after you take 10 Storm damage, and at max level reveals where future circles will land.",
@@ -476,8 +470,7 @@ const ELEMENTALS = [
     name: { pt: "Sobrescudo", en: "Overshield" },
     wikiName: "Overshield Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede Sobrescudo, com a quantidade aumentando a cada nível.",
       en: "Grants Overshield, with the amount increasing at higher Levels.",
@@ -510,8 +503,7 @@ const ELEMENTALS = [
     name: { pt: "Sonic", en: "Sonic" },
     wikiName: "Sonic Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Aumenta a velocidade de corrida.",
       en: "Sprint faster.",
@@ -524,8 +516,7 @@ const ELEMENTALS = [
     name: { pt: "Tails", en: "Tails" },
     wikiName: "Tails Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Permite pairar no ar com a ajuda da cauda, anulando todo o dano de queda.",
       en: "Hover in mid-air with the help of Tails, and cancels all fall damage.",
@@ -538,8 +529,7 @@ const ELEMENTALS = [
     name: { pt: "Shadow", en: "Shadow" },
     wikiName: "Shadow Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Recarrega as armas automaticamente com o tempo, mesmo as que não estão equipadas.",
       en: "Automatically reload weapons over time, even when unequipped.",
@@ -552,8 +542,7 @@ const ELEMENTALS = [
     name: { pt: "Disruptor", en: "Killswitch" },
     wikiName: "Killswitch Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Ative a câmera lenta com precisão melhorada ao mirar enquanto pula.",
       en: "Enter Hangtime with improved accuracy.",
@@ -566,8 +555,7 @@ const ELEMENTALS = [
     name: { pt: "Jackrabbit", en: "Jackrabbit" },
     wikiName: "Jackrabbit Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Permite dar mais um pulo enquanto está no ar.",
       en: "Perform another jump while mid-air.",
@@ -584,8 +572,7 @@ const ELEMENTALS = [
     name: { pt: "Raio-X", en: "X-Ray" },
     wikiName: "X-Ray Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Marca periodicamente os inimigos próximos. A frequência e o raio de detecção aumentam a cada nível.",
       en: "Periodically marks nearby enemies. Frequency and radius increases with each level.",
@@ -622,8 +609,7 @@ const ELEMENTALS = [
     name: { pt: "Klimbo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede itens aleatórios a cada nível. Só sobe de nível usando itens consumíveis que dão vida ou escudo.",
       en: "Grants random items at each level. You can only level it up by using consumable items that give Health or Shield.",
@@ -642,8 +628,7 @@ const ELEMENTALS = [
     name: { pt: "Blinky", en: "Blinky" },
     wikiName: "Blinky Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede Camuflagem ao levar dano, que aumenta a cada nível.",
       en: "Grants you Cloak when you take damage, which increases with each level.",
@@ -657,8 +642,7 @@ const ELEMENTALS = [
     name: { pt: "Crash Bandicoot", en: "Crash Bandicoot" },
     wikiName: "Crash Bandicoot Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Pule para ativar um ataque giratório que causa dano e arremessa os inimigos para trás. O dano aumenta a cada nível.",
       en: "Jump to trigger a whirlwind attack, which damages and knocks back enemies. Damage increases with each level.",
@@ -675,8 +659,7 @@ const ELEMENTALS = [
     name: { pt: "Lago", en: "Pond" },
     wikiName: "Pond Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede um Super Pulo depois de pular, ganhando mais cargas com o tempo. A força do Super Pulo aumenta a cada nível.",
       en: "Grants you a Super Jump after jumping, with more charges gained over time. Super Jump strength increases with each level.",
@@ -694,8 +677,7 @@ const ELEMENTALS = [
     name: { pt: "Morgana", en: "Morgana" },
     wikiName: "Morgana Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Aumenta a eficácia dos itens de cura, que aumenta a cada nível.",
       en: "Increases effectiveness of healing items, which increases with each level.",
@@ -713,8 +695,7 @@ const ELEMENTALS = [
     name: { pt: "Aniversariante", en: "Birthday" },
     wikiName: "Birthday Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Dá uma chance de receber um pedaço de bolo ao abrir baús.",
       en: "Gives you a chance to receive a piece of cake when opening chests.",
@@ -731,8 +712,7 @@ const ELEMENTALS = [
     name: { pt: "Catador de Lixo", en: "Dumpster Dive" },
     wikiName: "Dumpster Dive Sprite",
     rarity: "Epic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Aumenta a cura de alimentos e dá uma chance de encontrar comida ao pular para fora de lixeiras e banheiros químicos, ou ao abrir recipientes; a chance de comida aumenta a cada nível.",
       en: "Buffs heals from food and gives you a chance to find food when jumping out of dumpsters and porta potties and opening containers, with better food chance with each level.",
@@ -747,8 +727,7 @@ const ELEMENTALS = [
     name: { pt: "Vampiro", en: "Vampire" },
     wikiName: "Vampire Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Cura você ao causar dano aos inimigos. A quantidade curada aumenta a cada nível.",
       en: "Heals you when you damage enemies. Amount healed increases per level.",
@@ -764,8 +743,7 @@ const ELEMENTALS = [
     name: { pt: "O Cervo", en: "The Deer" },
     wikiName: "The Deer Sprite",
     rarity: "Legendary",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede bônus de dano corpo a corpo, que aumenta a cada nível.",
       en: "Buffs melee damage, which increases per level.",
@@ -779,8 +757,7 @@ const ELEMENTALS = [
     name: { pt: "Disparada Assustadora", en: "Spooky Dash" },
     wikiName: "Spooky Dash Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter"],
-    lockedVariants: ["trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
     ability: {
       pt: "Concede uma investida que atravessa objetos e paredes. Cada nível reduz o tempo de recarga.",
       en: "Grants you a dash that lets you phase through objects and walls. Each level reduces cooldown.",
