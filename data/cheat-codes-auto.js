@@ -19,6 +19,17 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "door2door4candy",
+    "code": "Door2Door4Candy",
+    "autoAdded": "2026-10-12",
+    "reward": {
+      "pt": "2x Extraction Accelerator",
+      "en": "2x Extraction Accelerator"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "veryscarypumpkin",
     "code": "VeryScaryPumpkin",
     "autoAdded": "2026-10-05",
