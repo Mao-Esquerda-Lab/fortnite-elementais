@@ -237,6 +237,23 @@ const IGN_ART = {
     "bounty-hunter": "5/52/Fortnite_bounty_hunter_spooky_dash_sprite",
     "trick-or-treat": "4/4b/Fortnite_trick_or_treat_spooky_dash_sprite",
   },
+  // Lançados em 15/out/2026 (Fortnitemares), já com as 5 variantes padrão.
+  "honey": {
+    base: "9/98/Fortnite-sprite-honey",
+    gold: "f/f1/Fortnite-sprite-goldhoney",
+    "cheat-master": "7/74/Fortnite-sprite-cheatmasterhoney",
+    "loot-hacker": "e/eb/Fortnite-sprite-loothackerhoney",
+    "bounty-hunter": "0/02/Fortnite-sprite-bountyhunterhoney",
+    "trick-or-treat": "9/9e/Fortnite-sprite-trickortreathoney",
+  },
+  "one-wish-willow": {
+    base: "b/ba/Fortnite-sprite-onewish",
+    gold: "c/ce/Fortnite-sprite-goldonewish",
+    "cheat-master": "f/f6/Fortnite-sprite-cheatmasteronewish",
+    "loot-hacker": "4/47/Fortnite-sprite-loothackeronewish",
+    "bounty-hunter": "8/87/Fortnite-sprite-bountyhunteronewish",
+    "trick-or-treat": "d/d3/Fortnite-sprite-trickortreatonewish",
+  },
 };
 
 const ignArt = (elementalId, variantId) => {
@@ -765,13 +782,47 @@ const ELEMENTALS = [
     dust: 6750,
     variantCost: 10000,
   },
+  {
+    // Lançado em 15/out/2026 (Fortnitemares 2026), com raridade, habilidade
+    // e as 5 variantes padrão já divulgadas na tabela do IGN. Vencedor do
+    // concurso Design-A-Sprite (por Conejito_sam) — vinha como `upcoming`
+    // só com nome e autor até aqui. PT da habilidade é tradução nossa
+    // provisória — ainda não conferida no cliente em português.
+    id: "honey",
+    name: { pt: "Mel", en: "Honey" },
+    wikiName: "Honey Sprite",
+    rarity: "Epic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    ability: {
+      pt: "Chance de abelhas aparecerem no local do acerto ao causar dano com uma arma de longo alcance.",
+      en: "Chance to spawn bees at the hit location upon dealing damage with a ranged weapon.",
+    },
+    dust: 2700,
+    variantCost: 4000,
+  },
+  {
+    // Mesmo lançamento do Mel (ver comentário acima) — Sprite novo, nunca
+    // listado como "Em breve". PT do nome mantido em inglês (nome próprio,
+    // como Jonesy/Crash Bandicoot/Mega Man); habilidade é tradução nossa
+    // provisória — ainda não conferida no cliente em português.
+    id: "one-wish-willow",
+    name: { pt: "One Wish Willow", en: "One Wish Willow" },
+    wikiName: "One Wish Willow Sprite",
+    rarity: "Mythic",
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    ability: {
+      pt: "Extrai o Sprite equipado de outros jogadores ao eliminá-los. Empurra tudo ao redor quando leva dano. Fica incomodada quando é removida e marca sua localização no mapa.",
+      en: "Extract other players equipped Sprites when eliminating them. Push everything away when damaged. Gets upset when removed and marks you on the map.",
+    },
+    dust: 6750,
+    variantCost: 10000,
+  },
   // Vencedores do concurso Design-A-Sprite, confirmados pela Epic mas ainda
   // sem arte, raridade, habilidade ou custo divulgados — por isso entram só
-  // com nome e autor. O Lago (Pine & Kiri) e o Catador de Lixo já foram
-  // lançados — ver entradas próprias acima.
+  // com nome e autor. O Lago (Pine & Kiri), o Catador de Lixo e o Mel já
+  // foram lançados — ver entradas próprias acima.
   ...[
     { id: "bullet", pt: "Bala", en: "Bullet", author: "Enorull" },
-    { id: "honey", pt: "Mel", en: "Honey", author: "Conejito_sam" },
   ].map((c) => ({
     id: c.id,
     name: { pt: c.pt, en: c.en },
