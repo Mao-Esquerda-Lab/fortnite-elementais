@@ -54,6 +54,7 @@ const IGN_ART = {
     "loot-hacker": "5/55/Fortnite_loot_hacker_adventure_sprite",
     "bounty-hunter": "0/01/Fortnite_bounty_hunter_adventure_sprite",
     "trick-or-treat": "a/a8/Fortnite_trick_or_treat_adventure_sprite",
+    quack: "a/ad/Fortnite-sprite-quackadventure",
   },
   "bush": {
     base: "2/28/Fortnite_bush_sprite",
@@ -62,6 +63,7 @@ const IGN_ART = {
     "loot-hacker": "0/00/Fortnite_loot_hacker_bush_sprite",
     "bounty-hunter": "3/3c/Fortnite_bounty_hunter_bush_sprite",
     "trick-or-treat": "1/1c/Fortnite_trick_or_treat_bush_sprite",
+    quack: "b/bf/Fortnite-sprite-quackbush",
   },
   "jonesy": {
     base: "e/ed/Fortnite_jonesy_sprite",
@@ -70,6 +72,7 @@ const IGN_ART = {
     "loot-hacker": "8/87/Fortnite_loot_hacker_jonesy_sprite",
     "bounty-hunter": "8/8f/Fortnite_bounty_hunter_jonesy_sprite",
     "trick-or-treat": "9/91/Fortnite_trick_or_treat_jonesy_sprite",
+    quack: "7/7c/Fortnite-sprite-quackjonesy",
   },
   "sonic": {
     base: "a/ab/Fortnite_sonic_sprite",
@@ -128,6 +131,7 @@ const IGN_ART = {
     "loot-hacker": "1/14/Fortnite_loot_hacker_klombo_sprite",
     "bounty-hunter": "e/e9/Fortnite_bounty_hunter_klombo_sprite",
     "trick-or-treat": "0/09/Fortnite_trick_or_treat_klombo_sprite",
+    quack: "6/67/Fortnite-sprite-quackklombo",
   },
   "storm-scout": {
     base: "a/a3/Fortnite_storm_scout_sprite",
@@ -236,6 +240,7 @@ const IGN_ART = {
     "loot-hacker": "d/dc/Fortnite_loot_hacker_spooky_dash_sprite",
     "bounty-hunter": "5/52/Fortnite_bounty_hunter_spooky_dash_sprite",
     "trick-or-treat": "4/4b/Fortnite_trick_or_treat_spooky_dash_sprite",
+    quack: "8/81/Fortnite-sprite-quackspookydash",
   },
   // Lançados em 15/out/2026 (Fortnitemares), já com as 5 variantes padrão.
   "honey": {
@@ -338,6 +343,20 @@ const EXTRA_VARIANTS = {
       en: "Effect not yet revealed.",
     },
   },
+  // Variante de Temporadas anteriores, que o comentário acima do
+  // SPRITE_VARIANTS já citava como fora do escopo — a Epic confirmou que
+  // "algumas" variantes de Temporada 3 "podem" voltar, e esta voltou de
+  // verdade em 15/out/2026 (mesma atualização do Mel/One Wish Willow), só
+  // pra Arbusto, Aventura, Jonesy, Klimbo e Disparada Assustadora. IGN não
+  // descreve o efeito; nome em PT é tradução nossa provisória.
+  quack: {
+    id: "quack",
+    name: { pt: "Pato", en: "Quack" },
+    effect: {
+      pt: "Efeito ainda não revelado.",
+      en: "Effect not yet revealed.",
+    },
+  },
 };
 
 // Ordem de preferência da arte de uma variante: link explícito na entrada
@@ -413,7 +432,7 @@ const ELEMENTALS = [
     name: { pt: "Aventura", en: "Adventure" },
     wikiName: "Adventure Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat", "quack"],
     ability: {
       pt: "Melhora um item aleatório do seu inventário a cada nível.",
       en: "Upgrade a random item in your inventory at each Level.",
@@ -426,7 +445,7 @@ const ELEMENTALS = [
     name: { pt: "Arbusto", en: "Bush" },
     wikiName: "Bush Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat", "quack"],
     ability: {
       pt: "Cria um Arbusto em você depois de um tempo. No nível máximo, ganha outro a cada eliminação.",
       en: "Spawns a Bush on you after a duration. At max Level, gain a Bush on elimination.",
@@ -439,7 +458,7 @@ const ELEMENTALS = [
     name: { pt: "Jonesy", en: "Jonesy" },
     wikiName: "Jonesy Sprite",
     rarity: "Rare",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat", "quack"],
     ability: {
       pt: "Recupera um pouco de vida ou escudo pouco depois de levar dano.",
       en: "After a short duration, recover some Health or Shield after being damaged.",
@@ -626,7 +645,7 @@ const ELEMENTALS = [
     name: { pt: "Klimbo", en: "Klombo" },
     wikiName: "Klombo Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat", "quack"],
     ability: {
       pt: "Concede itens aleatórios a cada nível. Só sobe de nível usando itens consumíveis que dão vida ou escudo.",
       en: "Grants random items at each level. You can only level it up by using consumable items that give Health or Shield.",
@@ -774,7 +793,7 @@ const ELEMENTALS = [
     name: { pt: "Disparada Assustadora", en: "Spooky Dash" },
     wikiName: "Spooky Dash Sprite",
     rarity: "Mythic",
-    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
+    onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat", "quack"],
     ability: {
       pt: "Concede uma investida que atravessa objetos e paredes. Cada nível reduz o tempo de recarga.",
       en: "Grants you a dash that lets you phase through objects and walls. Each level reduces cooldown.",
@@ -802,11 +821,11 @@ const ELEMENTALS = [
   },
   {
     // Mesmo lançamento do Mel (ver comentário acima) — Sprite novo, nunca
-    // listado como "Em breve". PT do nome mantido em inglês (nome próprio,
-    // como Jonesy/Crash Bandicoot/Mega Man); habilidade é tradução nossa
-    // provisória — ainda não conferida no cliente em português.
+    // listado como "Em breve". Nome em PT confirmado no cliente: "Salgueiro
+    // do Desejo"; habilidade ainda é tradução nossa provisória, não
+    // conferida no cliente em português.
     id: "one-wish-willow",
-    name: { pt: "One Wish Willow", en: "One Wish Willow" },
+    name: { pt: "Salgueiro do Desejo", en: "One Wish Willow" },
     wikiName: "One Wish Willow Sprite",
     rarity: "Mythic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
