@@ -821,11 +821,11 @@ const ELEMENTALS = [
   },
   {
     // Mesmo lançamento do Mel (ver comentário acima) — Sprite novo, nunca
-    // listado como "Em breve". PT do nome mantido em inglês (nome próprio,
-    // como Jonesy/Crash Bandicoot/Mega Man); habilidade é tradução nossa
-    // provisória — ainda não conferida no cliente em português.
+    // listado como "Em breve". Nome em PT confirmado no cliente: "Salgueiro
+    // do Desejo"; habilidade ainda é tradução nossa provisória, não
+    // conferida no cliente em português.
     id: "one-wish-willow",
-    name: { pt: "One Wish Willow", en: "One Wish Willow" },
+    name: { pt: "Salgueiro do Desejo", en: "One Wish Willow" },
     wikiName: "One Wish Willow Sprite",
     rarity: "Mythic",
     onlyVariants: ["gold", "cheat-master", "loot-hacker", "bounty-hunter", "trick-or-treat"],
