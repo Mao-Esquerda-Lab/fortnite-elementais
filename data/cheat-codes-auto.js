@@ -19,6 +19,17 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "suppliesforthehunt",
+    "code": "SuppliesForTheHunt",
+    "autoAdded": "2026-10-31",
+    "reward": {
+      "pt": "2x Snack-o'-Lantern",
+      "en": "2x Snack-o'-Lantern"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "b1gbodysw3rve",
     "code": "B1GBODYSW3RVE",
     "autoAdded": "2026-10-18",
