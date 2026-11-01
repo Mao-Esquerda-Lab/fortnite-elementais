@@ -89,33 +89,54 @@
   --accent: #5fd49a;
 }
 
-/* Pirata (Temporada One Piece): madeira de navio, pergaminho e ouro do
-   tesouro. Além das cores, ganha veios de madeira no fundo e filete dourado
-   no cabeçalho. */
+/* Pirata (Temporada One Piece): mar e madeira escura do Going Merry, ouro do
+   tesouro e o chapéu de palha do Luffy. Sem textura de madeira (ficava
+   pesada): o fundo é liso, com um papel de parede discreto de caveira,
+   âncora, bússola e ondas. O chapéu de palha aparece no cabeçalho. */
 :root[data-theme="pirate"] {
   color-scheme: dark;
-  --bg: #1b120b;
-  --surface: #2a1c11;
-  --surface-hover: #37251a;
-  --text: #f6e9cf;
-  --muted: #c2a883;
-  --border: #4d3622;
-  --accent: #f0c04a;
+  --bg: #161a24;
+  --surface: #2a1e17;
+  --surface-hover: #382a20;
+  --text: #f8ecd2;
+  --muted: #c7ae8a;
+  --border: #4f3a28;
+  --accent: #f4c542;
 }
 
 :root[data-theme="pirate"] body {
   background-color: var(--bg);
-  background-image:
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 86px),
-    repeating-linear-gradient(0deg, rgba(255, 220, 160, 0.035) 0 1px, transparent 1px 7px),
-    linear-gradient(180deg, #24170d 0%, #1b120b 60%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22%3E%3Cg fill=%22none%22 stroke=%22%23f0c04a%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 opacity=%220.09%22%3E%3Cg transform=%22translate(14 18) scale(0.9)%22%3E%3Ccircle cx=%2224%22 cy=%2220%22 r=%2214%22/%3E%3Ccircle cx=%2218%22 cy=%2219%22 r=%223.5%22/%3E%3Ccircle cx=%2230%22 cy=%2219%22 r=%223.5%22/%3E%3Cpath d=%22M24 25v4M19 34l-14 12M5 34l14 12M29 34l14 12M43 34l-14 12%22 transform=%22translate(0 -4)%22/%3E%3C/g%3E%3Cg transform=%22translate(120 20)%22%3E%3Ccircle cx=%2222%22 cy=%226%22 r=%225%22/%3E%3Cpath d=%22M22 11v34M12 20h20M6 34c0 10 8 14 16 14s16-4 16-14M6 34l-4 4M38 34l4 4%22/%3E%3C/g%3E%3Cg transform=%22translate(20 120)%22%3E%3Ccircle cx=%2224%22 cy=%2224%22 r=%2218%22/%3E%3Cpath d=%22M24 2v8M24 38v8M2 24h8M38 24h8M24 10l5 14-5 14-5-14z%22/%3E%3C/g%3E%3Cg transform=%22translate(118 122)%22%3E%3Cpath d=%22M0 10c8-8 14 8 22 0s14 8 22 0 14 8 22 0M0 24c8-8 14 8 22 0s14 8 22 0 14 8 22 0%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"), linear-gradient(180deg, #1d2433 0%, #161a24 55%, #1a1612 100%);
   background-attachment: fixed;
 }
 
 :root[data-theme="pirate"] .app-header {
-  background: linear-gradient(180deg, #33200f, var(--bg));
-  border-bottom: 2px solid var(--accent);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, #232c40, var(--bg));
+  border-bottom: 3px solid var(--accent);
+  box-shadow: 0 2px 0 #d63a2f;
+}
+
+/* Chapéu de palha do Luffy em cima do ícone do app. */
+:root[data-theme="pirate"] .header-icon {
+  position: relative;
+  overflow: visible;
+}
+
+:root[data-theme="pirate"] .app-header-row {
+  position: relative;
+}
+
+:root[data-theme="pirate"] .app-header-row::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0.1rem;
+  width: 3.2rem;
+  height: 2rem;
+  transform: translateX(-50%) rotate(-8deg);
+  background: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 40%22%3E%3Cg%3E%3Cellipse cx=%2232%22 cy=%2228%22 rx=%2230%22 ry=%229%22 fill=%22%23f4c542%22 stroke=%22%23b9862b%22 stroke-width=%222%22/%3E%3Cpath d=%22M12 26 C12 8 52 8 52 26 C44 31 20 31 12 26Z%22 fill=%22%23f4c542%22 stroke=%22%23b9862b%22 stroke-width=%222%22/%3E%3Cpath d=%22M13 22 C24 26 40 26 51 22 L52 26 C44 31 20 31 12 26Z%22 fill=%22%23d63a2f%22/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6));
+  pointer-events: none;
 }
 
 * {
