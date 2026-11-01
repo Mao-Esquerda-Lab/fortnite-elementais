@@ -693,6 +693,8 @@ const VARIANT_CODES = {
   holofoil: "h",
   cube: "c",
   quack: "q",
+  fortune: "f",
+  cursed: "r",
   "cheat-master": "m",
   "loot-hacker": "l",
   "trick-or-treat": "t",
