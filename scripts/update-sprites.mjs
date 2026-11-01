@@ -69,6 +69,35 @@ const MIN_CHAPTER = 7;
 const EXCLUDED_SPRITES = [
   "Dash Sprite",
   "Superman Sprite",
+  // Sprites da Temporada 4 (Override), removidos a pedido do usuário em
+  // 01/nov/2026 (virada para a Temporada 5, Treasure Hunters).
+  "8-Bit Sprite",
+  "Adventure Sprite",
+  "Bush Sprite",
+  "Jonesy Sprite",
+  "Onigiri Sprite",
+  "Storm Scout Sprite",
+  "Overshield Sprite",
+  "Mega Man Sprite",
+  "Sonic Sprite",
+  "Tails Sprite",
+  "Shadow Sprite",
+  "Killswitch Sprite",
+  "Jackrabbit Sprite",
+  "X-Ray Sprite",
+  "Crown Sprite",
+  "Klombo Sprite",
+  "Blinky Sprite",
+  "Crash Bandicoot Sprite",
+  "Pond Sprite",
+  "Morgana Sprite",
+  "Birthday Sprite",
+  "Dumpster Dive Sprite",
+  "Vampire Sprite",
+  "The Deer Sprite",
+  "Spooky Dash Sprite",
+  "Honey Sprite",
+  "One Wish Willow Sprite",
   // Sprites de temporadas anteriores à 4 (Override), removidos do app a
   // pedido do usuário em 20/ago/2026 — o app cobre só a temporada atual.
   // A wiki continua listando-os (é um catálogo histórico), então sem essa

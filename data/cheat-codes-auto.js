@@ -19,6 +19,50 @@
 // topo da tabela, não enterrados atrás de códigos antigos.
 const AUTO_CHEAT_CODES = [
   {
+    "id": "suppliesforthehunt",
+    "code": "SuppliesForTheHunt",
+    "autoAdded": "2026-10-31",
+    "reward": {
+      "pt": "2x Snack-o'-Lantern",
+      "en": "2x Snack-o'-Lantern"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "b1gbodysw3rve",
+    "code": "B1GBODYSW3RVE",
+    "autoAdded": "2026-10-18",
+    "reward": {
+      "pt": "Plays Lil Krazy by Yeat",
+      "en": "Plays Lil Krazy by Yeat"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "pr1vat3j3t",
+    "code": "PR1VAT3J3T",
+    "autoAdded": "2026-10-18",
+    "reward": {
+      "pt": "Plays MARCHING by Yeat",
+      "en": "Plays MARCHING by Yeat"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
+    "id": "luhleakyz",
+    "code": "LUHLEAKYZ",
+    "autoAdded": "2026-10-18",
+    "reward": {
+      "pt": "Plays Time Passed by Yeat",
+      "en": "Plays Time Passed by Yeat"
+    },
+    "untranslated": true,
+    "isNew": true
+  },
+  {
     "id": "door2door4candy",
     "code": "Door2Door4Candy",
     "autoAdded": "2026-10-12",
