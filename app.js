@@ -205,7 +205,7 @@ const TRANSLATIONS = {
     tabNotMastered: "Não dominados",
     tabFavorites: "Favoritos ★",
     sortLabel: "Ordenar por",
-    sortDefault: "Padrão",
+    sortDefault: "Número",
     sortRarity: "Raridade",
     sortAlpha: "Nome (A–Z)",
     progressOwned: (owned, total) => `${owned} / ${total} coletados`,
@@ -437,7 +437,7 @@ const TRANSLATIONS = {
     tabNotMastered: "Not mastered",
     tabFavorites: "Favorites ★",
     sortLabel: "Sort by",
-    sortDefault: "Default",
+    sortDefault: "Number",
     sortRarity: "Rarity",
     sortAlpha: "Name (A–Z)",
     progressOwned: (owned, total) => `${owned} / ${total} collected`,
@@ -923,7 +923,11 @@ function sortElementals(list) {
         a.name[lang].localeCompare(b.name[lang], lang === "pt" ? "pt-BR" : "en")
     );
   }
-  return list; // ordem padrão dos dados
+  // Padrão: por número do Sprite (ELEMENTALS já vem ordenado por ele; sem
+  // número, mantém a ordem da lista).
+  return [...list].sort(
+    (x, y) => (x.number ?? Infinity) - (y.number ?? Infinity) || 0
+  );
 }
 
 function applyLanguage() {
@@ -1394,7 +1398,7 @@ function createCard(elemental) {
              loading="lazy" onerror="iconFallback(this, '${elemental.id}')" />
       </div>
       <div class="card-title">
-        <h3 class="elemental-name">${elemental.name[lang]}</h3>
+        <h3 class="elemental-name">${elemental.number != null ? `<span class="sprite-number">${lang === "pt" ? "Nº" : "No."} ${elemental.number}</span> ` : ""}${elemental.name[lang]}</h3>
         <span class="rarity-badge">${s.rarities[elemental.rarity]}</span>
         ${elemental.upcoming ? `<span class="upcoming-badge">${s.upcoming}</span>` : ""}
       </div>
