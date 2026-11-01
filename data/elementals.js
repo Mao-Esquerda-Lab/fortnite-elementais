@@ -124,7 +124,7 @@ const S5 = ["fortune", "cursed"];
 const ELEMENTALS = [
   ["halfpeel-d", "Halfpeel'd", "Rare", S5,
     "Marca eliminações no mapa; o alcance de detecção aumenta a cada nível.",
-    "Marks eliminations on the map, with a detection range that grows each level."],
+    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho"],
   ["re-pete", "Re-Pete", "Rare", S5,
     "Recarrega mais rápido, com chance de recuperar munição.",
     "Reloads faster, with a chance to get ammo back.", "Repetácio"],
