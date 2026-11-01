@@ -89,6 +89,35 @@
   --accent: #5fd49a;
 }
 
+/* Pirata (Temporada One Piece): madeira de navio, pergaminho e ouro do
+   tesouro. Além das cores, ganha veios de madeira no fundo e filete dourado
+   no cabeçalho. */
+:root[data-theme="pirate"] {
+  color-scheme: dark;
+  --bg: #1b120b;
+  --surface: #2a1c11;
+  --surface-hover: #37251a;
+  --text: #f6e9cf;
+  --muted: #c2a883;
+  --border: #4d3622;
+  --accent: #f0c04a;
+}
+
+:root[data-theme="pirate"] body {
+  background-color: var(--bg);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 86px),
+    repeating-linear-gradient(0deg, rgba(255, 220, 160, 0.035) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #24170d 0%, #1b120b 60%);
+  background-attachment: fixed;
+}
+
+:root[data-theme="pirate"] .app-header {
+  background: linear-gradient(180deg, #33200f, var(--bg));
+  border-bottom: 2px solid var(--accent);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
+}
+
 * {
   box-sizing: border-box;
 }
