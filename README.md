@@ -4,7 +4,7 @@
 
 App web (PWA) para acompanhar sua coleção de **Sprites (Elementais)** do Fortnite Battle Royale — quais você já tem, quais já dominou (incluindo as variantes Dourada e especial) e quais códigos do Painel de Admin ("Lobby Hack codes") você já resgatou.
 
-Escopo atual: **Chapter 7, Temporada 4 "Override"**.
+Escopo atual: **Chapter 7, Temporada 5 "Treasure Hunters"**.
 
 🔗 Produção: publicado via GitHub Pages a partir da branch `main` (veja [Deploy](#deploy)).
 
