@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f1115" id="theme-color-meta" />
+  <meta name="theme-color" content="#161a24" id="theme-color-meta" />
   <!-- Aplica o tema salvo antes do CSS pintar a página, para não piscar o
        tema padrão ao abrir. A lista de temas válidos é THEMES, no app.js. -->
   <script>
@@ -11,6 +11,9 @@
       var savedTheme = localStorage.getItem("fortnite-sprites-theme");
       if (/^(dark|light|storm|legendary|mythic|jungle|pirate)$/.test(savedTheme)) {
         document.documentElement.setAttribute("data-theme", savedTheme);
+      } else if (savedTheme !== "auto") {
+        // Sem escolha salva: o padrão é o tema Pirata (DEFAULT_THEME, no app.js).
+        document.documentElement.setAttribute("data-theme", "pirate");
       }
     } catch (e) {}
   </script>
