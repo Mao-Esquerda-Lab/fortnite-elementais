@@ -102,6 +102,7 @@ const TRANSLATIONS = {
       legendary: "Lendário",
       mythic: "Mítico",
       jungle: "Selva",
+      pirate: "Pirata",
     },
     avatarChange: "Trocar imagem",
     avatarClose: "Fechar",
@@ -335,6 +336,7 @@ const TRANSLATIONS = {
       legendary: "Legendary",
       mythic: "Mythic",
       jungle: "Jungle",
+      pirate: "Pirate",
     },
     avatarChange: "Change picture",
     avatarClose: "Close",
@@ -2829,6 +2831,7 @@ const THEMES = [
   { id: "legendary", bg: "#17120b", accent: "#f2a33d" },
   { id: "mythic", bg: "#1a0e13", accent: "#f47a95" },
   { id: "jungle", bg: "#0d1612", accent: "#5fd49a" },
+  { id: "pirate", bg: "#1b120b", accent: "#f0c04a" },
 ];
 const themePicker = document.getElementById("theme-picker");
 const themeColorMeta = document.getElementById("theme-color-meta");

@@ -9,7 +9,7 @@
   <script>
     try {
       var savedTheme = localStorage.getItem("fortnite-sprites-theme");
-      if (/^(dark|light|storm|legendary|mythic|jungle)$/.test(savedTheme)) {
+      if (/^(dark|light|storm|legendary|mythic|jungle|pirate)$/.test(savedTheme)) {
         document.documentElement.setAttribute("data-theme", savedTheme);
       }
     } catch (e) {}
