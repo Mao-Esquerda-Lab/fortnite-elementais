@@ -130,7 +130,7 @@ const ELEMENTALS = [
     "Reloads faster, with a chance to get ammo back.", "Repetácio"],
   ["barry-o-fish", "Barry O'Fish", "Rare", S5,
     "Gasta menos estamina ao correr na água; ganha efeito de Tapa no nível máximo.",
-    "Uses less stamina sprinting in water; gains a Slap effect at max level."],
+    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson"],
   ["wayfinder", "Wayfinder", "Epic", S5,
     "Mostra Sprites por perto e adiciona saque extra aos Baús Enterrados.",
     "Shows nearby Sprites; adds extra loot to Buried Chests."],
