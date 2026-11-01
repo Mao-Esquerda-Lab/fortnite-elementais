@@ -4,7 +4,7 @@
 
 Web app (PWA) to track your **Sprite (Elemental)** collection in Fortnite Battle Royale — which ones you own, which ones you've mastered (including the Gold and special variants), and which Admin Panel codes ("Lobby Hack codes") you've already redeemed.
 
-Current scope: **Chapter 7, Season 4 "Override"**.
+Current scope: **Chapter 7, Season 5 "Treasure Hunters"**.
 
 🔗 Production: deployed via GitHub Pages from the `main` branch (see [Deploy](#deploy)).
 
