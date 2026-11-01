@@ -29,11 +29,12 @@ const WIKI_ITEM = (fileBase) =>
     `${fileBase} - Item - Fortnite.png`
   )}`;
 
-// Sem arte própria ainda: o IGN e a Fortnite Wiki não tinham os arquivos
-// dos Sprites da Temporada 5 no lançamento. Sem `image`, o app cai no
-// ícone SVG local. Quando a arte existir, preencha `image` e
-// `variantImages` direto na entrada (links completos) — ver
-// `variantImage` abaixo.
+// O IGN e a Fortnite Wiki não tinham os arquivos dos Sprites da Temporada 5
+// no lançamento. A arte (256x256) veio do spritecatch.com e fica no próprio
+// repositório, em img/sprites/{id}-{base|fortune|cursed}.png — assim não
+// depende de site de terceiros, funciona offline e não trava a imagem de
+// resumo por CORS. Quando o IGN/wiki publicarem a arte oficial, dá pra
+// trocar `image`/`variantImages` por links completos.
 const IGN_ITEM = (fileBase) =>
   `https://oyster.ignimgs.com/mediawiki/apis.ign.com/fortnite/${fileBase}.png`;
 const IGN_ART = {};
@@ -162,6 +163,10 @@ const ELEMENTALS = [
   ...(variants.length ? { onlyVariants: variants } : { noVariants: true }),
   ability: { pt, en: abEn },
   ...COSTS[rarity],
+  image: `img/sprites/${id}-base.png`,
+  variantImages: Object.fromEntries(
+    variants.map((v) => [v, `img/sprites/${id}-${v}.png`])
+  ),
 }));
 
 ELEMENTALS.forEach((e) => {
