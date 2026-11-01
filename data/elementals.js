@@ -155,14 +155,21 @@ const ELEMENTALS = [
   ["sweet-dreams", "Sweet Dreams", "Mythic", [],
     "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
     "Grants a random item each level-up, with Mythic loot at max level."],
-  // Raridade Lendário confirmada pelo usuário (custos estimados pela tabela
-  // por raridade). Variantes não confirmadas (GameRant lista só a base; a
-  // Destructoid diz que todos os Sprites têm Valioso/Amaldiçoado).
-  // Nome em PT confirmado pelo usuário.
+  // Lendário (confirmado pelo usuário e pelo fortnite.gg/Sprite Vault). Sem
+  // variantes (confirmado pelo usuário). Custo base 1.750 de pó, do Sprite
+  // Vault. Nome em PT confirmado pelo usuário.
   ["transponder-snail", "Transponder Snail", "Legendary", [],
-    "Concede recursos extras ao coletar itens, para você e seu grupo; o bônus aumenta a cada nível.",
-    "Get extra resources from pickups for yourself and all party members; the bonus grows each level.", "Caracol Telepático"],
-].map(([id, en, rarity, variants, pt, abEn, namePt]) => ({
+    "Concede recursos extras ao coletar itens; companheiros de equipe com este Sprite equipado também recebem um pouco. O bônus aumenta a cada nível.",
+    "Grants extra resources on pickup, with teammates who also have this Sprite equipped receiving some extra resources as well. The bonus grows each level.",
+    "Caracol Telepático", { dust: 1750 }],
+  // Ainda não lançado (chega na semana 2, ~07/nov/2026; Sprite Vault lista
+  // Lendário, 1.750 de pó e 2.100 nas variantes). Entra como "Em breve":
+  // caixinhas travadas e fora do progresso. Nome em PT ainda não conferido.
+  ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", [],
+    "Gera um efeito de Chug Splash ao restaurar escudos; a recarga diminui a cada nível.",
+    "Generates a Chug Splash effect when restoring shields; cooldown decreases each level.",
+    undefined, { upcoming: true, dust: 1750, variantCost: 2100 }],
+].map(([id, en, rarity, variants, pt, abEn, namePt, extra]) => ({
   id,
   name: { pt: namePt || en, en },
   wikiName: `${en} Sprite`,
@@ -170,6 +177,7 @@ const ELEMENTALS = [
   ...(variants.length ? { onlyVariants: variants } : { noVariants: true }),
   ability: { pt, en: abEn },
   ...COSTS[rarity],
+  ...extra,
   image: `img/sprites/${id}-base.png`,
   variantImages: Object.fromEntries(
     variants.map((v) => [v, `img/sprites/${id}-${v}.png`])
