@@ -2,7 +2,7 @@
 
 🇧🇷 Português | [🇺🇸 English](README.en.md)
 
-App web (PWA) para acompanhar sua coleção de **Sprites (Elementais)** do Fortnite Battle Royale — quais você já tem, quais já dominou (incluindo as variantes Dourada e especial) e quais códigos do Painel de Admin ("Lobby Hack codes") você já resgatou.
+App web (PWA) para acompanhar sua coleção de **Sprites (Elementais)** do Fortnite Battle Royale — quais você já tem e quais já dominou (incluindo as variantes Dourada e especial).
 
 Escopo atual: **Chapter 7, Temporada 5 "Treasure Hunters"**.
 
@@ -16,9 +16,8 @@ Escopo atual: **Chapter 7, Temporada 5 "Treasure Hunters"**.
 - **Temas** — em "Aparência" (botão de conta): Automático, Noite, Dia, Tempestade, Lendário, Mítico e Selva. Vale por aparelho, com ou sem conta.
 - **Imagem de perfil** — com conta, escolha um Sprite como imagem; aparece no botão de conta, no "Meu perfil" e na comparação com amigos.
 - **Filtros e ordenação** — por raridade, possuído/não possuído, dominado/não dominado, favoritos; ordenar por raridade ou ordem alfabética.
-- **Códigos do lobby** — lista dos códigos do Painel de Admin, com checklist de resgatados e opção de cadastrar à mão um código novo antes de ele ser publicado pelo robô.
 - **Exportar resumo** — gera uma imagem (PNG) com o resumo da coleção para compartilhar.
-- **Backup/restauração** — exporta a coleção inteira (itens, favoritos, códigos) como código/arquivo e importa em outro aparelho, com opção de mesclar ou substituir.
+- **Backup/restauração** — exporta a coleção inteira (itens, favoritos) como código/arquivo e importa em outro aparelho, com opção de mesclar ou substituir.
 - **Comparar com amigos** — por link/código (sem conta) ou, com conta, uma lista de amigos com comparação ao vivo.
 - **Conta opcional (sincronização na nuvem)** — login por e-mail/senha via Firebase para sincronizar a coleção entre aparelhos. Sem `firebase-config.js` configurado, o app funciona 100% local, só sem essa opção.
 - **PWA instalável e offline** — funciona instalado (Android/iOS/desktop) e continua funcionando sem internet via service worker.

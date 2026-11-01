@@ -2,7 +2,7 @@
 
 [🇧🇷 Português](README.md) | 🇺🇸 English
 
-Web app (PWA) to track your **Sprite (Elemental)** collection in Fortnite Battle Royale — which ones you own, which ones you've mastered (including the Gold and special variants), and which Admin Panel codes ("Lobby Hack codes") you've already redeemed.
+Web app (PWA) to track your **Sprite (Elemental)** collection in Fortnite Battle Royale — which ones you own and which ones you've mastered (including the Gold and special variants).
 
 Current scope: **Chapter 7, Season 5 "Treasure Hunters"**.
 
@@ -16,9 +16,8 @@ Current scope: **Chapter 7, Season 5 "Treasure Hunters"**.
 - **Themes** — under "Appearance" (account button): Automatic, Night, Day, Storm, Legendary, Mythic and Jungle. Per device, with or without an account.
 - **Profile picture** — with an account, pick a Sprite as your picture; it shows on the account button, in "My profile" and when friends compare with you.
 - **Filters and sorting** — by rarity, owned/not owned, mastered/not mastered, favorites; sort by rarity or alphabetically.
-- **Lobby codes** — list of Admin Panel codes, with a checklist of redeemed ones and the option to manually add a new code before the bot publishes it.
 - **Export summary** — generates an image (PNG) with a summary of your collection to share.
-- **Backup/restore** — exports your entire collection (items, favorites, codes) as a code/file and imports it on another device, with the option to merge or replace.
+- **Backup/restore** — exports your entire collection (items, favorites) as a code/file and imports it on another device, with the option to merge or replace.
 - **Compare with friends** — via link/code (no account needed) or, with an account, a friends list with live comparison.
 - **Optional account (cloud sync)** — email/password login via Firebase to sync your collection across devices. Without `firebase-config.js` set up, the app works 100% locally, just without that option.
 - **Installable, offline-capable PWA** — works installed (Android/iOS/desktop) and keeps working without internet via a service worker.
