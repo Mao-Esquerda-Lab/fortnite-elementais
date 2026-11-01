@@ -45,7 +45,7 @@ const ignArt = (elementalId, variantId) => {
 };
 
 // Todas as variantes herdam a raridade do Sprite base. A Temporada 5 usa
-// Fortuna + Amaldiçoada (`onlyVariants`). O Dourado volta em 12/nov/2026,
+// Valioso (Fortune) + Amaldiçoada (Cursed) (`onlyVariants`). O Dourado volta em 12/nov/2026,
 // mas a Epic não disse em quais Sprites — só entra no `onlyVariants`
 // quando for confirmado.
 //
@@ -68,7 +68,7 @@ const SPRITE_VARIANTS = [
 const EXTRA_VARIANTS = {
   fortune: {
     id: "fortune",
-    name: { pt: "Fortuna", en: "Fortune" },
+    name: { pt: "Valioso", en: "Fortune" },
     effect: {
       pt: "Revela os baús por perto.",
       en: "Reveals nearby Chests.",
@@ -127,7 +127,7 @@ const ELEMENTALS = [
     "Marks eliminations on the map, with a detection range that grows each level."],
   ["re-pete", "Re-Pete", "Rare", S5,
     "Recarrega mais rápido, com chance de recuperar munição.",
-    "Reloads faster, with a chance to get ammo back."],
+    "Reloads faster, with a chance to get ammo back.", "Repetácio"],
   ["barry-o-fish", "Barry O'Fish", "Rare", S5,
     "Gasta menos estamina ao correr na água; ganha efeito de Tapa no nível máximo.",
     "Uses less stamina sprinting in water; gains a Slap effect at max level."],
@@ -136,16 +136,16 @@ const ELEMENTALS = [
     "Shows nearby Sprites; adds extra loot to Buried Chests."],
   ["kelper", "Kelper", "Epic", S5,
     "Cura você aos poucos na água, com mais cura a cada nível.",
-    "Heals you over time in water, with bigger heals each level."],
+    "Heals you over time in water, with bigger heals each level.", "Apatilda"],
   ["exmarks", "Exmarks", "Legendary", S5,
     "Mostra Mapas do Tesouro e Cartazes de Procurado por perto; gera um Mapa do Tesouro no nível máximo.",
     "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level."],
   ["chester", "Chester", "Legendary", S5,
     "Baús podem gerar saque extra; cancela o dano de queda.",
-    "Chests may spawn extra loot; cancels fall damage."],
+    "Chests may spawn extra loot; cancels fall damage.", "Baunardo"],
   ["lil-squibbly", "Lil' Squibbly", "Legendary", S5,
     "Pule em buracos de pesca para ganhar peixes e saque bônus.",
-    "Jump into fishing holes for fish and bonus loot."],
+    "Jump into fishing holes for fish and bonus loot.", "Polvitozinho"],
   ["lil-flacko", "Lil' Flacko", "Legendary", S5,
     "Ao pousar, cria uma pequena onda de choque que empurra os oponentes.",
     "Landing creates a small shockwave that knocks opponents back."],
@@ -155,9 +155,15 @@ const ELEMENTALS = [
   ["sweet-dreams", "Sweet Dreams", "Mythic", [],
     "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
     "Grants a random item each level-up, with Mythic loot at max level."],
-].map(([id, en, rarity, variants, pt, abEn]) => ({
+  // Sem raridade, custo nem variantes confirmados (GameRant lista só a
+  // base; a Destructoid diz que todos os Sprites têm Fortuna/Amaldiçoada).
+  // Nome em PT ainda não conferido.
+  ["transponder-snail", "Transponder Snail", "Unknown", [],
+    "Concede recursos extras ao coletar itens, para você e seu grupo; o bônus aumenta a cada nível.",
+    "Get extra resources from pickups for yourself and all party members; the bonus grows each level."],
+].map(([id, en, rarity, variants, pt, abEn, namePt]) => ({
   id,
-  name: { pt: en, en },
+  name: { pt: namePt || en, en },
   wikiName: `${en} Sprite`,
   rarity,
   ...(variants.length ? { onlyVariants: variants } : { noVariants: true }),
