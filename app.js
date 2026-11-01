@@ -2823,6 +2823,9 @@ document.getElementById("sort-select").addEventListener("change", (e) => {
 // em styles.css (:root[data-theme="..."]); aqui só as das bolinhas do
 // seletor. Ao mudar a lista, atualize também o script inline do index.html.
 const THEME_KEY = "fortnite-sprites-theme";
+// Tema de quem nunca escolheu um (quem escolheu "Automático" continua nele).
+// Ao mudar, atualize também o script inline do index.html.
+const DEFAULT_THEME = "pirate";
 const THEMES = [
   { id: "auto", bg: "linear-gradient(135deg, #0f1115 50%, #f4f5f7 50%)", accent: "#7dd3fc" },
   { id: "dark", bg: "#0f1115", accent: "#7dd3fc" },
@@ -2838,7 +2841,7 @@ const themeColorMeta = document.getElementById("theme-color-meta");
 
 function currentTheme() {
   const saved = storage.get(THEME_KEY);
-  return THEMES.some((th) => th.id === saved) ? saved : "auto";
+  return THEMES.some((th) => th.id === saved) ? saved : DEFAULT_THEME;
 }
 
 function applyTheme(id) {
