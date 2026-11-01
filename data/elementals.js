@@ -124,22 +124,22 @@ const S5 = ["fortune", "cursed"];
 const ELEMENTALS = [
   ["halfpeel-d", "Halfpeel'd", "Rare", S5,
     "Marca eliminações no mapa; o alcance de detecção aumenta a cada nível.",
-    "Marks eliminations on the map, with a detection range that grows each level."],
+    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho"],
   ["re-pete", "Re-Pete", "Rare", S5,
     "Recarrega mais rápido, com chance de recuperar munição.",
     "Reloads faster, with a chance to get ammo back.", "Repetácio"],
   ["barry-o-fish", "Barry O'Fish", "Rare", S5,
     "Gasta menos estamina ao correr na água; ganha efeito de Tapa no nível máximo.",
-    "Uses less stamina sprinting in water; gains a Slap effect at max level."],
+    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson"],
   ["wayfinder", "Wayfinder", "Epic", S5,
     "Mostra Sprites por perto e adiciona saque extra aos Baús Enterrados.",
-    "Shows nearby Sprites; adds extra loot to Buried Chests."],
+    "Shows nearby Sprites; adds extra loot to Buried Chests.", "Localizador"],
   ["kelper", "Kelper", "Epic", S5,
     "Cura você aos poucos na água, com mais cura a cada nível.",
     "Heals you over time in water, with bigger heals each level.", "Apatilda"],
   ["exmarks", "Exmarks", "Legendary", S5,
     "Mostra Mapas do Tesouro e Cartazes de Procurado por perto; gera um Mapa do Tesouro no nível máximo.",
-    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level."],
+    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level.", "Xisconde"],
   ["chester", "Chester", "Legendary", S5,
     "Baús podem gerar saque extra; cancela o dano de queda.",
     "Chests may spawn extra loot; cancels fall damage.", "Baunardo"],
@@ -148,17 +148,15 @@ const ELEMENTALS = [
     "Jump into fishing holes for fish and bonus loot.", "Polvitozinho"],
   ["lil-flacko", "Lil' Flacko", "Legendary", S5,
     "Ao pousar, cria uma pequena onda de choque que empurra os oponentes.",
-    "Landing creates a small shockwave that knocks opponents back."],
+    "Landing creates a small shockwave that knocks opponents back.", "Flacko Jr."],
   ["plundarrgh", "Plundarrgh", "Mythic", S5,
     "Abrir baús aumenta a velocidade da picareta e de movimento.",
-    "Opening Chests boosts Pickaxe and movement speed."],
-  ["sweet-dreams", "Sweet Dreams", "Mythic", [],
-    "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
-    "Grants a random item each level-up, with Mythic loot at max level."],
-  // Sem raridade, custo nem variantes confirmados (GameRant lista só a
-  // base; a Destructoid diz que todos os Sprites têm Valioso/Amaldiçoado).
+    "Opening Chests boosts Pickaxe and movement speed.", "Moedonho"],
+  // Raridade Lendário confirmada pelo usuário (custos estimados pela tabela
+  // por raridade). Variantes não confirmadas (GameRant lista só a base; a
+  // Destructoid diz que todos os Sprites têm Valioso/Amaldiçoado).
   // Nome em PT confirmado pelo usuário.
-  ["transponder-snail", "Transponder Snail", "Unknown", [],
+  ["transponder-snail", "Transponder Snail", "Legendary", [],
     "Concede recursos extras ao coletar itens, para você e seu grupo; o bônus aumenta a cada nível.",
     "Get extra resources from pickups for yourself and all party members; the bonus grows each level.", "Caracol Telepático"],
 ].map(([id, en, rarity, variants, pt, abEn, namePt]) => ({
@@ -175,7 +173,19 @@ const ELEMENTALS = [
   ),
 }));
 
+// Número do Sprite na tela de Sprites do jogo (a Temporada 5 passou a
+// numerá-los). Preencha por id; quem não tiver número vai para o fim, na
+// ordem em que está na lista. O app mostra o número no cartão e usa a
+// ordem numérica como padrão.
+const SPRITE_NUMBERS = {
+  // "halfpeel-d": 1,
+};
 ELEMENTALS.forEach((e) => {
   e.image = e.image || ignArt(e.id, "base") || WIKI_ITEM(e.wikiName);
   e.variants = e.noVariants ? [] : makeVariants(e);
+  if (SPRITE_NUMBERS[e.id] != null) e.number = SPRITE_NUMBERS[e.id];
 });
+// Ordem padrão = numérica (sort estável: sem número, mantém a ordem da lista).
+ELEMENTALS.sort(
+  (a, b) => (a.number ?? Infinity) - (b.number ?? Infinity) || 0
+);
