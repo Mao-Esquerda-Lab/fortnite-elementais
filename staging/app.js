@@ -1486,14 +1486,18 @@ grid.addEventListener("click", (e) => {
 // Desenha tudo em canvas com formas, texto e os ícones dos Sprites (esses
 // carregados com CORS via loadCorsImage, pra não "sujar" o canvas e
 // impedir o toBlob).
-// Cores fixas do tema escuro, iguais às de styles.css.
+// Cores fixas do tema Pirata (One Piece), iguais às de styles.css — a imagem
+// sai sempre assim, seja qual for o tema escolhido no app.
 const EXPORT_COLORS = {
-  bg: "#0f1115",
-  surface: "#1a1d24",
-  border: "#2b2f38",
-  text: "#f2f3f5",
-  muted: "#9aa1ac",
-  star: "#f2a33d",
+  bg: "#161a24",
+  bg2: "#232c40",
+  surface: "#2a1e17",
+  border: "#4f3a28",
+  text: "#f8ecd2",
+  muted: "#c7ae8a",
+  accent: "#f4c542",
+  red: "#d63a2f",
+  star: "#f4c542",
   rarity: {
     Rare: "#5b9bd5",
     Epic: "#b16fe0",
@@ -1501,6 +1505,59 @@ const EXPORT_COLORS = {
     Mythic: "#ef5b7c",
   },
 };
+
+// Chapéu de palha do Luffy (mesmo desenho do SVG usado no cabeçalho do app,
+// em styles.css), com a coroa em 64x40 desenhada a partir de (x, y).
+function drawStrawHat(ctx, x, y, w, rot = 0) {
+  const k = w / 64;
+  ctx.save();
+  ctx.translate(x + w / 2, y + 20 * k);
+  ctx.rotate(rot);
+  ctx.scale(k, k);
+  ctx.translate(-32, -20);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#b9862b";
+  ctx.fillStyle = "#f4c542";
+  ctx.beginPath();
+  ctx.ellipse(32, 28, 30, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  const crown = new Path2D("M12 26 C12 8 52 8 52 26 C44 31 20 31 12 26Z");
+  ctx.fill(crown);
+  ctx.stroke(crown);
+  ctx.fillStyle = "#d63a2f";
+  ctx.fill(new Path2D("M13 22 C24 26 40 26 51 22 L52 26 C44 31 20 31 12 26Z"));
+  ctx.restore();
+}
+
+// Bandeira do bando: caveira com ossos cruzados e o chapéu de palha. Com
+// `alpha` baixo vira marca d'água.
+function drawJollyRoger(ctx, cx, cy, size, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#f8ecd2";
+  ctx.lineWidth = size * 0.1;
+  const b = size * 0.42;
+  ctx.beginPath();
+  ctx.moveTo(cx - b, cy + size * 0.1);
+  ctx.lineTo(cx + b, cy + size * 0.5);
+  ctx.moveTo(cx + b, cy + size * 0.1);
+  ctx.lineTo(cx - b, cy + size * 0.5);
+  ctx.stroke();
+  ctx.fillStyle = "#f8ecd2";
+  ctx.beginPath();
+  ctx.arc(cx, cy + size * 0.18, size * 0.27, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillRect(cx - size * 0.13, cy + size * 0.3, size * 0.26, size * 0.17);
+  ctx.fillStyle = "#161a24";
+  ctx.beginPath();
+  ctx.arc(cx - size * 0.1, cy + size * 0.2, size * 0.065, 0, Math.PI * 2);
+  ctx.arc(cx + size * 0.1, cy + size * 0.2, size * 0.065, 0, Math.PI * 2);
+  ctx.fill();
+  drawStrawHat(ctx, cx - size * 0.5, cy - size * 0.66, size, -0.1);
+  ctx.restore();
+}
 
 // Ajusta o texto ao espaço SEM usar o maxWidth do fillText: no WebKit/Safari
 // textos maiores que o maxWidth podem simplesmente não ser desenhados
@@ -1601,8 +1658,27 @@ async function exportSummary() {
   ctx.scale(scale, scale);
 
   const FONT = '-apple-system, "Segoe UI", Roboto, sans-serif';
-  ctx.fillStyle = c.bg;
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, c.bg2);
+  bgGrad.addColorStop(0.25, c.bg);
+  bgGrad.addColorStop(1, "#1a1612");
+  ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, W, H);
+
+  // Ondas discretas no fundo e a bandeira do bando como marca d'água.
+  ctx.strokeStyle = c.accent;
+  ctx.globalAlpha = 0.05;
+  ctx.lineWidth = 2;
+  for (let wy = HEADER + 60; wy < H; wy += 120) {
+    ctx.beginPath();
+    for (let wx = -20; wx < W + 40; wx += 40) {
+      ctx.quadraticCurveTo(wx + 10, wy - 10, wx + 20, wy);
+      ctx.quadraticCurveTo(wx + 30, wy + 10, wx + 40, wy);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  drawJollyRoger(ctx, W - 96, 66, 112, 0.95);
 
   // Totais: tenho / não tenho e dominados / não dominados (de um total
   // que conta o Base e cada variante de todos os Elementais lançados).
@@ -1620,7 +1696,7 @@ async function exportSummary() {
 
   // Números grandes, um bloco por total.
   const stats = [
-    { value: owned, label: `✓ ${s.tabOwned}`, color: "#7dd3fc" },
+    { value: owned, label: `✓ ${s.tabOwned}`, color: c.accent },
     { value: total - owned, label: s.tabNotOwned, color: c.muted },
     { value: mastered, label: `★ ${s.tabMastered}`, color: c.star },
     { value: total - mastered, label: s.tabNotMastered, color: c.muted },
@@ -1635,11 +1711,11 @@ async function exportSummary() {
     ctx.fillText(stat.label, x, 150);
   });
 
-  ctx.strokeStyle = c.border;
-  ctx.beginPath();
-  ctx.moveTo(24, HEADER - 14);
-  ctx.lineTo(W - 24, HEADER - 14);
-  ctx.stroke();
+  // Filete dourado com uma linha vermelha por baixo (faixa do chapéu).
+  ctx.fillStyle = c.accent;
+  ctx.fillRect(24, HEADER - 16, W - 48, 3);
+  ctx.fillStyle = c.red;
+  ctx.fillRect(24, HEADER - 13, W - 48, 2);
 
   // Uma linha por Elemental: ícone grande na cor da raridade com a inicial,
   // nome e um chip quadrado grande por quadradinho (Base + variantes), só
@@ -1737,7 +1813,7 @@ async function exportSummary() {
   // Rodapé.
   ctx.fillStyle = c.muted;
   ctx.font = `400 12px ${FONT}`;
-  ctx.fillText("fortnite-elementais — GitHub Pages", 24, H - FOOTER / 2);
+  ctx.fillText("☠ fortnite-elementais — GitHub Pages", 24, H - FOOTER / 2);
 
   // Mostra a imagem num visualizador com opção de baixar,
   // em vez de disparar o download direto.
