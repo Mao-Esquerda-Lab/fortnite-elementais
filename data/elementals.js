@@ -45,7 +45,7 @@ const ignArt = (elementalId, variantId) => {
 };
 
 // Todas as variantes herdam a raridade do Sprite base. A Temporada 5 usa
-// Valioso (Fortune) + Amaldiçoada (Cursed) (`onlyVariants`). O Dourado volta em 12/nov/2026,
+// Valioso (Fortune) + Amaldiçoado (Cursed) (`onlyVariants`). O Dourado volta em 12/nov/2026,
 // mas a Epic não disse em quais Sprites — só entra no `onlyVariants`
 // quando for confirmado.
 //
@@ -76,7 +76,7 @@ const EXTRA_VARIANTS = {
   },
   cursed: {
     id: "cursed",
-    name: { pt: "Amaldiçoada", en: "Cursed" },
+    name: { pt: "Amaldiçoado", en: "Cursed" },
     effect: {
       pt: "Aumenta a chance de achar variantes raras de Sprites, mas a água causa dano enquanto está equipada.",
       en: "Improves your odds of finding rare Sprite variants, but water damages you while equipped.",
@@ -156,11 +156,11 @@ const ELEMENTALS = [
     "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
     "Grants a random item each level-up, with Mythic loot at max level."],
   // Sem raridade, custo nem variantes confirmados (GameRant lista só a
-  // base; a Destructoid diz que todos os Sprites têm Fortuna/Amaldiçoada).
-  // Nome em PT ainda não conferido.
+  // base; a Destructoid diz que todos os Sprites têm Valioso/Amaldiçoado).
+  // Nome em PT confirmado pelo usuário.
   ["transponder-snail", "Transponder Snail", "Unknown", [],
     "Concede recursos extras ao coletar itens, para você e seu grupo; o bônus aumenta a cada nível.",
-    "Get extra resources from pickups for yourself and all party members; the bonus grows each level."],
+    "Get extra resources from pickups for yourself and all party members; the bonus grows each level.", "Caracol Telepático"],
 ].map(([id, en, rarity, variants, pt, abEn, namePt]) => ({
   id,
   name: { pt: namePt || en, en },
