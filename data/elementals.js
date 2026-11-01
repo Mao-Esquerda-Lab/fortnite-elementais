@@ -152,9 +152,6 @@ const ELEMENTALS = [
   ["plundarrgh", "Plundarrgh", "Mythic", S5,
     "Abrir baús aumenta a velocidade da picareta e de movimento.",
     "Opening Chests boosts Pickaxe and movement speed.", "Moedonho"],
-  ["sweet-dreams", "Sweet Dreams", "Mythic", [],
-    "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
-    "Grants a random item each level-up, with Mythic loot at max level."],
   // Raridade Lendário confirmada pelo usuário (custos estimados pela tabela
   // por raridade). Variantes não confirmadas (GameRant lista só a base; a
   // Destructoid diz que todos os Sprites têm Valioso/Amaldiçoado).

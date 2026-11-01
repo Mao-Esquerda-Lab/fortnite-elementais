@@ -69,6 +69,9 @@ const MIN_CHAPTER = 7;
 const EXCLUDED_SPRITES = [
   "Dash Sprite",
   "Superman Sprite",
+  // Sweet Dreams é de outra temporada (informado pelo usuário em 01/nov/2026);
+  // sem isto o bot a readicionaria se a fonte a listar.
+  "Sweet Dreams Sprite",
   // Sprites da Temporada 4 (Override), removidos a pedido do usuário em
   // 01/nov/2026 (virada para a Temporada 5, Treasure Hunters).
   "8-Bit Sprite",
