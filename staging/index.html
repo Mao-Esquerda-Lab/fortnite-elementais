@@ -97,11 +97,10 @@
   </header>
 
   <main class="container">
-    <!-- Alterna entre a coleção de Sprites e a lista de códigos do lobby. -->
+    <!-- Alterna entre a coleção de Sprites e as outras abas. -->
     <div class="view-tabs" id="view-tabs" role="tablist">
       <button class="view-tab active" type="button" data-view="sprites" role="tab"></button>
       <button class="view-tab" type="button" data-view="friends" role="tab"></button>
-      <button class="view-tab" type="button" data-view="codes" role="tab"></button>
       <button class="view-tab" type="button" data-view="mastery" role="tab"></button>
     </div>
 
@@ -228,54 +227,6 @@
         <p class="compare-list-empty" id="friend-list-empty" hidden></p>
       </div>
       <p class="share-field-label" id="friends-signed-out-hint" hidden></p>
-    </div>
-
-    <!-- Aba dos códigos do Painel de Admin: marcar os já resgatados. -->
-    <div id="view-codes" hidden>
-      <p class="codes-intro" id="codes-intro"></p>
-      <div class="progress-row">
-        <div class="progress-bar" id="codes-progress-bar"></div>
-        <span class="progress-label" id="codes-progress-label"></span>
-      </div>
-      <!-- Código novo costuma circular no jogo antes de o IGN publicar, e a
-           ação diária só lê o IGN. Este formulário é a ponte: o código entra
-           na lista deste aparelho na hora, e a entrada oficial toma o lugar
-           dele quando o robô finalmente trouxer o código. -->
-      <div class="accordion">
-        <button class="accordion-toggle" id="codes-add-toggle" type="button"
-                aria-expanded="false" aria-controls="codes-add-form"></button>
-        <form class="accordion-panel" id="codes-add-form" hidden>
-          <div class="codes-add-field">
-            <label class="share-field-label" id="codes-add-code-label"
-                   for="codes-add-code"></label>
-            <input class="share-input" id="codes-add-code" type="text"
-                   maxlength="32" autocomplete="off" autocapitalize="off"
-                   autocorrect="off" spellcheck="false" />
-          </div>
-          <div class="codes-add-field">
-            <label class="share-field-label" id="codes-add-reward-label"
-                   for="codes-add-reward"></label>
-            <input class="share-input" id="codes-add-reward" type="text"
-                   maxlength="80" autocomplete="off" />
-          </div>
-          <p class="share-error" id="codes-add-error" hidden></p>
-          <div class="codes-add-actions">
-            <button class="export-copy" id="codes-add-submit" type="submit"></button>
-          </div>
-        </form>
-      </div>
-
-      <table class="codes-table">
-        <thead>
-          <tr>
-            <th id="codes-th-done"></th>
-            <th id="codes-th-code"></th>
-            <th id="codes-th-reward"></th>
-          </tr>
-        </thead>
-        <tbody id="codes-body"></tbody>
-      </table>
-      <p class="codes-source" id="codes-source"></p>
     </div>
 
     <!-- Aba de recompensas de Domínio: desbloqueiam sozinhas pela contagem

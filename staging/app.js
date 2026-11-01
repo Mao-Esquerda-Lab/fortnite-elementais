@@ -157,33 +157,6 @@ const TRANSLATIONS = {
     accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
     viewCompareTab: "Comparar",
-    viewCodes: "Códigos",
-    codesIntro:
-      "Códigos do Painel de Admin: no menu principal, clique na caixa “… / admin panel” no canto superior direito, digite e confirme. Marque aqui os que já resgatou.",
-    codesThDone: "Resgatei",
-    codesThCode: "Código",
-    codesThReward: "Recompensa",
-    codesNew: "Novo",
-    codesCopy: "Copiar código",
-    codesProgress: (done, total) => `${done} / ${total} resgatados`,
-    codesExpired: "Expirado",
-    codesExpiredHint: "O IGN tirou este código da lista — não deve mais funcionar.",
-    codesAdd: "Adicionar código",
-    codesAddTitle:
-      "Para códigos que você viu antes de entrarem na lista automática",
-    codesAddCodeLabel: "Código, como aparece no jogo",
-    codesAddRewardLabel: "Recompensa (opcional)",
-    codesAddRewardPlaceholder: "Ex.: 2.000 de Pó de Elemental",
-    codesAddSubmit: "Adicionar",
-    codesAddInvalid: "O código tem só letras e números, de 2 a 32 caracteres.",
-    codesAddDuplicate: "Este código já está na lista.",
-    codesCustom: "Seu",
-    codesCustomHint:
-      "Código que você adicionou à mão. Quando o IGN publicar, a entrada oficial (traduzida) toma o lugar desta sozinha.",
-    codesNoReward: "Recompensa não informada",
-    codesRemove: "Remover este código",
-    codesSource:
-      'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, atualizada todo dia. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     viewMastery: "Domínio",
     masteryIntro:
       "A cada Sprite Dominado (Base ou variante) você desbloqueia uma recompensa sozinho — não precisa resgatar nada aqui, é só acompanhar.",
@@ -390,32 +363,6 @@ const TRANSLATIONS = {
     accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
     viewCompareTab: "Compare",
-    viewCodes: "Codes",
-    codesIntro:
-      "Admin Panel codes: on the main menu, click the “… / admin panel” box in the top right, type the code and submit. Tick here the ones you have already redeemed.",
-    codesThDone: "Redeemed",
-    codesThCode: "Code",
-    codesThReward: "Reward",
-    codesNew: "New",
-    codesCopy: "Copy code",
-    codesProgress: (done, total) => `${done} / ${total} redeemed`,
-    codesExpired: "Expired",
-    codesExpiredHint: "IGN dropped this code from the list — it should no longer work.",
-    codesAdd: "Add a code",
-    codesAddTitle: "For codes you saw before they reached the automatic list",
-    codesAddCodeLabel: "Code, exactly as it appears in game",
-    codesAddRewardLabel: "Reward (optional)",
-    codesAddRewardPlaceholder: "e.g. 2,000 Sprite Dust",
-    codesAddSubmit: "Add",
-    codesAddInvalid: "A code is 2 to 32 letters and digits only.",
-    codesAddDuplicate: "This code is already on the list.",
-    codesCustom: "Yours",
-    codesCustomHint:
-      "A code you added by hand. Once IGN publishes it, the official (translated) entry takes this one's place on its own.",
-    codesNoReward: "Reward not filled in",
-    codesRemove: "Remove this code",
-    codesSource:
-      'List from the <a href="https://www.ign.com/wikis/fortnite/All_Admin_Panel_Lobby_Hack_Codes_For_Free_Rewards" target="_blank" rel="noopener noreferrer">IGN wiki</a>, refreshed daily. Reward wording is our own translation, not the game\'s official text.',
     viewMastery: "Mastery",
     masteryIntro:
       "Every Mastered Sprite (Base or variant) unlocks a reward on its own — nothing to redeem here, just track it.",
@@ -991,32 +938,16 @@ function applyLanguage() {
   const viewTabLabels = {
     sprites: s.viewSprites,
     friends: s.viewCompareTab,
-    codes: s.viewCodes,
     mastery: s.viewMastery,
   };
   [...viewTabs.children].forEach((tab) => {
     tab.textContent = viewTabLabels[tab.dataset.view];
   });
-  document.getElementById("codes-intro").textContent = s.codesIntro;
-  document.getElementById("codes-th-done").textContent = s.codesThDone;
-  document.getElementById("codes-th-code").textContent = s.codesThCode;
-  document.getElementById("codes-th-reward").textContent = s.codesThReward;
-  // Tem link para a página de origem, então precisa de innerHTML.
-  document.getElementById("codes-source").innerHTML = s.codesSource;
   document.getElementById("mastery-intro").textContent = s.masteryIntro;
   document.getElementById("mastery-th-done").textContent = s.masteryThDone;
   document.getElementById("mastery-th-level").textContent = s.masteryThLevel;
   document.getElementById("mastery-th-reward").textContent = s.masteryThReward;
   document.getElementById("mastery-source").innerHTML = s.masterySource;
-  const codesAddBtn = document.getElementById("codes-add-toggle");
-  codesAddBtn.textContent = `+ ${s.codesAdd}`;
-  codesAddBtn.title = s.codesAddTitle;
-  document.getElementById("codes-add-code-label").textContent = s.codesAddCodeLabel;
-  document.getElementById("codes-add-reward-label").textContent =
-    s.codesAddRewardLabel;
-  document.getElementById("codes-add-reward").placeholder =
-    s.codesAddRewardPlaceholder;
-  document.getElementById("codes-add-submit").textContent = s.codesAddSubmit;
 
   const backupBtn = document.getElementById("backup-btn");
   backupBtn.title = s.backupTitle;
@@ -1913,44 +1844,12 @@ document.getElementById("export-btn").addEventListener("click", () => {
 const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
 const viewFriends = document.getElementById("view-friends");
-const viewCodes = document.getElementById("view-codes");
 const viewMastery = document.getElementById("view-mastery");
 const friendsTabBtn = document.querySelector('#view-tabs [data-view="friends"]');
-const codesBody = document.getElementById("codes-body");
-const codesProgressBar = document.getElementById("codes-progress-bar");
-const codesProgressLabel = document.getElementById("codes-progress-label");
 const masteryBody = document.getElementById("mastery-body");
 const masteryProgressBar = document.getElementById("mastery-progress-bar");
 const masteryProgressLabel = document.getElementById("mastery-progress-label");
 const masteryNextEl = document.getElementById("mastery-next");
-
-// O que o usuário digitou entra na tabela com a mesma cara das entradas do
-// robô. A recompensa vale nos dois idiomas: é o texto dele, não tem tradução
-// para escolher.
-const customCodeEntries = () =>
-  customCodes.map((c) => ({
-    id: c.id,
-    code: c.code,
-    custom: true,
-    reward: { pt: c.reward, en: c.reward },
-  }));
-
-// Os manuais vêm primeiro: são o que acabou de ser digitado, e a lista do
-// IGN é longa o bastante para o novo sumir no meio dela.
-const allCodes = () => [...customCodeEntries(), ...CHEAT_CODES];
-
-// Expirado não conta no progresso, nem em cima nem embaixo: não adianta
-// mais resgatar, então cobrar por ele deixaria a barra impossível de fechar.
-const activeCodes = () => allCodes().filter((c) => !c.expired);
-
-const codesDone = () =>
-  activeCodes().filter((c) => redeemedCodes[c.id] === true).length;
-
-// Expirados vão para o fim da lista, na ordem original dentro de cada grupo.
-const sortedCodes = () => [
-  ...allCodes().filter((c) => !c.expired),
-  ...allCodes().filter((c) => c.expired),
-];
 
 // A tabela é montada com innerHTML e passou a mostrar texto digitado por
 // gente: o do próprio usuário e, via backup, o de quem mandou o backup.
@@ -1961,58 +1860,9 @@ const escapeHtml = (text) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]
   );
 
-function renderCodes() {
-  const s = t();
-  codesBody.innerHTML = sortedCodes()
-    .map((c) => {
-      const done = redeemedCodes[c.id] === true;
-      const classes = ["code-row"];
-      if (done) classes.push("done");
-      if (c.expired) classes.push("expired");
-      const reward = c.reward[lang];
-      return `
-      <tr class="${classes.join(" ")}">
-        <td class="code-check-cell">
-          <input type="checkbox" class="code-check" ${done ? "checked" : ""}
-                 data-code="${c.id}" aria-label="${s.codesThDone}" />
-        </td>
-        <td>
-          <div class="code-cell">
-            <code class="code-text">${escapeHtml(c.code)}</code>
-            ${c.expired ? `<span class="code-expired" title="${s.codesExpiredHint}">${s.codesExpired}</span>` : ""}
-            ${c.isNew && !c.expired ? `<span class="code-new">${s.codesNew}</span>` : ""}
-            ${c.custom ? `<span class="code-custom" title="${s.codesCustomHint}">${s.codesCustom}</span>` : ""}
-            <button class="code-copy" type="button" data-copy="${c.id}"
-                    title="${s.codesCopy}" aria-label="${s.codesCopy}">⧉</button>
-            ${
-              c.custom
-                ? `<button class="code-remove" type="button" data-remove="${c.id}"
-                    title="${s.codesRemove}" aria-label="${s.codesRemove}">✕</button>`
-                : ""
-            }
-          </div>
-        </td>
-        <td>
-          <span class="code-reward">${
-            reward ? escapeHtml(reward) : `<em>${s.codesNoReward}</em>`
-          }</span>
-          ${c.note ? `<span class="code-note">${escapeHtml(c.note[lang])}</span>` : ""}
-        </td>
-      </tr>`;
-    })
-    .join("");
-
-  const done = codesDone();
-  const total = activeCodes().length;
-  const width = total === 0 ? 0 : (done / total) * 100;
-  codesProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
-  codesProgressLabel.textContent = s.codesProgress(done, total);
-}
-
 // Desbloqueia sozinho pela contagem total de Sprites Dominados (mesma
 // definição da barra "Dominados" da aba de Sprites — Base + cada variante
-// conta separado): nada para o usuário marcar aqui, ao contrário dos
-// códigos do lobby.
+// conta separado): nada para o usuário marcar aqui.
 function renderMastery() {
   const s = t();
   const masteredCount = computeTotals(collection).mastered;
@@ -2050,14 +1900,12 @@ function renderMastery() {
 function applyView() {
   viewSprites.hidden = activeView !== "sprites";
   viewFriends.hidden = activeView !== "friends";
-  viewCodes.hidden = activeView !== "codes";
   viewMastery.hidden = activeView !== "mastery";
   [...viewTabs.children].forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.view === activeView)
   );
   // O menu de navegação rápida é grudento e só faz sentido com a grade.
   spriteNav.hidden = activeView !== "sprites";
-  if (activeView === "codes") renderCodes();
   if (activeView === "mastery") renderMastery();
   if (activeView === "friends") refreshShareLink();
 }
@@ -2067,96 +1915,6 @@ viewTabs.addEventListener("click", (e) => {
   if (!tab || tab.dataset.view === activeView) return;
   activeView = tab.dataset.view;
   applyView();
-});
-
-codesBody.addEventListener("click", async (e) => {
-  const remove = e.target.closest("[data-remove]");
-  if (remove) {
-    customCodes = customCodes.filter((c) => c.id !== remove.dataset.remove);
-    saveCustomCodes();
-    // O "já resgatei" fica: se o código voltar (à mão ou pelo IGN), o
-    // progresso volta com ele, e uma chave sobrando não aparece em lugar
-    // nenhum.
-    renderCodes();
-    return;
-  }
-
-  const copy = e.target.closest("[data-copy]");
-  if (copy) {
-    const entry = allCodes().find((c) => c.id === copy.dataset.copy);
-    if (!entry) return;
-    try {
-      await navigator.clipboard.writeText(entry.code);
-      copy.textContent = "✓";
-      setTimeout(() => {
-        copy.textContent = "⧉";
-      }, 1500);
-    } catch {
-      // Sem clipboard: seleciona o texto do código para copiar na mão.
-      const range = document.createRange();
-      range.selectNodeContents(copy.closest(".code-cell").querySelector(".code-text"));
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-  }
-});
-
-codesBody.addEventListener("change", (e) => {
-  const box = e.target.closest(".code-check");
-  if (!box) return;
-  if (box.checked) redeemedCodes[box.dataset.code] = true;
-  else delete redeemedCodes[box.dataset.code];
-  saveCodes();
-  renderCodes();
-});
-
-// ---- Adicionar um código à mão ----
-const codesAddToggle = document.getElementById("codes-add-toggle");
-const codesAddForm = document.getElementById("codes-add-form");
-const codesAddCode = document.getElementById("codes-add-code");
-const codesAddReward = document.getElementById("codes-add-reward");
-const codesAddError = document.getElementById("codes-add-error");
-
-function toggleCodesAdd(open) {
-  codesAddForm.hidden = !open;
-  codesAddToggle.setAttribute("aria-expanded", String(open));
-  if (open) codesAddCode.focus();
-  else {
-    codesAddCode.value = "";
-    codesAddReward.value = "";
-    codesAddError.hidden = true;
-  }
-}
-
-codesAddToggle.addEventListener("click", () => {
-  toggleCodesAdd(codesAddForm.hidden);
-});
-
-codesAddForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const s = t();
-  const code = codesAddCode.value.trim();
-  if (!VALID_CODE.test(code)) {
-    codesAddError.textContent = s.codesAddInvalid;
-    codesAddError.hidden = false;
-    return;
-  }
-  const id = codeId(code);
-  // Vale para os dois lados: já digitado antes, ou já publicado pelo IGN
-  // (aí a linha oficial, traduzida, é a que interessa).
-  if (allCodes().some((c) => c.id === id)) {
-    codesAddError.textContent = s.codesAddDuplicate;
-    codesAddError.hidden = false;
-    return;
-  }
-  customCodes = [
-    { id, code, reward: codesAddReward.value.trim().slice(0, REWARD_MAX) },
-    ...customCodes,
-  ];
-  saveCustomCodes();
-  toggleCodesAdd(false);
-  renderCodes();
 });
 
 // ---- Backup: levar a coleção inteira de um aparelho para outro ----
