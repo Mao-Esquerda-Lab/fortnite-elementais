@@ -164,15 +164,15 @@ const ELEMENTALS = [
     "Grants extra resources on pickup, with teammates who also have this Sprite equipped receiving some extra resources as well. The bonus grows each level.",
     "Caracol Telepático", { dust: 1750 }],
   // Lançado em 08/nov/2026 (confirmado pelo usuário) — saiu do "Em breve".
-  // O IGN ainda não lista o Sprite base com o <b>Nome Sprite</b>/checkbox de
-  // sempre nesta página, só nos metadados internos de checklist (mesmo
-  // padrão de quando um Sprite é anunciado antes de aparecer na tabela) —
-  // por isso o scraper diário ainda não o detecta sozinho. Esses metadados
-  // já citam variantes Fortune/Cursed, mas isso NÃO foi confirmado pelo
-  // usuário ainda: por ora segue sem variantes (`noVariants`) até confirmar.
+  // Tem variantes Fortune/Cursed (confirmado pelo usuário em 08/nov) — a
+  // arte das duas veio direto do IGN (150x150, menor que os 256x256 do
+  // spritecatch.com do resto da leva, mas é a oficial). O IGN ainda não
+  // lista o Sprite base com o <b>Nome Sprite</b>/checkbox de sempre nesta
+  // página, só nos metadados internos de checklist — por isso o scraper
+  // diário ainda não o detecta sozinho; não é um bug.
   // Nome em PT ainda não conferido. Custo (1.750/2.100) é estimativa do
   // Sprite Vault.
-  ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", [],
+  ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", S5,
     "Gera um efeito de Chug Splash ao restaurar escudos; a recarga diminui a cada nível.",
     "Generates a Chug Splash effect when restoring shields; cooldown decreases each level.",
     undefined, { dust: 1750, variantCost: 2100 }],
