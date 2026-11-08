@@ -111,9 +111,10 @@ const makeVariants = (elemental) => {
   }));
 };
 
-// Os 11 Sprites de lançamento (01/nov/2026). Novos Sprites (ex.: Lil' Uzi
-// Vert Jr., previsto ~07/nov) chegam via data/elementals-auto.js ou entram
-// aqui com `upcoming: true` até serem lançados.
+// Os 11 Sprites de lançamento (01/nov/2026) + os lançados depois na mesma
+// temporada (ex.: Lil' Uzi Vert Jr., em 08/nov). Sprites novos chegam via
+// data/elementals-auto.js ou entram aqui com `upcoming: true` até serem
+// lançados.
 const COSTS = {
   Rare: { dust: 100, variantCost: 2700 },
   Epic: { dust: 2700, variantCost: 4000 },
@@ -162,13 +163,19 @@ const ELEMENTALS = [
     "Concede recursos extras ao coletar itens; companheiros de equipe com este Sprite equipado também recebem um pouco. O bônus aumenta a cada nível.",
     "Grants extra resources on pickup, with teammates who also have this Sprite equipped receiving some extra resources as well. The bonus grows each level.",
     "Caracol Telepático", { dust: 1750 }],
-  // Ainda não lançado (chega na semana 2, ~07/nov/2026; Sprite Vault lista
-  // Lendário, 1.750 de pó e 2.100 nas variantes). Entra como "Em breve":
-  // caixinhas travadas e fora do progresso. Nome em PT ainda não conferido.
+  // Lançado em 08/nov/2026 (confirmado pelo usuário) — saiu do "Em breve".
+  // O IGN ainda não lista o Sprite base com o <b>Nome Sprite</b>/checkbox de
+  // sempre nesta página, só nos metadados internos de checklist (mesmo
+  // padrão de quando um Sprite é anunciado antes de aparecer na tabela) —
+  // por isso o scraper diário ainda não o detecta sozinho. Esses metadados
+  // já citam variantes Fortune/Cursed, mas isso NÃO foi confirmado pelo
+  // usuário ainda: por ora segue sem variantes (`noVariants`) até confirmar.
+  // Nome em PT ainda não conferido. Custo (1.750/2.100) é estimativa do
+  // Sprite Vault.
   ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", [],
     "Gera um efeito de Chug Splash ao restaurar escudos; a recarga diminui a cada nível.",
     "Generates a Chug Splash effect when restoring shields; cooldown decreases each level.",
-    undefined, { upcoming: true, dust: 1750, variantCost: 2100 }],
+    undefined, { dust: 1750, variantCost: 2100 }],
 ].map(([id, en, rarity, variants, pt, abEn, namePt, extra]) => ({
   id,
   name: { pt: namePt || en, en },
