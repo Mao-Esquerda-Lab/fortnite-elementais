@@ -12,13 +12,21 @@
 // todos carregarem. Erro de rede num link individual conta como quebrado;
 // erro ao carregar os próprios dados (bug de parse) sobe e aborta o script.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MANUAL_FILE = join(ROOT, "data", "elementals.js");
 const AUTO_FILE = join(ROOT, "data", "elementals-auto.js");
+
+// Desde a Temporada 5 (01/nov/2026), parte da arte vem local
+// (img/sprites/{id}-{variante}.png, ver data/elementals.js) em vez de uma
+// URL da Fandom/IGN — checar isso é olhar o arquivo no disco, não dar
+// fetch. Sem esse desvio, `new URL()` de um caminho relativo estoura
+// "Invalid URL" e aborta o script inteiro antes de checar qualquer link de
+// verdade (detectado em 04/nov/2026, mesmo dia da correção do scraper).
+const isRemote = (url) => /^https?:\/\//i.test(url);
 
 // Mesmo UA de scripts/update-sprites.mjs: a Fandom bloqueia clientes
 // "não navegador".
@@ -37,6 +45,11 @@ function loadElementals() {
 // Devolve { ok, status | error } pra uma URL. Tenta HEAD primeiro (mais
 // barato); alguns CDNs recusam HEAD (405/403), então cai pra GET nesse caso.
 async function checkUrl(url) {
+  if (!isRemote(url)) {
+    return existsSync(join(ROOT, url))
+      ? { ok: true }
+      : { ok: false, error: "arquivo não existe no repositório" };
+  }
   for (const method of ["HEAD", "GET"]) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -65,7 +78,7 @@ async function checkUrl(url) {
 // não prova que a imagem sumiu pro usuário final, só que não dá pra checar
 // daqui — então entra à parte, sem contar como link quebrado de verdade.
 const isUnverifiable = (url, error) =>
-  new URL(url).hostname === "fortnite.fandom.com" && error === "HTTP 403";
+  isRemote(url) && new URL(url).hostname === "fortnite.fandom.com" && error === "HTTP 403";
 
 async function checkAll(targets) {
   const broken = [];

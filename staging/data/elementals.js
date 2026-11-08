@@ -111,9 +111,10 @@ const makeVariants = (elemental) => {
   }));
 };
 
-// Os 11 Sprites de lançamento (01/nov/2026). Novos Sprites (ex.: Lil' Uzi
-// Vert Jr., previsto ~07/nov) chegam via data/elementals-auto.js ou entram
-// aqui com `upcoming: true` até serem lançados.
+// Os 11 Sprites de lançamento (01/nov/2026) + os lançados depois na mesma
+// temporada (ex.: Lil' Uzi Vert Jr., em 08/nov). Sprites novos chegam via
+// data/elementals-auto.js ou entram aqui com `upcoming: true` até serem
+// lançados.
 const COSTS = {
   Rare: { dust: 100, variantCost: 2700 },
   Epic: { dust: 2700, variantCost: 4000 },
@@ -124,22 +125,22 @@ const S5 = ["fortune", "cursed"];
 const ELEMENTALS = [
   ["halfpeel-d", "Halfpeel'd", "Rare", S5,
     "Marca eliminações no mapa; o alcance de detecção aumenta a cada nível.",
-    "Marks eliminations on the map, with a detection range that grows each level."],
+    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho"],
   ["re-pete", "Re-Pete", "Rare", S5,
     "Recarrega mais rápido, com chance de recuperar munição.",
     "Reloads faster, with a chance to get ammo back.", "Repetácio"],
   ["barry-o-fish", "Barry O'Fish", "Rare", S5,
     "Gasta menos estamina ao correr na água; ganha efeito de Tapa no nível máximo.",
-    "Uses less stamina sprinting in water; gains a Slap effect at max level."],
+    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson"],
   ["wayfinder", "Wayfinder", "Epic", S5,
     "Mostra Sprites por perto e adiciona saque extra aos Baús Enterrados.",
-    "Shows nearby Sprites; adds extra loot to Buried Chests."],
+    "Shows nearby Sprites; adds extra loot to Buried Chests.", "Localizador"],
   ["kelper", "Kelper", "Epic", S5,
     "Cura você aos poucos na água, com mais cura a cada nível.",
     "Heals you over time in water, with bigger heals each level.", "Apatilda"],
   ["exmarks", "Exmarks", "Legendary", S5,
     "Mostra Mapas do Tesouro e Cartazes de Procurado por perto; gera um Mapa do Tesouro no nível máximo.",
-    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level."],
+    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level.", "Xisconde"],
   ["chester", "Chester", "Legendary", S5,
     "Baús podem gerar saque extra; cancela o dano de queda.",
     "Chests may spawn extra loot; cancels fall damage.", "Baunardo"],
@@ -148,20 +149,34 @@ const ELEMENTALS = [
     "Jump into fishing holes for fish and bonus loot.", "Polvitozinho"],
   ["lil-flacko", "Lil' Flacko", "Legendary", S5,
     "Ao pousar, cria uma pequena onda de choque que empurra os oponentes.",
-    "Landing creates a small shockwave that knocks opponents back."],
+    "Landing creates a small shockwave that knocks opponents back.", "Flacko Jr."],
   ["plundarrgh", "Plundarrgh", "Mythic", S5,
     "Abrir baús aumenta a velocidade da picareta e de movimento.",
-    "Opening Chests boosts Pickaxe and movement speed."],
+    "Opening Chests boosts Pickaxe and movement speed.", "Moedonho"],
   ["sweet-dreams", "Sweet Dreams", "Mythic", [],
     "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
     "Grants a random item each level-up, with Mythic loot at max level."],
-  // Sem raridade, custo nem variantes confirmados (GameRant lista só a
-  // base; a Destructoid diz que todos os Sprites têm Valioso/Amaldiçoado).
-  // Nome em PT confirmado pelo usuário.
-  ["transponder-snail", "Transponder Snail", "Unknown", [],
-    "Concede recursos extras ao coletar itens, para você e seu grupo; o bônus aumenta a cada nível.",
-    "Get extra resources from pickups for yourself and all party members; the bonus grows each level.", "Caracol Telepático"],
-].map(([id, en, rarity, variants, pt, abEn, namePt]) => ({
+  // Lendário (confirmado pelo usuário e pelo fortnite.gg/Sprite Vault). Sem
+  // variantes (confirmado pelo usuário). Custo base 1.750 de pó, do Sprite
+  // Vault. Nome em PT confirmado pelo usuário.
+  ["transponder-snail", "Transponder Snail", "Legendary", [],
+    "Concede recursos extras ao coletar itens; companheiros de equipe com este Sprite equipado também recebem um pouco. O bônus aumenta a cada nível.",
+    "Grants extra resources on pickup, with teammates who also have this Sprite equipped receiving some extra resources as well. The bonus grows each level.",
+    "Caracol Telepático", { dust: 1750 }],
+  // Lançado em 08/nov/2026 (confirmado pelo usuário) — saiu do "Em breve".
+  // O IGN ainda não lista o Sprite base com o <b>Nome Sprite</b>/checkbox de
+  // sempre nesta página, só nos metadados internos de checklist (mesmo
+  // padrão de quando um Sprite é anunciado antes de aparecer na tabela) —
+  // por isso o scraper diário ainda não o detecta sozinho. Esses metadados
+  // já citam variantes Fortune/Cursed, mas isso NÃO foi confirmado pelo
+  // usuário ainda: por ora segue sem variantes (`noVariants`) até confirmar.
+  // Nome em PT ainda não conferido. Custo (1.750/2.100) é estimativa do
+  // Sprite Vault.
+  ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", [],
+    "Gera um efeito de Chug Splash ao restaurar escudos; a recarga diminui a cada nível.",
+    "Generates a Chug Splash effect when restoring shields; cooldown decreases each level.",
+    undefined, { dust: 1750, variantCost: 2100 }],
+].map(([id, en, rarity, variants, pt, abEn, namePt, extra]) => ({
   id,
   name: { pt: namePt || en, en },
   wikiName: `${en} Sprite`,
@@ -169,13 +184,26 @@ const ELEMENTALS = [
   ...(variants.length ? { onlyVariants: variants } : { noVariants: true }),
   ability: { pt, en: abEn },
   ...COSTS[rarity],
+  ...extra,
   image: `img/sprites/${id}-base.png`,
   variantImages: Object.fromEntries(
     variants.map((v) => [v, `img/sprites/${id}-${v}.png`])
   ),
 }));
 
+// Número do Sprite na tela de Sprites do jogo (a Temporada 5 passou a
+// numerá-los). Preencha por id; quem não tiver número vai para o fim, na
+// ordem em que está na lista. O app mostra o número no cartão e usa a
+// ordem numérica como padrão.
+const SPRITE_NUMBERS = {
+  // "halfpeel-d": 1,
+};
 ELEMENTALS.forEach((e) => {
   e.image = e.image || ignArt(e.id, "base") || WIKI_ITEM(e.wikiName);
   e.variants = e.noVariants ? [] : makeVariants(e);
+  if (SPRITE_NUMBERS[e.id] != null) e.number = SPRITE_NUMBERS[e.id];
 });
+// Ordem padrão = numérica (sort estável: sem número, mantém a ordem da lista).
+ELEMENTALS.sort(
+  (a, b) => (a.number ?? Infinity) - (b.number ?? Infinity) || 0
+);

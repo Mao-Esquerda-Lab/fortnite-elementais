@@ -40,12 +40,16 @@ const RAW_URL = `https://fortnite.fandom.com/wiki/${PAGE}?action=raw`;
 
 // Fonte principal: o wiki do IGN da temporada atual. Ao virar a temporada,
 // troque esta URL pela página nova (o título traz o capítulo/temporada).
-// Renomeada em 17/set/2026 (o IGN acrescentou "and Mastery Rewards" ao
-// título) — a URL antiga ainda redireciona (301), então isso sozinho não
-// quebrava o scraper.
+// Trocada em 04/nov/2026 (virada pra Temporada 5 "Treasure Hunters" em
+// 01/nov): a URL antiga da Temporada 4 agora redireciona pra uma página
+// arquivada ("Sprites List (Chapter 7 Season 4)") sem os nomes dos Sprites
+// no corpo do texto, por isso o scraper ficou citando 0 Sprites por 4 dias
+// (fail-closed, nada escrito). A página nova não traz "and Mastery Rewards"
+// no título — o IGN não parece ter uma tabela de Mastery Rewards pra esta
+// temporada ainda.
 const IGN_URL =
   "https://www.ign.com/wikis/fortnite/" +
-  "Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List";
+  "Sprites_Checklist_and_Guide_(Treasure_Hunters)_-_All_Variants";
 
 // Segunda página do IGN: os códigos do Painel de Admin. Ao virar a
 // temporada, confira se ela continua sendo a lista da temporada corrente.
@@ -210,14 +214,24 @@ async function fetchIgnHtml() {
   return res.text();
 }
 
-// O HTML do wiki chega escapado dentro do payload JSON do Next.js do IGN.
+// O HTML do wiki chega escapado dentro do payload JSON do Next.js do IGN,
+// e o texto visível por baixo ainda traz entidades HTML de verdade (ex.:
+// "Halfpeel&apos;d Sprite", "Barry O&#x27;Fish Sprite") — sem decodificá-las
+// aqui, nomes com apóstrofo batem duas vezes (uma por variante de entidade)
+// e nunca igualam o `wikiName` literal ("Halfpeel'd Sprite") de
+// data/elementals.js, derrubando o scraper em "Parse suspeito" mesmo com a
+// URL certa (detectado em 04/nov/2026, Temporada 5 — a 4 não tinha Sprite
+// com apóstrofo no nome, por isso nunca apareceu antes). `unescapeEntities`
+// (definida mais abaixo, usada pelos códigos) já resolve isso.
 const unescapeIgn = (raw) =>
-  raw
-    .replace(/\\u003c/g, "<")
-    .replace(/\\u003e/g, ">")
-    .replace(/\\u0026/g, "&")
-    .replace(/\\"/g, '"')
-    .replace(/\\n/g, "\n");
+  unescapeEntities(
+    raw
+      .replace(/\\u003c/g, "<")
+      .replace(/\\u003e/g, ">")
+      .replace(/\\u0026/g, "&")
+      .replace(/\\"/g, '"')
+      .replace(/\\n/g, "\n")
+  );
 
 // Divide a página nas seções <h2> para saber quais Sprites estão sob o
 // bloco de não lançados ("Upcoming Sprites List" / "Unreleased Sprites List").
