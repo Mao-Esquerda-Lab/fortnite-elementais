@@ -1242,6 +1242,18 @@ textarea {
   color: var(--muted);
 }
 
+.compare-stat-mastered {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--stat-color, var(--text));
+}
+
+.compare-stat-mastered small {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
 .compare-stat-label {
   font-size: 0.8rem;
   font-weight: 600;
