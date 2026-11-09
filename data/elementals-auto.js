@@ -8,7 +8,24 @@
 // variantes especiais etc.), MOVA a entrada para data/elementals.js: o
 // gerador pula Sprites que já estão na lista manual e a cópia daqui some na
 // próxima execução.
-const AUTO_ELEMENTALS = [];
+const AUTO_ELEMENTALS = [
+  {
+    "id": "sir-oscar-the-second",
+    "name": {
+      "pt": "Sir Oscar the Second",
+      "en": "Sir Oscar the Second"
+    },
+    "wikiName": "Sir Oscar the Second Sprite",
+    "rarity": "Unknown",
+    "autoAdded": "2026-11-09",
+    "ability": {
+      "pt": "Habilidade ainda não revelada.",
+      "en": "Ability not yet revealed."
+    },
+    "noVariants": true,
+    "upcoming": true
+  }
+];
 
 // Anexa à lista principal os que ainda não existem lá, montando imagem e
 // variantes com os mesmos helpers de data/elementals.js.
