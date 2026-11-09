@@ -161,11 +161,16 @@ const VARIANT_PREFIXES = [
 const RARITIES = ["Mythic", "Legendary", "Epic", "Rare"];
 
 // Custos (invocação / variantes) por raridade, iguais aos da lista manual.
+// Mesma tabela de data/elementals.js (Temporada 5). Atualizada em
+// 09/nov/2026 — estava com os valores antigos da Temporada 4 (detectado
+// quando um Sprite novo com raridade conhecida teria herdado o custo
+// errado; "Unknown" nunca bate em COSTS, então isso não quebrava nada
+// visivelmente, só ficava esperando acontecer).
 const COSTS = {
-  Rare: { dust: 100, variantCost: 4000 },
-  Epic: { dust: 3000, variantCost: 6000 },
-  Legendary: { dust: 5000, variantCost: 10000 },
-  Mythic: { dust: 7500, variantCost: 15000 },
+  Rare: { dust: 100, variantCost: 2700 },
+  Epic: { dust: 2700, variantCost: 4000 },
+  Legendary: { dust: 4500, variantCost: 6750 },
+  Mythic: { dust: 6750, variantCost: 10000 },
 };
 
 // Se o parse "encontrar" mais novidades que isso de uma vez, é quase certo
@@ -673,9 +678,15 @@ function makeEntry(wikiName, info, today) {
       pt: "Habilidade ainda não revelada.",
       en: "Ability not yet revealed.",
     },
-    // A Temporada 4 só tem estas duas variantes (ver SPRITE_VARIANTS e
-    // EXTRA_VARIANTS em data/elementals.js).
-    onlyVariants: ["gold", "cheat-master"],
+    // Esquema de variantes da temporada muda a cada troca (Temporada 4 era
+    // gold/cheat-master; a 5 usa fortune/cursed, nem sempre nos 3 — Sweet
+    // Dreams e Transponder Snail não têm nenhuma, Gold ainda nem voltou
+    // pra ninguém confirmado). Chutar errado aqui gera imagem/custo errado
+    // e pode até quebrar scripts/check-images.mjs se o id chutado não
+    // existir em EXTRA_VARIANTS (foi o que aconteceu em 09/nov/2026, com o
+    // "gold"/"cheat-master" chumbado da Temporada 4). Sem variante nenhuma
+    // é o único default seguro — a curadoria confirma e preenche depois.
+    noVariants: true,
   };
   // Não lançados entram travados no app (selo "Em breve", caixinhas
   // desabilitadas) e sem custo: a Epic ainda não divulgou nenhum.
