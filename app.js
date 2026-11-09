@@ -2133,13 +2133,16 @@ function parseSharePaste(text) {
   return match ? match[1] : trimmed;
 }
 
-// A comparação só olha para "tenho": "dominado" não entra na conta.
+// As listas de diferenças só olham para "tenho", mas o tile mostra também
+// quantos Sprites cada lado já dominou.
 // Número grande com o rótulo embaixo, como no topo da imagem de resumo.
 function statTile(label, totals, color) {
+  const s = t();
   return `
     <div class="compare-stat" style="--stat-color:${color}">
       <span class="compare-stat-value">${totals.owned}<small> / ${totals.total}</small></span>
       <span class="compare-stat-label">✓ ${label}</span>
+      <span class="compare-stat-mastered">★ ${totals.mastered}<small> ${s.tabMastered}</small></span>
     </div>`;
 }
 
