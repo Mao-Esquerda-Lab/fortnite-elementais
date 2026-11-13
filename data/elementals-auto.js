@@ -39,7 +39,7 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    "noVariants": true,
+    "onlyVariants": ["fortune", "cursed"],
     "upcoming": true,
     "image": "img/sprites/mini-miku-base.png"
   },
@@ -56,7 +56,7 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    "noVariants": true,
+    "onlyVariants": ["fortune", "cursed"],
     "upcoming": true
   }
 ];
