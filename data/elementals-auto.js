@@ -8,15 +8,6 @@
 // variantes especiais etc.), MOVA a entrada para data/elementals.js: o
 // gerador pula Sprites que já estão na lista manual e a cópia daqui some na
 // próxima execução.
-//
-// Exceção em 09/nov/2026: o campo "image" do Sir Oscar the Second foi
-// ACRESCENTADO À MÃO (usuário reportou o ícone faltando). O IGN só tem uma
-// arte "teaser" pra ele (Sprite ainda não lançado), com o arquivo fora do
-// padrão "Fortnite_{slug}_sprite.png" que IGN_IMAGE reconhece
-// (scripts/update-sprites.mjs) — por isso o gerador não achou sozinho.
-// Baixada pra img/sprites/sir-oscar-the-second-base.png. Se rodar o
-// gerador de novo sem reconciliar, ele reescreve esta entrada do zero e
-// perde o campo; conferir antes de sobrescrever.
 const AUTO_ELEMENTALS = [
   {
     "id": "sir-oscar-the-second",
@@ -34,6 +25,38 @@ const AUTO_ELEMENTALS = [
     "noVariants": true,
     "upcoming": true,
     "image": "img/sprites/sir-oscar-the-second-base.png"
+  },
+  {
+    "id": "mini-miku",
+    "name": {
+      "pt": "Mini Miku",
+      "en": "Mini Miku"
+    },
+    "wikiName": "Mini Miku Sprite",
+    "rarity": "Unknown",
+    "autoAdded": "2026-11-13",
+    "ability": {
+      "pt": "Habilidade ainda não revelada.",
+      "en": "Ability not yet revealed."
+    },
+    "noVariants": true,
+    "upcoming": true
+  },
+  {
+    "id": "squiplash",
+    "name": {
+      "pt": "Squiplash",
+      "en": "Squiplash"
+    },
+    "wikiName": "Squiplash Sprite",
+    "rarity": "Unknown",
+    "autoAdded": "2026-11-13",
+    "ability": {
+      "pt": "Habilidade ainda não revelada.",
+      "en": "Ability not yet revealed."
+    },
+    "noVariants": true,
+    "upcoming": true
   }
 ];
 
