@@ -2,6 +2,8 @@ const STORAGE_KEY = "fortnite-sprites-collection-v1";
 const LANG_KEY = "fortnite-elementals-lang";
 const SORT_KEY = "fortnite-elementals-sort";
 const CODES_KEY = "fortnite-lobby-codes-v1";
+// Recompensas da Caça ao Tesouro marcadas como "já encontrei".
+const TREASURE_FOUND_KEY = "fortnite-treasure-found-v1";
 // Códigos que o usuário digitou à mão, antes de o IGN publicá-los.
 const CUSTOM_CODES_KEY = "fortnite-lobby-custom-codes-v1";
 
@@ -157,20 +159,21 @@ const TRANSLATIONS = {
     accountPolicySpecial: "um caractere especial",
     viewSprites: "Elementais",
     viewCompareTab: "Comparar",
-    viewMastery: "Domínio",
-    masteryIntro:
-      "A cada Sprite Dominado (Base ou variante) você desbloqueia uma recompensa sozinho — não precisa resgatar nada aqui, é só acompanhar.",
-    masteryThDone: "Desbloqueado",
-    masteryThLevel: "Nível",
-    masteryThReward: "Recompensa",
-    masteryProgress: (unlocked, total) => `${unlocked} / ${total} desbloqueados`,
-    masteryNext: (remaining) =>
-      remaining === 1
-        ? "Falta 1 Sprite Dominado para a próxima recompensa."
-        : `Faltam ${remaining} Sprites Dominados para a próxima recompensa.`,
-    masteryDone: "Concluído — todas as recompensas reveladas até agora foram desbloqueadas.",
-    masterySource:
-      'Lista do <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">wiki do IGN</a>, seção "Sprite Mastery Rewards" — a Epic ainda não revelou os níveis depois do 28º. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
+    viewTreasure: "Caça ao Tesouro",
+    treasureIntro:
+      'Toda sexta ("Dia do Capitão") o pool de recompensas grátis dos Baús do Tesouro muda. É tudo achado ao acaso ao abrir qualquer baú — não precisa de código. Marque abaixo o que você já encontrou (só fica salvo neste navegador).',
+    treasureSeasonTitle: "Fixas a temporada toda",
+    treasureWeekLabel: (week) => `Semana ${week}`,
+    treasureWeekLive: "Ao vivo",
+    treasureWeekEnded: "Encerrada",
+    treasureWeekUpcoming: "Ainda não começou",
+    treasureWeekUnrevealed: "A Epic ainda não revelou as recompensas desta semana.",
+    treasureThFound: "Encontrei",
+    treasureThReward: "Recompensa",
+    treasureThOdds: "Chance",
+    treasureProgress: (found, total) => `${found} / ${total} encontrados`,
+    treasureSource:
+      'Lista do <a href="https://www.ign.com/wikis/fortnite/All_Free_Treasure_Chest_Rewards_List_-_Odds_and_Schedule" target="_blank" rel="noopener noreferrer">wiki do IGN</a> — a Epic revela a tabela de cada semana aos poucos, geralmente perto do início dela. Os textos das recompensas são tradução nossa, não o texto oficial do jogo.',
     tabAll: "Todos",
     tabOwned: "Tenho",
     tabNotOwned: "Não tenho",
@@ -363,20 +366,21 @@ const TRANSLATIONS = {
     accountPolicySpecial: "a special character",
     viewSprites: "Sprites",
     viewCompareTab: "Compare",
-    viewMastery: "Mastery",
-    masteryIntro:
-      "Every Mastered Sprite (Base or variant) unlocks a reward on its own — nothing to redeem here, just track it.",
-    masteryThDone: "Unlocked",
-    masteryThLevel: "Level",
-    masteryThReward: "Reward",
-    masteryProgress: (unlocked, total) => `${unlocked} / ${total} unlocked`,
-    masteryNext: (remaining) =>
-      remaining === 1
-        ? "1 more Mastered Sprite until the next reward."
-        : `${remaining} more Mastered Sprites until the next reward.`,
-    masteryDone: "Done — every reward revealed so far is unlocked.",
-    masterySource:
-      'List from the <a href="https://www.ign.com/wikis/fortnite/Sprites_Checklist_and_Guide_(Chapter_7_Season_4)_-_All_Variants_and_Mastery_Rewards_List" target="_blank" rel="noopener noreferrer">IGN wiki</a>, "Sprite Mastery Rewards" section — Epic hasn\'t revealed levels past 28 yet. Reward wording is our own translation, not the game\'s official text.',
+    viewTreasure: "Treasure Hunt",
+    treasureIntro:
+      "Every Friday (\"Captain's Day\") the pool of free Treasure Chest rewards changes. They're all found at random from opening any chest — no code needed. Check off what you've already found below (only saved in this browser).",
+    treasureSeasonTitle: "Fixed for the whole season",
+    treasureWeekLabel: (week) => `Week ${week}`,
+    treasureWeekLive: "Live",
+    treasureWeekEnded: "Ended",
+    treasureWeekUpcoming: "Not started yet",
+    treasureWeekUnrevealed: "Epic hasn't revealed this week's rewards yet.",
+    treasureThFound: "Found",
+    treasureThReward: "Reward",
+    treasureThOdds: "Odds",
+    treasureProgress: (found, total) => `${found} / ${total} found`,
+    treasureSource:
+      'List from the <a href="https://www.ign.com/wikis/fortnite/All_Free_Treasure_Chest_Rewards_List_-_Odds_and_Schedule" target="_blank" rel="noopener noreferrer">IGN wiki</a> — Epic reveals each week\'s table gradually, usually close to when it starts. Reward wording is our own translation, not the game\'s official text.',
     tabAll: "All",
     tabOwned: "Owned",
     tabNotOwned: "Not owned",
@@ -549,6 +553,20 @@ function loadLang() {
 
 let collection = loadCollection();
 let redeemedCodes = loadCodes();
+
+// Mesmo formato dos códigos (id -> true), então reaproveita sanitizeCodes.
+function loadTreasureFound() {
+  try {
+    return sanitizeCodes(JSON.parse(storage.get(TREASURE_FOUND_KEY)) || {});
+  } catch {
+    return {};
+  }
+}
+function saveTreasureFound() {
+  storage.set(TREASURE_FOUND_KEY, JSON.stringify(treasureFound));
+  notifyDataChanged("treasureFound");
+}
+let treasureFound = loadTreasureFound();
 let customCodes = loadCustomCodes();
 // Quando o IGN publica um código que o usuário já tinha digitado, a cópia
 // manual sai da lista ao carregar (a oficial vem traduzida). Gravar de volta
@@ -942,16 +960,11 @@ function applyLanguage() {
   const viewTabLabels = {
     sprites: s.viewSprites,
     friends: s.viewCompareTab,
-    mastery: s.viewMastery,
+    treasure: s.viewTreasure,
   };
   [...viewTabs.children].forEach((tab) => {
     tab.textContent = viewTabLabels[tab.dataset.view];
   });
-  document.getElementById("mastery-intro").textContent = s.masteryIntro;
-  document.getElementById("mastery-th-done").textContent = s.masteryThDone;
-  document.getElementById("mastery-th-level").textContent = s.masteryThLevel;
-  document.getElementById("mastery-th-reward").textContent = s.masteryThReward;
-  document.getElementById("mastery-source").innerHTML = s.masterySource;
 
   const backupBtn = document.getElementById("backup-btn");
   backupBtn.title = s.backupTitle;
@@ -1173,7 +1186,13 @@ window.navIconFallback = navIconFallback;
 
 // Menu de navegação rápida: um botão com o ícone de cada Elemental base.
 function renderNav() {
-  spriteNavIcons.innerHTML = ELEMENTALS.map(
+  // Mesma ordem numérica do padrão da grade: ELEMENTALS só vem ordenado por
+  // número até onde data/elementals.js alcança — os Sprites anexados depois
+  // por data/elementals-auto.js entram no fim da lista sem reordenar.
+  const sorted = [...ELEMENTALS].sort(
+    (x, y) => (x.number ?? Infinity) - (y.number ?? Infinity) || 0
+  );
+  spriteNavIcons.innerHTML = sorted.map(
     (e) => `
     <button class="nav-icon${e.upcoming ? " upcoming" : ""}" type="button"
             data-nav="${e.id}" title="${e.name[lang]}" aria-label="${e.name[lang]}"
@@ -1844,16 +1863,15 @@ document.getElementById("export-btn").addEventListener("click", () => {
   exportSummary();
 });
 
-// ---- Aba dos códigos do Painel de Admin ----
+// ---- Aba da Caça ao Tesouro ----
 const viewTabs = document.getElementById("view-tabs");
 const viewSprites = document.getElementById("view-sprites");
 const viewFriends = document.getElementById("view-friends");
-const viewMastery = document.getElementById("view-mastery");
+const viewTreasure = document.getElementById("view-treasure");
 const friendsTabBtn = document.querySelector('#view-tabs [data-view="friends"]');
-const masteryBody = document.getElementById("mastery-body");
-const masteryProgressBar = document.getElementById("mastery-progress-bar");
-const masteryProgressLabel = document.getElementById("mastery-progress-label");
-const masteryNextEl = document.getElementById("mastery-next");
+const treasureBody = document.getElementById("treasure-body");
+const treasureProgressBar = document.getElementById("treasure-progress-bar");
+const treasureProgressLabel = document.getElementById("treasure-progress-label");
 
 // A tabela é montada com innerHTML e passou a mostrar texto digitado por
 // gente: o do próprio usuário e, via backup, o de quem mandou o backup.
@@ -1864,53 +1882,108 @@ const escapeHtml = (text) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]
   );
 
-// Desbloqueia sozinho pela contagem total de Sprites Dominados (mesma
-// definição da barra "Dominados" da aba de Sprites — Base + cada variante
-// conta separado): nada para o usuário marcar aqui.
-function renderMastery() {
-  const s = t();
-  const masteredCount = computeTotals(collection).mastered;
+const fmtTreasureDate = (iso) =>
+  new Date(iso).toLocaleDateString(lang === "pt" ? "pt-BR" : "en-US", {
+    day: "2-digit",
+    month: "2-digit",
+  });
 
-  masteryBody.innerHTML = MASTERY_REWARDS.map((m) => {
-    const unlocked = masteredCount >= m.level;
+function treasureWeekStatus(s, schedule) {
+  const now = new Date();
+  if (now < new Date(schedule.startsAt)) return s.treasureWeekUpcoming;
+  if (now > new Date(schedule.endsAt)) return s.treasureWeekEnded;
+  return s.treasureWeekLive;
+}
+
+function treasureRewardRow(reward) {
+  const found = !!treasureFound[reward.id];
+  return `
+    <tr class="treasure-row${found ? " found" : ""}">
+      <td class="code-check-cell">
+        <input type="checkbox" class="code-check" ${found ? "checked" : ""}
+               data-action="treasure-found" data-id="${reward.id}" />
+      </td>
+      <td><span class="code-reward">${escapeHtml(reward.name[lang])}</span></td>
+      <td>${escapeHtml(reward.odds)}</td>
+    </tr>`;
+}
+
+function treasureTable(s, rewards) {
+  return `
+    <table class="codes-table">
+      <thead>
+        <tr>
+          <th>${s.treasureThFound}</th>
+          <th>${s.treasureThReward}</th>
+          <th>${s.treasureThOdds}</th>
+        </tr>
+      </thead>
+      <tbody>${rewards.map(treasureRewardRow).join("")}</tbody>
+    </table>`;
+}
+
+// Todas as recompensas conhecidas (fixas + cada semana já revelada) viram um
+// "Encontrei" marcado à mão — a Epic não dá como saber programaticamente o
+// que você já achou, diferente do Domínio (que a contagem de Sprites já
+// resolvia sozinha).
+function renderTreasure() {
+  const s = t();
+  const knownWeeks = TREASURE_WEEKS;
+  const allRewards = [
+    ...TREASURE_SEASON_REWARDS,
+    ...knownWeeks.flatMap((w) => w.rewards),
+  ];
+  const foundCount = allRewards.filter((r) => treasureFound[r.id]).length;
+
+  const seasonSection = `
+    <h4 class="treasure-section-title">${s.treasureSeasonTitle}</h4>
+    ${treasureTable(s, TREASURE_SEASON_REWARDS)}`;
+
+  const weekSections = TREASURE_SCHEDULE.map((schedule) => {
+    const week = knownWeeks.find((w) => w.week === schedule.week);
+    const dates = `${fmtTreasureDate(schedule.startsAt)}–${fmtTreasureDate(schedule.endsAt)}`;
+    const body = week
+      ? treasureTable(s, week.rewards)
+      : `<p class="codes-intro">${s.treasureWeekUnrevealed}</p>`;
     return `
-      <tr class="mastery-row${unlocked ? "" : " locked"}">
-        <td class="code-check-cell">
-          <span class="mastery-check" aria-hidden="true">${unlocked ? "✓" : ""}</span>
-        </td>
-        <td>${m.level}</td>
-        <td><span class="code-reward">${escapeHtml(m.reward[lang])}</span></td>
-      </tr>`;
+      <div class="treasure-week">
+        <h4 class="treasure-section-title">
+          ${s.treasureWeekLabel(schedule.week)}
+          <span class="treasure-week-status">${treasureWeekStatus(s, schedule)}</span>
+          <span class="treasure-week-dates">${dates}</span>
+        </h4>
+        ${body}
+      </div>`;
   }).join("");
 
-  const unlockedCount = MASTERY_REWARDS.filter((m) => masteredCount >= m.level).length;
-  const total = MASTERY_REWARDS.length;
-  const width = total === 0 ? 0 : (unlockedCount / total) * 100;
-  masteryProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
-  masteryProgressLabel.textContent = s.masteryProgress(unlockedCount, total);
+  treasureBody.innerHTML = seasonSection + weekSections;
 
-  const next = MASTERY_REWARDS.find((m) => masteredCount < m.level);
-  if (next) {
-    masteryNextEl.textContent = s.masteryNext(next.level - masteredCount);
-    masteryNextEl.hidden = false;
-  } else if (total > 0) {
-    masteryNextEl.textContent = s.masteryDone;
-    masteryNextEl.hidden = false;
-  } else {
-    masteryNextEl.hidden = true;
-  }
+  const total = allRewards.length;
+  const width = total === 0 ? 0 : (foundCount / total) * 100;
+  treasureProgressBar.innerHTML = `<div class="progress-seg" style="width:${width}%; background:var(--accent)"></div>`;
+  treasureProgressLabel.textContent = s.treasureProgress(foundCount, total);
 }
+
+treasureBody.addEventListener("change", (e) => {
+  const input = e.target.closest('[data-action="treasure-found"]');
+  if (!input) return;
+  treasureFound = { ...treasureFound };
+  if (input.checked) treasureFound[input.dataset.id] = true;
+  else delete treasureFound[input.dataset.id];
+  saveTreasureFound();
+  renderTreasure();
+});
 
 function applyView() {
   viewSprites.hidden = activeView !== "sprites";
   viewFriends.hidden = activeView !== "friends";
-  viewMastery.hidden = activeView !== "mastery";
+  viewTreasure.hidden = activeView !== "treasure";
   [...viewTabs.children].forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.view === activeView)
   );
   // O menu de navegação rápida é grudento e só faz sentido com a grade.
   spriteNav.hidden = activeView !== "sprites";
-  if (activeView === "mastery") renderMastery();
+  if (activeView === "treasure") renderTreasure();
   if (activeView === "friends") refreshShareLink();
 }
 
@@ -1976,6 +2049,7 @@ function backupSnapshot() {
     collection: currentCollectionOnly(collection),
     codes: redeemedCodes,
     customCodes,
+    treasureFound,
   };
 }
 
@@ -2039,6 +2113,7 @@ function decodeBackup(text) {
     collection: collectionPart,
     codes: sanitizeCodes(payload.codes),
     customCodes: sanitizeCustomCodes(payload.customCodes),
+    treasureFound: sanitizeCodes(payload.treasureFound),
   };
 }
 
@@ -2047,7 +2122,9 @@ function decodeBackup(text) {
 // Conta os códigos resgatados junto, já que o backup leva os dois.
 function countBackupMarks(backup) {
   return (
-    countMarks(backup.collection) + Object.keys(backup.codes || {}).length
+    countMarks(backup.collection) +
+    Object.keys(backup.codes || {}).length +
+    Object.keys(backup.treasureFound || {}).length
   );
 }
 
@@ -2457,9 +2534,14 @@ function applyBackup(merge) {
         ),
       ]
     : [...pendingBackup.customCodes];
+  // Recompensas da Caça ao Tesouro são só booleanos, igual aos códigos.
+  treasureFound = merge
+    ? { ...treasureFound, ...pendingBackup.treasureFound }
+    : { ...pendingBackup.treasureFound };
   saveCollection(collection);
   saveCodes();
   saveCustomCodes();
+  saveTreasureFound();
   pendingBackup = null;
   backupConfirm.hidden = true;
   backupPasteInput.value = "";
