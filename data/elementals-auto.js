@@ -22,9 +22,16 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    "noVariants": true,
+    // Variantes confirmadas pelo usuário em 15/nov/2026.
+    "onlyVariants": ["fortune", "cursed"],
+    "lockedVariants": ["gold"],
     "number": 6,
-    "image": "img/sprites/sir-oscar-the-second-base.png"
+    "image": "img/sprites/sir-oscar-the-second-base.png",
+    "variantImages": {
+      "fortune": "img/sprites/sir-oscar-the-second-fortune.png",
+      "cursed": "img/sprites/sir-oscar-the-second-cursed.png",
+      "gold": "img/sprites/sir-oscar-the-second-gold.png"
+    }
   },
   {
     "id": "mini-miku",
