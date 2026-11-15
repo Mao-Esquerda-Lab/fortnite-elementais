@@ -1173,7 +1173,13 @@ window.navIconFallback = navIconFallback;
 
 // Menu de navegação rápida: um botão com o ícone de cada Elemental base.
 function renderNav() {
-  spriteNavIcons.innerHTML = ELEMENTALS.map(
+  // Mesma ordem numérica do padrão da grade: ELEMENTALS só vem ordenado por
+  // número até onde data/elementals.js alcança — os Sprites anexados depois
+  // por data/elementals-auto.js entram no fim da lista sem reordenar.
+  const sorted = [...ELEMENTALS].sort(
+    (x, y) => (x.number ?? Infinity) - (y.number ?? Infinity) || 0
+  );
+  spriteNavIcons.innerHTML = sorted.map(
     (e) => `
     <button class="nav-icon${e.upcoming ? " upcoming" : ""}" type="button"
             data-nav="${e.id}" title="${e.name[lang]}" aria-label="${e.name[lang]}"
