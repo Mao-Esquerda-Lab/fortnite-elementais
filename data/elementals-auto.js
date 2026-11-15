@@ -23,7 +23,6 @@ const AUTO_ELEMENTALS = [
       "en": "Ability not yet revealed."
     },
     "noVariants": true,
-    "upcoming": true,
     "image": "img/sprites/sir-oscar-the-second-base.png"
   },
   {
@@ -40,7 +39,6 @@ const AUTO_ELEMENTALS = [
       "en": "Ability not yet revealed."
     },
     "onlyVariants": ["fortune", "cursed"],
-    "upcoming": true,
     "image": "img/sprites/mini-miku-base.png"
   },
   {
@@ -56,8 +54,7 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    "onlyVariants": ["fortune", "cursed"],
-    "upcoming": true
+    "onlyVariants": ["fortune", "cursed"]
   }
 ];
 
