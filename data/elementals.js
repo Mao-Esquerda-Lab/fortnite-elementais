@@ -122,37 +122,44 @@ const COSTS = {
   Mythic: { dust: 6750, variantCost: 10000 },
 };
 const S5 = ["fortune", "cursed"];
+// Dourado (`gold`, ver SPRITE_VARIANTS) confirmado pelo usuário em
+// 15/nov/2026 (checou as 17 páginas de Sprites da temporada no fortnite.gg):
+// anunciado para todos os 11 Sprites abaixo, mas ainda marcado como
+// "Unreleased" lá — por isso entra como `lockedVariants` (cadeado no app,
+// não conta no progresso) em vez de `onlyVariants`, até alguém confirmar
+// que já dá pra colecionar de verdade.
+const GOLD_LOCKED = { lockedVariants: ["gold"] };
 const ELEMENTALS = [
   ["halfpeel-d", "Halfpeel'd", "Rare", S5,
     "Marca eliminações no mapa; o alcance de detecção aumenta a cada nível.",
-    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho"],
+    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho", GOLD_LOCKED],
   ["re-pete", "Re-Pete", "Rare", S5,
     "Recarrega mais rápido, com chance de recuperar munição.",
-    "Reloads faster, with a chance to get ammo back.", "Repetácio"],
+    "Reloads faster, with a chance to get ammo back.", "Repetácio", GOLD_LOCKED],
   ["barry-o-fish", "Barry O'Fish", "Rare", S5,
     "Gasta menos estamina ao correr na água; ganha efeito de Tapa no nível máximo.",
-    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson"],
+    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson", GOLD_LOCKED],
   ["wayfinder", "Wayfinder", "Epic", S5,
     "Mostra Sprites por perto e adiciona saque extra aos Baús Enterrados.",
-    "Shows nearby Sprites; adds extra loot to Buried Chests.", "Localizador"],
+    "Shows nearby Sprites; adds extra loot to Buried Chests.", "Localizador", GOLD_LOCKED],
   ["kelper", "Kelper", "Epic", S5,
     "Cura você aos poucos na água, com mais cura a cada nível.",
-    "Heals you over time in water, with bigger heals each level.", "Apatilda"],
+    "Heals you over time in water, with bigger heals each level.", "Apatilda", GOLD_LOCKED],
   ["exmarks", "Exmarks", "Legendary", S5,
     "Mostra Mapas do Tesouro e Cartazes de Procurado por perto; gera um Mapa do Tesouro no nível máximo.",
-    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level.", "Xisconde"],
+    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level.", "Xisconde", GOLD_LOCKED],
   ["chester", "Chester", "Legendary", S5,
     "Baús podem gerar saque extra; cancela o dano de queda.",
-    "Chests may spawn extra loot; cancels fall damage.", "Baunardo"],
+    "Chests may spawn extra loot; cancels fall damage.", "Baunardo", GOLD_LOCKED],
   ["lil-squibbly", "Lil' Squibbly", "Legendary", S5,
     "Pule em buracos de pesca para ganhar peixes e saque bônus.",
-    "Jump into fishing holes for fish and bonus loot.", "Polvitozinho"],
+    "Jump into fishing holes for fish and bonus loot.", "Polvitozinho", GOLD_LOCKED],
   ["lil-flacko", "Lil' Flacko", "Legendary", S5,
     "Ao pousar, cria uma pequena onda de choque que empurra os oponentes.",
-    "Landing creates a small shockwave that knocks opponents back.", "Flacko Jr."],
+    "Landing creates a small shockwave that knocks opponents back.", "Flacko Jr.", GOLD_LOCKED],
   ["plundarrgh", "Plundarrgh", "Mythic", S5,
     "Abrir baús aumenta a velocidade da picareta e de movimento.",
-    "Opening Chests boosts Pickaxe and movement speed.", "Moedonho"],
+    "Opening Chests boosts Pickaxe and movement speed.", "Moedonho", GOLD_LOCKED],
   ["sweet-dreams", "Sweet Dreams", "Mythic", [],
     "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
     "Grants a random item each level-up, with Mythic loot at max level."],
@@ -175,7 +182,7 @@ const ELEMENTALS = [
   ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", S5,
     "Gera um efeito de Chug Splash ao restaurar escudos; a recarga diminui a cada nível.",
     "Generates a Chug Splash effect when restoring shields; cooldown decreases each level.",
-    undefined, { dust: 1750, variantCost: 2100 }],
+    undefined, { dust: 1750, variantCost: 2100, lockedVariants: ["gold"] }],
 ].map(([id, en, rarity, variants, pt, abEn, namePt, extra]) => ({
   id,
   name: { pt: namePt || en, en },
