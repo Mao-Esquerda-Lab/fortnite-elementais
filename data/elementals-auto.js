@@ -43,8 +43,10 @@ const AUTO_ELEMENTALS = [
   },
   {
     "id": "squiplash",
+    // Nome em PT ("Mô Lusco") confirmado pelo usuário em 15/nov/2026 — ver
+    // comentário no topo do arquivo sobre exceções de hand-edit.
     "name": {
-      "pt": "Squiplash",
+      "pt": "Mô Lusco",
       "en": "Squiplash"
     },
     "wikiName": "Squiplash Sprite",
