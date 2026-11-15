@@ -23,6 +23,7 @@ const AUTO_ELEMENTALS = [
       "en": "Ability not yet revealed."
     },
     "noVariants": true,
+    "number": 6,
     "image": "img/sprites/sir-oscar-the-second-base.png"
   },
   {
@@ -40,6 +41,7 @@ const AUTO_ELEMENTALS = [
     },
     "onlyVariants": ["fortune", "cursed"],
     "lockedVariants": ["gold"],
+    "number": 7,
     "image": "img/sprites/mini-miku-base.png"
   },
   {
@@ -60,6 +62,7 @@ const AUTO_ELEMENTALS = [
     },
     "onlyVariants": ["fortune", "cursed"],
     "lockedVariants": ["gold"],
+    "number": 9,
     "image": "img/sprites/squiplash-base.png"
   },
   {
@@ -80,6 +83,7 @@ const AUTO_ELEMENTALS = [
       "en": "Ability not yet revealed."
     },
     "noVariants": true,
+    "number": 2,
     "image": "img/sprites/zee-base.png"
   }
 ];
