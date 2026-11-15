@@ -193,8 +193,11 @@ const ELEMENTALS = [
   ...COSTS[rarity],
   ...extra,
   image: `img/sprites/${id}-base.png`,
+  // Inclui "gold" sempre: inofensivo pra quem não tem essa variante (nunca
+  // é lido), e cobre os 11 que têm `lockedVariants: ["gold"]` sem precisar
+  // listar cada um aqui.
   variantImages: Object.fromEntries(
-    variants.map((v) => [v, `img/sprites/${id}-${v}.png`])
+    [...variants, "gold"].map((v) => [v, `img/sprites/${id}-${v}.png`])
   ),
 }));
 
