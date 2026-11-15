@@ -910,6 +910,13 @@ textarea {
   margin-top: 0.5rem;
 }
 
+/* <summary> dentro de <details>: cursor de clique e sem o espaço extra que
+   o navegador dá por padrão antes do marcador. */
+summary.treasure-section-title {
+  cursor: pointer;
+  margin-left: -0.3rem;
+}
+
 .treasure-week-status {
   font-size: 0.75rem;
   font-weight: 600;
