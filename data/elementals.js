@@ -202,8 +202,24 @@ const ELEMENTALS = [
 // numerá-los). Preencha por id; quem não tiver número vai para o fim, na
 // ordem em que está na lista. O app mostra o número no cartão e usa a
 // ordem numérica como padrão.
+// Confirmado pelo usuário em 15/nov/2026 (fortnite.gg, lista de Sprites da
+// temporada): os 4 que ficam em data/elementals-auto.js (Sir Oscar the
+// Second, Mini Miku, Squiplash, Zee) recebem o número direto na própria
+// entrada lá, já que SPRITE_NUMBERS só é aplicado aqui.
 const SPRITE_NUMBERS = {
-  // "halfpeel-d": 1,
+  "plundarrgh": 1,
+  "sweet-dreams": 3,
+  "chester": 4,
+  "lil-uzi-vert-jr": 5,
+  "re-pete": 8,
+  "halfpeel-d": 10,
+  "wayfinder": 11,
+  "lil-squibbly": 12,
+  "exmarks": 13,
+  "transponder-snail": 14,
+  "lil-flacko": 15,
+  "barry-o-fish": 16,
+  "kelper": 17,
 };
 ELEMENTALS.forEach((e) => {
   e.image = e.image || ignArt(e.id, "base") || WIKI_ITEM(e.wikiName);
