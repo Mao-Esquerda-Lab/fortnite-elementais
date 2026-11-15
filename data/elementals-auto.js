@@ -42,7 +42,12 @@ const AUTO_ELEMENTALS = [
     "onlyVariants": ["fortune", "cursed"],
     "lockedVariants": ["gold"],
     "number": 7,
-    "image": "img/sprites/mini-miku-base.png"
+    "image": "img/sprites/mini-miku-base.png",
+    "variantImages": {
+      "fortune": "img/sprites/mini-miku-fortune.png",
+      "cursed": "img/sprites/mini-miku-cursed.png",
+      "gold": "img/sprites/mini-miku-gold.png"
+    }
   },
   {
     "id": "squiplash",
@@ -63,7 +68,12 @@ const AUTO_ELEMENTALS = [
     "onlyVariants": ["fortune", "cursed"],
     "lockedVariants": ["gold"],
     "number": 9,
-    "image": "img/sprites/squiplash-base.png"
+    "image": "img/sprites/squiplash-base.png",
+    "variantImages": {
+      "fortune": "img/sprites/squiplash-fortune.png",
+      "cursed": "img/sprites/squiplash-cursed.png",
+      "gold": "img/sprites/squiplash-gold.png"
+    }
   },
   {
     "id": "zee",
