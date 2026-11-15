@@ -878,19 +878,36 @@ textarea {
   opacity: 0.5;
 }
 
-/* Recompensas de Domínio: o oposto dos códigos — aqui é o BLOQUEADO (ainda
-   não atingiu o nível) que fica discreto; o desbloqueado é a conquista, por
-   isso continua em destaque. */
-.mastery-row.locked .code-reward {
+/* Caça ao Tesouro: encontrado fica discreto, igual aos códigos resgatados —
+   o que falta achar é o que deve saltar aos olhos. */
+.treasure-row.found .code-reward {
   opacity: 0.5;
 }
 
-.mastery-check {
-  display: inline-block;
-  width: 1.15rem;
-  text-align: center;
-  color: var(--rare);
-  font-weight: 700;
+.treasure-section-title {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.treasure-week {
+  margin-top: 0.5rem;
+}
+
+.treasure-week-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.treasure-week-dates {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 400;
 }
 
 .code-cell {
