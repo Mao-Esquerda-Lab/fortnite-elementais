@@ -1329,7 +1329,7 @@ function createCard(elemental) {
              loading="lazy" onerror="iconFallback(this, '${elemental.id}')" />
       </div>
       <div class="card-title">
-        <h3 class="elemental-name">${elemental.number != null ? `<span class="sprite-number">${lang === "pt" ? "Nº" : "No."} ${elemental.number}</span> ` : ""}${elemental.name[lang]}</h3>
+        <h3 class="elemental-name">${elemental.number != null ? `<span class="sprite-number">#${elemental.number}</span> ` : ""}${elemental.name[lang]}</h3>
         <span class="rarity-badge">${s.rarities[elemental.rarity]}</span>
         ${elemental.upcoming ? `<span class="upcoming-badge">${s.upcoming}</span>` : ""}
       </div>
