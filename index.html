@@ -101,7 +101,7 @@
     <div class="view-tabs" id="view-tabs" role="tablist">
       <button class="view-tab active" type="button" data-view="sprites" role="tab"></button>
       <button class="view-tab" type="button" data-view="friends" role="tab"></button>
-      <button class="view-tab" type="button" data-view="mastery" role="tab"></button>
+      <button class="view-tab" type="button" data-view="treasure" role="tab"></button>
     </div>
 
     <div id="view-sprites">
@@ -229,27 +229,19 @@
       <p class="share-field-label" id="friends-signed-out-hint" hidden></p>
     </div>
 
-    <!-- Aba de recompensas de Domínio: desbloqueiam sozinhas pela contagem
-         total de Sprites Dominados — nada para marcar à mão. -->
-    <div id="view-mastery" hidden>
-      <p class="codes-intro" id="mastery-intro"></p>
+    <!-- Aba da Caça ao Tesouro: recompensas grátis de Baú do Tesouro,
+         achadas ao acaso ao abrir qualquer baú. "Encontrei" é marcado à mão
+         (a Epic não dá como saber isso sozinho, diferente do Domínio
+         antigo). O conteúdo (recompensas fixas + uma seção por semana) é
+         montado inteiro por JS em renderTreasure(). -->
+    <div id="view-treasure" hidden>
+      <p class="codes-intro" id="treasure-intro"></p>
       <div class="progress-row">
-        <div class="progress-bar" id="mastery-progress-bar"></div>
-        <span class="progress-label" id="mastery-progress-label"></span>
+        <div class="progress-bar" id="treasure-progress-bar"></div>
+        <span class="progress-label" id="treasure-progress-label"></span>
       </div>
-      <p class="codes-intro" id="mastery-next" hidden></p>
-
-      <table class="codes-table">
-        <thead>
-          <tr>
-            <th id="mastery-th-done"></th>
-            <th id="mastery-th-level"></th>
-            <th id="mastery-th-reward"></th>
-          </tr>
-        </thead>
-        <tbody id="mastery-body"></tbody>
-      </table>
-      <p class="codes-source" id="mastery-source"></p>
+      <div id="treasure-body"></div>
+      <p class="codes-source" id="treasure-source"></p>
     </div>
   </main>
 
@@ -482,7 +474,8 @@
 
   <script src="data/cheat-codes.js"></script>
   <script src="data/cheat-codes-auto.js"></script>
-  <script src="data/mastery-rewards.js"></script>
+  <script src="data/treasure-rewards.js"></script>
+  <script src="data/treasure-rewards-auto.js"></script>
   <script src="data/elementals.js"></script>
   <script src="data/elementals-auto.js"></script>
   <script src="icons.js"></script>
