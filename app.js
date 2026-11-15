@@ -1945,21 +1945,26 @@ function renderTreasure() {
     <h4 class="treasure-section-title">${s.treasureSeasonTitle}</h4>
     ${treasureTable(s, TREASURE_SEASON_REWARDS)}`;
 
+  // <details> em vez de <div>: cada semana recolhe sozinha (nativo do
+  // navegador, sem precisar de JS pra abrir/fechar). Só a semana ao vivo
+  // começa aberta — as outras já renderizam fechadas pra não precisar
+  // rolar a página toda pra achar a semana atual.
   const weekSections = TREASURE_SCHEDULE.map((schedule) => {
     const week = knownWeeks.find((w) => w.week === schedule.week);
     const dates = `${fmtTreasureDate(schedule.startsAt)}–${fmtTreasureDate(schedule.endsAt)}`;
+    const status = treasureWeekStatus(s, schedule);
     const body = week
       ? treasureTable(s, week.rewards)
       : `<p class="codes-intro">${s.treasureWeekUnrevealed}</p>`;
     return `
-      <div class="treasure-week">
-        <h4 class="treasure-section-title">
+      <details class="treasure-week"${status === s.treasureWeekLive ? " open" : ""}>
+        <summary class="treasure-section-title">
           ${s.treasureWeekLabel(schedule.week)}
-          <span class="treasure-week-status">${treasureWeekStatus(s, schedule)}</span>
+          <span class="treasure-week-status">${status}</span>
           <span class="treasure-week-dates">${dates}</span>
-        </h4>
+        </summary>
         ${body}
-      </div>`;
+      </details>`;
   }).join("");
 
   treasureBody.innerHTML = seasonSection + weekSections;
