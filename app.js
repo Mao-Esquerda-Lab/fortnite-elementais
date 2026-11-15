@@ -1959,6 +1959,7 @@ function renderTreasure() {
     return `
       <details class="treasure-week"${status === s.treasureWeekLive ? " open" : ""}>
         <summary class="treasure-section-title">
+          <span class="treasure-arrow" aria-hidden="true">▸</span>
           ${s.treasureWeekLabel(schedule.week)}
           <span class="treasure-week-status">${status}</span>
           <span class="treasure-week-dates">${dates}</span>

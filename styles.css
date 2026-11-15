@@ -906,15 +906,34 @@ textarea {
   flex-wrap: wrap;
 }
 
+/* Contorno pra deixar claro que cada semana é uma caixa clicável (abre/
+   fecha), não só um título solto. */
 .treasure-week {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem 0.75rem;
 }
 
-/* <summary> dentro de <details>: cursor de clique e sem o espaço extra que
-   o navegador dá por padrão antes do marcador. */
+/* <summary> dentro de <details>: cursor de clique, sem o espaço extra que o
+   navegador dá por padrão antes do marcador nativo (trocado pela seta
+   própria abaixo, que gira ao abrir — mais visível que o marcador nativo). */
 summary.treasure-section-title {
   cursor: pointer;
   margin-left: -0.3rem;
+  list-style: none;
+}
+summary.treasure-section-title::-webkit-details-marker {
+  display: none;
+}
+
+.treasure-arrow {
+  display: inline-block;
+  transition: transform 0.15s ease;
+  color: var(--accent);
+}
+.treasure-week[open] > summary .treasure-arrow {
+  transform: rotate(90deg);
 }
 
 .treasure-week-status {
