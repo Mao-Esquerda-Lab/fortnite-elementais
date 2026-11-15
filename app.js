@@ -1897,12 +1897,17 @@ function treasureWeekStatus(s, schedule) {
 
 function treasureRewardRow(reward) {
   const found = !!treasureFound[reward.id];
+  const icon = reward.image
+    ? `<img class="treasure-icon" src="${reward.image}" alt="" width="36" height="36"
+            loading="lazy" onerror="this.style.visibility='hidden'" />`
+    : "";
   return `
     <tr class="treasure-row${found ? " found" : ""}">
       <td class="code-check-cell">
         <input type="checkbox" class="code-check" ${found ? "checked" : ""}
                data-action="treasure-found" data-id="${reward.id}" />
       </td>
+      <td class="treasure-icon-cell">${icon}</td>
       <td><span class="code-reward">${escapeHtml(reward.name[lang])}</span></td>
       <td>${escapeHtml(reward.odds)}</td>
     </tr>`;
@@ -1914,6 +1919,7 @@ function treasureTable(s, rewards) {
       <thead>
         <tr>
           <th>${s.treasureThFound}</th>
+          <th></th>
           <th>${s.treasureThReward}</th>
           <th>${s.treasureThOdds}</th>
         </tr>

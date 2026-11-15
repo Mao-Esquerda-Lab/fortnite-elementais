@@ -884,6 +884,19 @@ textarea {
   opacity: 0.5;
 }
 
+.treasure-icon-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.treasure-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  border-radius: 6px;
+}
+
 .treasure-section-title {
   margin: 1.25rem 0 0.5rem;
   font-size: 0.95rem;
