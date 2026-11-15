@@ -30,6 +30,7 @@ const TREASURE_SEASON_REWARDS = [
     id: "pirate-shop-access",
     odds: "1 em 137.500",
     name: { pt: "Acesso à Loja Pirata", en: "Pirate Shop Access" },
+    image: "img/treasure/pirate-shop-access.png",
   },
   {
     id: "extraction-accelerator",
@@ -69,6 +70,7 @@ const TREASURE_WEEKS = [
           pt: "Traje A$AP Rocky Ouro Maciço",
           en: "Solid Gold A$AP Rocky Outfit",
         },
+        image: "img/treasure/w1-outfit.png",
       },
       {
         id: "w1-pickaxe",
@@ -77,6 +79,7 @@ const TREASURE_WEEKS = [
           pt: "Picareta Manopla de A$AP Rocky Ouro Maciço",
           en: "Solid Gold A$AP Rocky's Gauntlet Pickaxe",
         },
+        image: "img/treasure/w1-pickaxe.png",
       },
       {
         id: "w1-loading-screen",
@@ -85,6 +88,7 @@ const TREASURE_WEEKS = [
           pt: 'Tela de Carregamento "Saque no Paraíso" A$AP Rocky',
           en: '"Plunder In Paradise" A$AP Rocky Loading Screen',
         },
+        image: "img/treasure/w1-loading-screen.png",
       },
       {
         id: "w1-jam-track",
@@ -93,6 +97,7 @@ const TREASURE_WEEKS = [
           pt: 'Faixa Jam "Entrada Proibida" A$AP Rocky',
           en: '"No Trespassing" A$AP Rocky Jam Track',
         },
+        image: "img/treasure/w1-jam-track.png",
       },
       {
         id: "w1-vehicle",
@@ -101,6 +106,7 @@ const TREASURE_WEEKS = [
           pt: "Veículo Mercedes-AMG G 63 G-Wagon",
           en: "Mercedes-AMG G 63 G-Wagon Vehicle",
         },
+        image: "img/treasure/w1-vehicle.png",
       },
     ],
   },
@@ -114,6 +120,7 @@ const TREASURE_WEEKS = [
           pt: "Traje Lil' Uzi Vert Ouro Maciço",
           en: "Solid Gold Lil' Uzi Vert Outfit",
         },
+        image: "img/treasure/w2-outfit.png",
       },
       {
         id: "w2-vehicle",
@@ -122,6 +129,7 @@ const TREASURE_WEEKS = [
           pt: "Veículo Cadillac CT5-V Blackwing (com Decalque da Lhama Dourada)",
           en: "Cadillac CT5-V Blackwing Vehicle (with Golden Llama Crew Decal)",
         },
+        image: "img/treasure/w2-vehicle.png",
       },
       {
         id: "w2-back-bling",
@@ -130,6 +138,7 @@ const TREASURE_WEEKS = [
           pt: "Aderência nas Costas Diamante e Ouro",
           en: "Diamond and Gold Back Bling",
         },
+        image: "img/treasure/w2-back-bling.png",
       },
       {
         id: "w2-jam-track",
@@ -138,6 +147,7 @@ const TREASURE_WEEKS = [
           pt: "Faixa Jam \"Londres\" Lil' Uzi Vert",
           en: "\"London\" Lil' Uzi Vert Jam Track",
         },
+        image: "img/treasure/w2-jam-track.png",
       },
       {
         id: "w2-loading-screen",
@@ -145,6 +155,130 @@ const TREASURE_WEEKS = [
         name: {
           pt: "Tela de Carregamento Tão Kawaii",
           en: "So Kawaii Loading Screen",
+        },
+        image: "img/treasure/w2-loading-screen.png",
+      },
+    ],
+  },
+  // Semana 3: nomes e ícones do fortnite.gg (checado em 15/nov/2026) — o IGN
+  // ainda não publicou a tabela desta semana, por isso os nomes em inglês
+  // seguem o estilo curto do catálogo de cosméticos dele, não o nome
+  // "completo" como nas semanas 1/2 (ex.: "Solid Gold A$AP Rocky Outfit").
+  {
+    week: 3,
+    rewards: [
+      {
+        id: "w3-outfit",
+        odds: "1 em 1.562.500",
+        name: { pt: "Traje Miku Ouro Maciço", en: "Solid Gold Miku" },
+        image: "img/treasure/w3-outfit.png",
+      },
+      {
+        id: "w3-vehicle",
+        odds: "1 em 7.813",
+        name: {
+          pt: "Veículo com Decalque da Lhama Dourada",
+          en: "Golden Llama Crew Car",
+        },
+        image: "img/treasure/w3-vehicle.png",
+      },
+      {
+        id: "w3-back-bling",
+        odds: "1 em 568",
+        name: { pt: "Aderência nas Costas Takarabako da Miku", en: "Miku's Takarabako" },
+        image: "img/treasure/w3-back-bling.png",
+      },
+      {
+        id: "w3-jam-track",
+        odds: "1 em 391",
+        name: { pt: "Faixa Jam \"PPPP\"", en: '"PPPP" Jam Track' },
+        image: "img/treasure/w3-jam-track.png",
+      },
+      {
+        id: "w3-loading-screen",
+        odds: "1 em 272",
+        name: {
+          pt: "Tela de Carregamento \"Que a Sorte te Encontre\"",
+          en: '"May Fortune Find You" Loading Screen',
+        },
+        image: "img/treasure/w3-loading-screen.png",
+      },
+    ],
+  },
+  // Semanas 4 e 5: nomes "datamined" do fortnite.gg (checado em 15/nov/2026)
+  // — a Epic ainda NÃO confirmou oficialmente (nem o IGN, nem o jogo
+  // mostram essas semanas ainda). Podem mudar até lá; sem ícone porque o
+  // fortnite.gg também ainda não tem a arte dessas.
+  {
+    week: 4,
+    unconfirmed: true,
+    rewards: [
+      {
+        id: "w4-outfit",
+        odds: "1 em 1.562.500",
+        name: { pt: "Traje Kasane Teto Ouro Maciço", en: "Solid Gold Kasane Teto" },
+      },
+      {
+        id: "w4-vehicle",
+        odds: "1 em 7.813",
+        name: {
+          pt: "Lamborghini Urus SE Dourado",
+          en: "Gold Lamborghini Urus SE",
+        },
+      },
+      {
+        id: "w4-back-bling",
+        odds: "1 em 568",
+        name: {
+          pt: "Aderência nas Costas Onda Rebelde e Andador de Maré",
+          en: "Rogue Wave and Tidewalker",
+        },
+      },
+      {
+        id: "w4-jam-track",
+        odds: "1 em 391",
+        name: { pt: "Faixa Jam Cântico do Mar", en: "Sea Shanty" },
+      },
+      {
+        id: "w4-loading-screen",
+        odds: "1 em 272",
+        name: {
+          pt: "Tela de Carregamento Embrulhos do Oscar",
+          en: "Oscar's Wraps",
+        },
+      },
+    ],
+  },
+  {
+    week: 5,
+    unconfirmed: true,
+    rewards: [
+      {
+        id: "w5-outfit",
+        odds: "1 em 1.562.500",
+        name: { pt: "Traje Capitão X Ouro Maciço", en: "Solid Gold Captain X" },
+      },
+      {
+        id: "w5-vehicle",
+        odds: "1 em 7.813",
+        name: { pt: "G-Wagon Dourado v2", en: "Gold G-Wagon v2" },
+      },
+      {
+        id: "w5-back-bling",
+        odds: "1 em 568",
+        name: { pt: "Aderência nas Costas Carne Assada", en: "Roasted Meat" },
+      },
+      {
+        id: "w5-jam-track",
+        odds: "1 em 391",
+        name: { pt: "Faixa Jam Eu Sigo os Rios", en: "I Follow Rivers" },
+      },
+      {
+        id: "w5-loading-screen",
+        odds: "1 em 272",
+        name: {
+          pt: "Tela de Carregamento Jones e os Chapéus de Palha",
+          en: "Jones and the Straw Hats",
         },
       },
     ],
