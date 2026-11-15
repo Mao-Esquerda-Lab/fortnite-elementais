@@ -29,6 +29,8 @@ const MANUAL_FILE = join(ROOT, "data", "elementals.js");
 const AUTO_FILE = join(ROOT, "data", "elementals-auto.js");
 const CODES_MANUAL_FILE = join(ROOT, "data", "cheat-codes.js");
 const CODES_AUTO_FILE = join(ROOT, "data", "cheat-codes-auto.js");
+const TREASURE_MANUAL_FILE = join(ROOT, "data", "treasure-rewards.js");
+const TREASURE_AUTO_FILE = join(ROOT, "data", "treasure-rewards-auto.js");
 
 // O WAF da Fandom bloqueia clientes "não navegador" (ver pages.yml).
 const UA =
@@ -657,6 +659,162 @@ async function updateCodes(fixtureHtml, today) {
   };
 }
 
+// ---- Baús do Tesouro grátis (terceira fonte, página própria do IGN) ----
+
+const IGN_TREASURE_URL =
+  "https://www.ign.com/wikis/fortnite/" +
+  "All_Free_Treasure_Chest_Rewards_List_-_Odds_and_Schedule";
+
+// Sinal de parse quebrado: menos que isso de semanas no total (já
+// confirmadas + achadas agora) é página de erro ou formato mudou.
+const MIN_TREASURE_WEEKS_ON_PAGE = 1;
+// Mais que isso de semana nova de uma vez é sinal de formato mudado, não de
+// a Epic ter revelado várias semanas de uma vez (elas saem uma por vez, toda
+// sexta) — aborta sem escrever.
+const MAX_NEW_TREASURE_WEEKS_PER_RUN = 2;
+
+async function fetchIgnTreasureHtml() {
+  const res = await fetch(IGN_TREASURE_URL, { headers: { "User-Agent": UA } });
+  if (!res.ok) throw new Error(`IGN (baús) HTTP ${res.status}`);
+  return res.text();
+}
+
+// Devolve Map: número da semana -> [{ name, odds }]. Cada semana vem numa
+// seção "Week N Treasure Chest Rewards and Drop Rates" (h3) seguida de uma
+// <table> com uma linha por recompensa: nome, "1 in N" e um <checkbox> (cujo
+// texto repete o nome — não usamos o id dele, só a presença confirma a
+// linha). O <br> dentro da 1ª célula (ex.: "Cadillac...<br>(with Golden
+// Llama...)") vira espaço antes de capturar, senão o nome ficaria cortado.
+function parseTreasureWeeks(rawHtml) {
+  const html = unescapeIgn(rawHtml).replace(/<br\s*\/?>/g, " ");
+  const weeks = new Map();
+  const headingPattern = /Week (\d+) Treasure Chest Rewards and Drop Rates/g;
+  const sections = [];
+  let match;
+  while ((match = headingPattern.exec(html)) !== null) {
+    if (sections.length) sections[sections.length - 1].end = match.index;
+    sections.push({ week: Number(match[1]), start: match.index, end: html.length });
+  }
+
+  const rowPattern =
+    /<tr>\s*<td[^>]*>\s*([^<]+?)\s*<\/td>\s*<td[^>]*>\s*1 in ([\d,]+)\s*<\/td>\s*<td[^>]*>\s*<checkbox /g;
+  for (const { week, start, end } of sections) {
+    // A página do IGN embute a página inteira duas vezes (mesmo problema que
+    // unexpiredIds já tratava pros códigos) — só a primeira ocorrência de
+    // cada semana tem os limites de seção certos; a segunda cópia faz o
+    // "end" de alguma seção anterior disparar pra longe demais e não bate
+    // com nenhuma linha de verdade.
+    if (weeks.has(week)) continue;
+    const body = html.slice(start, end);
+    const rewards = [];
+    rowPattern.lastIndex = 0;
+    for (const row of body.matchAll(rowPattern)) {
+      rewards.push({ name: row[1].trim(), odds: `1 in ${row[2]}` });
+    }
+    weeks.set(week, rewards);
+  }
+  return weeks;
+}
+
+// Avalia os arquivos de dados pra saber que semanas e que recompensas fixas
+// (Loja Pirata + Gizmos) já são conhecidas.
+function loadKnownTreasureWeeks() {
+  const manual = readFileSync(TREASURE_MANUAL_FILE, "utf8");
+  let auto = "";
+  try {
+    auto = readFileSync(TREASURE_AUTO_FILE, "utf8");
+  } catch {
+    // Primeira execução: o arquivo automático ainda não existe.
+  }
+  return new Function(
+    `${manual}\n${auto}\n;return { weeks: [...TREASURE_WEEKS, ...(typeof AUTO_TREASURE_WEEKS !== "undefined" ? AUTO_TREASURE_WEEKS : [])], seasonRewards: TREASURE_SEASON_REWARDS };`
+  )();
+}
+
+function loadAutoTreasureWeeks() {
+  let auto = "";
+  try {
+    auto = readFileSync(TREASURE_AUTO_FILE, "utf8");
+  } catch {
+    return [];
+  }
+  return readGeneratedArray(auto, "AUTO_TREASURE_WEEKS");
+}
+
+function writeTreasureAutoFile(entries) {
+  const content = `// ARQUIVO GERADO AUTOMATICAMENTE — não edite à mão.
+// Gerado por scripts/update-sprites.mjs (workflow update-sprites.yml), que
+// consulta a página de Baús do Tesouro do IGN todo dia e ADICIONA aqui as
+// semanas que ainda não estão em data/treasure-rewards.js.
+//
+// Para traduzir/curar uma semana desta lista, MOVA a entrada pra
+// data/treasure-rewards.js: o gerador pula semanas que já estão na lista
+// manual e a cópia daqui some na próxima execução.
+const AUTO_TREASURE_WEEKS = ${JSON.stringify(entries, null, 2)};
+`;
+  writeFileSync(TREASURE_AUTO_FILE, content);
+}
+
+// Devolve o resumo do que mudou (ou null), já tendo escrito o arquivo. Erros
+// de rede/parse sobem para quem chama.
+async function updateTreasureChest(fixtureHtml, today) {
+  const html = fixtureHtml ?? (await fetchIgnTreasureHtml());
+  const parsed = parseTreasureWeeks(html);
+  console.log(`Semanas de Baú do Tesouro citadas no IGN: ${parsed.size}`);
+
+  const { weeks: known, seasonRewards } = loadKnownTreasureWeeks();
+  const knownWeekNumbers = new Set(known.map((w) => w.week));
+  const seasonRewardNames = new Set(seasonRewards.map((r) => r.name.en));
+
+  const totalKnownAfter = new Set([...knownWeekNumbers, ...parsed.keys()]).size;
+  if (totalKnownAfter < MIN_TREASURE_WEEKS_ON_PAGE) {
+    throw new Error(
+      `Parse suspeito: só ${totalKnownAfter} semana(s) de Baú do Tesouro ` +
+        `no total (mínimo ${MIN_TREASURE_WEEKS_ON_PAGE}). Nada foi alterado.`
+    );
+  }
+
+  const newWeekNumbers = [...parsed.keys()]
+    .filter((w) => !knownWeekNumbers.has(w))
+    .sort((a, b) => a - b);
+
+  if (newWeekNumbers.length > MAX_NEW_TREASURE_WEEKS_PER_RUN) {
+    throw new Error(
+      `Parse suspeito: ${newWeekNumbers.length} semanas novas de Baú do ` +
+        `Tesouro de uma vez (limite ${MAX_NEW_TREASURE_WEEKS_PER_RUN}). ` +
+        "Nada foi alterado."
+    );
+  }
+
+  if (newWeekNumbers.length === 0) {
+    console.log("Nenhuma semana nova de Baú do Tesouro — nada a fazer.");
+    return null;
+  }
+
+  const makeWeekEntry = (week) => {
+    // As recompensas fixas (Loja Pirata + Gizmos) aparecem repetidas em toda
+    // semana na página do IGN — ficam só uma vez em TREASURE_SEASON_REWARDS,
+    // então são descartadas aqui pra não duplicar.
+    const rewards = parsed
+      .get(week)
+      .filter((r) => !seasonRewardNames.has(r.name))
+      .map((r) => ({
+        id: `w${week}-${slug(r.name)}`,
+        odds: r.odds,
+        name: { pt: r.name, en: r.name },
+        untranslated: true,
+      }));
+    return { week, rewards };
+  };
+
+  const entries = [
+    ...loadAutoTreasureWeeks(),
+    ...newWeekNumbers.map(makeWeekEntry),
+  ];
+  writeTreasureAutoFile(entries);
+  return { added: newWeekNumbers };
+}
+
 const slug = (text) =>
   text
     .toLowerCase()
@@ -850,6 +1008,18 @@ async function main() {
   } catch (err) {
     console.error(`Códigos: ${err.message}`);
     failures.push("Códigos");
+  }
+
+  try {
+    const changed = await updateTreasureChest(fixture("--treasure-fixture"), today);
+    if (changed) {
+      console.log(
+        `Semana(s) nova(s) de Baú do Tesouro: ${changed.added.join(", ")}`
+      );
+    }
+  } catch (err) {
+    console.error(`Baú do Tesouro: ${err.message}`);
+    failures.push("Baú do Tesouro");
   }
 
   if (failures.length) {
