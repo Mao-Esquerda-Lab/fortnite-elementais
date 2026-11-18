@@ -135,6 +135,17 @@ const EXCLUDED_SPRITES = [
   "John Wick Sprite",
 ];
 
+// "Sir Oscar the Second" é um Sprite secreto/bônus: desde que o IGN
+// reorganizou a página (detectado em 16/nov/2026, estável por 3 dias
+// seguidos), ele só aparece numa mini-tabela de variantes (Base/Fortune/
+// Cursed/Gold), com o nome em negrito SEM o sufixo " Sprite" e sem
+// checkbox de checklist — por isso o regex principal (que exige " Sprite"
+// no texto) nunca bate nele, e o guard de "Parse suspeito" disparava todo
+// dia à toa. Lista separada da EXCLUDED_SPRITES porque ele continua
+// dentro do escopo do app, só não segue mais o formato padrão dos outros
+// 16 Sprites.
+const BONUS_SPRITES_NO_SUFFIX = ["Sir Oscar the Second"];
+
 // Prefixos de variantes: "Gold Water Sprite" não é um Sprite novo.
 const VARIANT_PREFIXES = [
   "Base",
@@ -297,6 +308,13 @@ function parseIgnSprites(rawHtml) {
       if (startsWithVariant(name)) continue;
       if (EXCLUDED_SPRITES.includes(name)) continue;
       if (!found.has(name)) found.set(name, { upcoming, variantImages: {} });
+    }
+
+    for (const bonusName of BONUS_SPRITES_NO_SUFFIX) {
+      const name = `${bonusName} Sprite`;
+      if (found.has(name) || EXCLUDED_SPRITES.includes(name)) continue;
+      const pattern = new RegExp(`<b>(?:<br\\s*/?>)?${escapeRegex(bonusName)}</b>`);
+      if (pattern.test(body)) found.set(name, { upcoming, variantImages: {} });
     }
 
     IGN_IMAGE.lastIndex = 0;
