@@ -88,8 +88,11 @@ const AUTO_ELEMENTALS = [
     // novo que nem o IGN nem a busca na web tinham citado ainda. Ícone
     // hand-added (fortnite.gg); sem variantes (confirmado: a página dele lá
     // não tem a seção "Variants").
+    // Nome em pt-BR confirmado pelo usuário em 21/nov/2026: o cliente
+    // brasileiro do jogo traduz "Zee" como "Ponto Zé" (trocadilho com o
+    // som da letra Z em inglês), não é uma transliteração literal.
     "name": {
-      "pt": "Zee",
+      "pt": "Ponto Zé",
       "en": "Zee"
     },
     "wikiName": "Zee Sprite",
