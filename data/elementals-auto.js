@@ -11,8 +11,10 @@
 const AUTO_ELEMENTALS = [
   {
     "id": "sir-oscar-the-second",
+    // Nome em pt-BR confirmado pelo usuário em 22/nov/2026: o cliente
+    // brasileiro do jogo traduz "Sir Oscar the Second" como "Oscar II".
     "name": {
-      "pt": "Sir Oscar the Second",
+      "pt": "Oscar II",
       "en": "Sir Oscar the Second"
     },
     "wikiName": "Sir Oscar the Second Sprite",
