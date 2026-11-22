@@ -45,9 +45,9 @@ const ignArt = (elementalId, variantId) => {
 };
 
 // Todas as variantes herdam a raridade do Sprite base. A Temporada 5 usa
-// Valioso (Fortune) + Amaldiçoado (Cursed) (`onlyVariants`). O Dourado volta em 12/nov/2026,
-// mas a Epic não disse em quais Sprites — só entra no `onlyVariants`
-// quando for confirmado.
+// Valioso (Fortune) + Amaldiçoado (Cursed) (`onlyVariants`). O Dourado
+// voltou em 12/nov/2026 e foi confirmado colecionável de verdade pelo
+// usuário em 22/nov/2026 nos Sprites que o tinham anunciado.
 //
 // Custo de invocação por raridade (tabela do hotfix de 24/jul/2026,
 // ESTIMATIVA — nenhuma fonte cita o valor exato desta temporada): Raro
@@ -121,45 +121,41 @@ const COSTS = {
   Legendary: { dust: 4500, variantCost: 6750 },
   Mythic: { dust: 6750, variantCost: 10000 },
 };
-const S5 = ["fortune", "cursed"];
-// Dourado (`gold`, ver SPRITE_VARIANTS) confirmado pelo usuário em
-// 15/nov/2026 (checou as 17 páginas de Sprites da temporada no fortnite.gg):
-// anunciado para todos os 11 Sprites abaixo, mas ainda marcado como
-// "Unreleased" lá — por isso entra como `lockedVariants` (cadeado no app,
-// não conta no progresso) em vez de `onlyVariants`, até alguém confirmar
-// que já dá pra colecionar de verdade.
-const GOLD_LOCKED = { lockedVariants: ["gold"] };
+// Dourado (`gold`, ver SPRITE_VARIANTS) anunciado pra estes 11 Sprites em
+// 15/nov/2026, mas só confirmado colecionável de verdade pelo usuário em
+// 22/nov/2026 — por isso entra direto no `onlyVariants`, sem cadeado.
+const S5 = ["fortune", "cursed", "gold"];
 const ELEMENTALS = [
   ["halfpeel-d", "Halfpeel'd", "Rare", S5,
     "Marca eliminações no mapa; o alcance de detecção aumenta a cada nível.",
-    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho", GOLD_LOCKED],
+    "Marks eliminations on the map, with a detection range that grows each level.", "Descascadinho"],
   ["re-pete", "Re-Pete", "Rare", S5,
     "Recarrega mais rápido, com chance de recuperar munição.",
-    "Reloads faster, with a chance to get ammo back.", "Repetácio", GOLD_LOCKED],
+    "Reloads faster, with a chance to get ammo back.", "Repetácio"],
   ["barry-o-fish", "Barry O'Fish", "Rare", S5,
     "Gasta menos estamina ao correr na água; ganha efeito de Tapa no nível máximo.",
-    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson", GOLD_LOCKED],
+    "Uses less stamina sprinting in water; gains a Slap effect at max level.", "Barrilson"],
   ["wayfinder", "Wayfinder", "Epic", S5,
     "Mostra Sprites por perto e adiciona saque extra aos Baús Enterrados.",
-    "Shows nearby Sprites; adds extra loot to Buried Chests.", "Localizador", GOLD_LOCKED],
+    "Shows nearby Sprites; adds extra loot to Buried Chests.", "Localizador"],
   ["kelper", "Kelper", "Epic", S5,
     "Cura você aos poucos na água, com mais cura a cada nível.",
-    "Heals you over time in water, with bigger heals each level.", "Apatilda", GOLD_LOCKED],
+    "Heals you over time in water, with bigger heals each level.", "Apatilda"],
   ["exmarks", "Exmarks", "Legendary", S5,
     "Mostra Mapas do Tesouro e Cartazes de Procurado por perto; gera um Mapa do Tesouro no nível máximo.",
-    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level.", "Xisconde", GOLD_LOCKED],
+    "Shows nearby Treasure Maps and Wanted Posters; spawns a Treasure Map at max level.", "Xisconde"],
   ["chester", "Chester", "Legendary", S5,
     "Baús podem gerar saque extra; cancela o dano de queda.",
-    "Chests may spawn extra loot; cancels fall damage.", "Baunardo", GOLD_LOCKED],
+    "Chests may spawn extra loot; cancels fall damage.", "Baunardo"],
   ["lil-squibbly", "Lil' Squibbly", "Legendary", S5,
     "Pule em buracos de pesca para ganhar peixes e saque bônus.",
-    "Jump into fishing holes for fish and bonus loot.", "Polvitozinho", GOLD_LOCKED],
+    "Jump into fishing holes for fish and bonus loot.", "Polvitozinho"],
   ["lil-flacko", "Lil' Flacko", "Legendary", S5,
     "Ao pousar, cria uma pequena onda de choque que empurra os oponentes.",
-    "Landing creates a small shockwave that knocks opponents back.", "Flacko Jr.", GOLD_LOCKED],
+    "Landing creates a small shockwave that knocks opponents back.", "Flacko Jr."],
   ["plundarrgh", "Plundarrgh", "Mythic", S5,
     "Abrir baús aumenta a velocidade da picareta e de movimento.",
-    "Opening Chests boosts Pickaxe and movement speed.", "Moedonho", GOLD_LOCKED],
+    "Opening Chests boosts Pickaxe and movement speed.", "Moedonho"],
   ["sweet-dreams", "Sweet Dreams", "Mythic", [],
     "Concede um item aleatório a cada nível; saque Mítico no nível máximo.",
     "Grants a random item each level-up, with Mythic loot at max level."],
@@ -182,7 +178,7 @@ const ELEMENTALS = [
   ["lil-uzi-vert-jr", "Lil' Uzi Vert Jr.", "Legendary", S5,
     "Gera um efeito de Chug Splash ao restaurar escudos; a recarga diminui a cada nível.",
     "Generates a Chug Splash effect when restoring shields; cooldown decreases each level.",
-    undefined, { dust: 1750, variantCost: 2100, lockedVariants: ["gold"] }],
+    undefined, { dust: 1750, variantCost: 2100 }],
 ].map(([id, en, rarity, variants, pt, abEn, namePt, extra]) => ({
   id,
   name: { pt: namePt || en, en },
@@ -193,9 +189,9 @@ const ELEMENTALS = [
   ...COSTS[rarity],
   ...extra,
   image: `img/sprites/${id}-base.png`,
-  // Inclui "gold" sempre: inofensivo pra quem não tem essa variante (nunca
-  // é lido), e cobre os 11 que têm `lockedVariants: ["gold"]` sem precisar
-  // listar cada um aqui.
+  // Inclui "gold" sempre, mesmo pra quem já o tem em `variants` (dedup via
+  // Object.fromEntries) ou nem tem essa variante (sweet-dreams,
+  // transponder-snail): inofensivo, nunca é lido nesses casos.
   variantImages: Object.fromEntries(
     [...variants, "gold"].map((v) => [v, `img/sprites/${id}-${v}.png`])
   ),
