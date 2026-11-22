@@ -22,9 +22,9 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    // Variantes confirmadas pelo usuário em 15/nov/2026.
-    "onlyVariants": ["fortune", "cursed"],
-    "lockedVariants": ["gold"],
+    // Variantes confirmadas pelo usuário em 15/nov/2026. Dourado
+    // confirmado colecionável de verdade em 22/nov/2026.
+    "onlyVariants": ["fortune", "cursed", "gold"],
     "number": 6,
     "image": "img/sprites/sir-oscar-the-second-base.png",
     "variantImages": {
@@ -46,8 +46,8 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    "onlyVariants": ["fortune", "cursed"],
-    "lockedVariants": ["gold"],
+    // Dourado confirmado colecionável de verdade em 22/nov/2026.
+    "onlyVariants": ["fortune", "cursed", "gold"],
     "number": 7,
     "image": "img/sprites/mini-miku-base.png",
     "variantImages": {
@@ -72,8 +72,8 @@ const AUTO_ELEMENTALS = [
       "pt": "Habilidade ainda não revelada.",
       "en": "Ability not yet revealed."
     },
-    "onlyVariants": ["fortune", "cursed"],
-    "lockedVariants": ["gold"],
+    // Dourado confirmado colecionável de verdade em 22/nov/2026.
+    "onlyVariants": ["fortune", "cursed", "gold"],
     "number": 9,
     "image": "img/sprites/squiplash-base.png",
     "variantImages": {
