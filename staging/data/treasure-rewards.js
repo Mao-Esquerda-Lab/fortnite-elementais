@@ -6,13 +6,13 @@
 // ao abrir qualquer baú, sem precisar de código.
 //
 // Fonte: wiki do IGN, "All Free Treasure Chest Rewards List - Odds and
-// Schedule" (checado em 15/nov/2026). Textos em PT são tradução nossa, NÃO
+// Schedule" (checado em 23/nov/2026). Textos em PT são tradução nossa, NÃO
 // o texto oficial do cliente brasileiro.
 //
 // TREASURE_SCHEDULE cobre a temporada inteira (já anunciada: 5 semanas, até
 // 05/dez/2026) — datas não mudam, por isso ficam fixas aqui. As recompensas
 // de cada semana só existem quando a Epic/o IGN revela, por isso TREASURE_WEEKS
-// só tem as semanas já confirmadas (1 e 2); semanas novas chegam sozinhas via
+// só tem as semanas já confirmadas (1 a 4); semanas novas chegam sozinhas via
 // data/treasure-rewards-auto.js (scripts/update-sprites.mjs) e devem ser
 // movidas pra cá ao traduzir.
 const TREASURE_SCHEDULE = [
@@ -205,25 +205,27 @@ const TREASURE_WEEKS = [
       },
     ],
   },
-  // Semanas 4 e 5: nomes "datamined" do fortnite.gg (checado em 15/nov/2026)
-  // — a Epic ainda NÃO confirmou oficialmente (nem o IGN, nem o jogo
-  // mostram essas semanas ainda). Podem mudar até lá; sem ícone porque o
-  // fortnite.gg também ainda não tem a arte dessas.
+  // Semana 4: confirmada oficialmente pelo IGN em 23/nov/2026 (nomes e
+  // checklist reais, não mais datamined) — nomes completos no padrão do
+  // IGN, como nas semanas 1/2. Sem ícone ainda: fortnite.gg (fonte dos
+  // ícones das semanas 1-3) está inacessível (403/Cloudflare) no momento.
   {
     week: 4,
-    unconfirmed: true,
     rewards: [
       {
         id: "w4-outfit",
         odds: "1 em 1.562.500",
-        name: { pt: "Traje Kasane Teto Ouro Maciço", en: "Solid Gold Kasane Teto" },
+        name: {
+          pt: "Traje Kasane Teto Ouro Maciço",
+          en: "Solid Gold Kasane Teto Outfit",
+        },
       },
       {
         id: "w4-vehicle",
         odds: "1 em 7.813",
         name: {
-          pt: "Lamborghini Urus SE Dourado",
-          en: "Gold Lamborghini Urus SE",
+          pt: "Veículo Lamborghini Urus SE Dourado",
+          en: "Gold Lamborghini Urus SE Vehicle",
         },
       },
       {
@@ -231,24 +233,31 @@ const TREASURE_WEEKS = [
         odds: "1 em 568",
         name: {
           pt: "Aderência nas Costas Onda Rebelde e Andador de Maré",
-          en: "Rogue Wave and Tidewalker",
+          en: "Rogue Wave and Tidewalker Back Bling",
         },
       },
       {
         id: "w4-jam-track",
         odds: "1 em 391",
-        name: { pt: "Faixa Jam Cântico do Mar", en: "Sea Shanty" },
+        name: {
+          pt: 'Faixa Jam "Wellerman Sea Shanty"',
+          en: '"Wellerman Sea Shanty" Jam Track',
+        },
       },
       {
         id: "w4-loading-screen",
         odds: "1 em 272",
         name: {
           pt: "Tela de Carregamento Embrulhos do Oscar",
-          en: "Oscar's Wraps",
+          en: "Oscar's Wraps Loading Screen",
         },
       },
     ],
   },
+  // Semana 5: nomes "datamined" do fortnite.gg (checado em 15/nov/2026) —
+  // a Epic ainda NÃO confirmou oficialmente (nem o IGN, nem o jogo mostram
+  // essa semana ainda). Pode mudar até lá; sem ícone porque o fortnite.gg
+  // também ainda não tem a arte dela.
   {
     week: 5,
     unconfirmed: true,
